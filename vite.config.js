@@ -9,6 +9,7 @@ export default defineConfig({
         mollie:  resolve(__dirname, 'mollie/index.html'),
         leica:   resolve(__dirname, 'leica/index.html'),
         blinkoo: resolve(__dirname, 'blinkoo/index.html'),
+        revolut: resolve(__dirname, 'revolut/index.html'),
       },
     },
   },
