@@ -202,7 +202,7 @@
     .s2-photos {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
@@ -228,7 +228,7 @@
 
     .s2-photos img {
       display: block;
-      border-radius: 6px;
+      border-radius: 12px;
       box-shadow:
         0 8px 24px rgba(0, 0, 0, 0.10),
         0 2px 6px  rgba(0, 0, 0, 0.06);
@@ -521,23 +521,23 @@
     .problem-stat {
       display: flex;
       align-items: baseline;
-      gap: 10px;
+      gap: 6px;
       margin: 16px 0 20px;
     }
     .problem-stat-value {
-      font-family: var(--serif);
-      font-size: 2.5rem;
-      font-weight: 500;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 600;
       color: var(--text);
-      line-height: 1;
-      letter-spacing: -0.03em;
+      line-height: 1.65;
+      letter-spacing: -0.01em;
     }
     .problem-stat-label {
       font-family: var(--sans);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       color: var(--muted);
       letter-spacing: -0.01em;
-      line-height: 1.4;
+      line-height: 1.65;
     }
     .problem-list {
       list-style: none;
@@ -811,8 +811,63 @@
       <img class="mockup-img" src="mockup-web-mba-3x.png" alt="Mollie MBA onboarding" />
     </div>
 
-    <!-- ── Slide 11: Play / Wins ────────────────────────────── -->
+    <!-- ── Slide 11: Impact ──────────────────────────────── -->
     <div class="slide" data-idx="10">
+      <span class="crumb">Mollie</span>
+      <div class="col" style="width:460px">
+        <h3 class="sec-heading">Impact</h3>
+        <p class="proj-body">Onboarding became a strategic multi-product activation engine, not just a compliance gate.</p>
+        <div class="impact-stats">
+          <div class="impact-stat">
+            <span class="impact-stat-value">+8pp</span>
+            <span class="impact-stat-label">30-day activation rate (22% → 30%)</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">1,700+</span>
+            <span class="impact-stat-label">Merchants in App Native Onboarding</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">68%</span>
+            <span class="impact-stat-label">MBA completion rate</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">1,000+</span>
+            <span class="impact-stat-label">Organisations in MBA onboarding</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 12: Takeaways ───────────────────────────── -->
+    <div class="slide" data-idx="11">
+      <span class="crumb">Mollie <b>/ Takeaways</b></span>
+      <div class="col">
+        <h3 class="sec-heading">Takeaways</h3>
+        <ol class="takeaway-list">
+          <li>
+            <div>
+              <span class="takeaway-title">Design for intention, not just completion</span>
+              <span class="takeaway-body">Move merchants through steps by helping them understand what each step is for.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="takeaway-title">Compliance is a design input, not an obstacle</span>
+              <span class="takeaway-body">Constraints from Product, Risk, and Legal clarify the best solution — they don't block it.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="takeaway-title">Onboarding lives at the intersection of trust and conversion</span>
+              <span class="takeaway-body">The best activation experience makes merchants feel set up to succeed, not just processed.</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ── Slide 13: Play / Wins ─────────────────────────── -->
+    <div class="slide" data-idx="12">
       <div class="col">
         <p class="slide-label" style="margin-bottom:16px">Play</p>
         <ul class="wins-list">
@@ -852,42 +907,6 @@
             <span class="wins-yr">2022</span>
           </li>
         </ul>
-      </div>
-    </div>
-
-    <!-- ── Slide 12: Impact ──────────────────────────────── -->
-    <div class="slide" data-idx="11">
-      <span class="crumb">Mollie</span>
-      <div class="col" style="width:460px">
-        <h3 class="sec-heading">Impact</h3>
-        <p class="proj-body">Onboarding became a strategic multi-product activation engine, not just a compliance gate.</p>
-        <div class="impact-stats">
-          <div class="impact-stat">
-            <span class="impact-stat-value">+8pp</span>
-            <span class="impact-stat-label">30-day activation rate (22% → 30%)</span>
-          </div>
-          <div class="impact-stat">
-            <span class="impact-stat-value">1,700+</span>
-            <span class="impact-stat-label">Merchants in App Native Onboarding</span>
-          </div>
-          <div class="impact-stat">
-            <span class="impact-stat-value">68%</span>
-            <span class="impact-stat-label">MBA completion rate</span>
-          </div>
-          <div class="impact-stat">
-            <span class="impact-stat-value">1,000+</span>
-            <span class="impact-stat-label">Organisations in MBA onboarding</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Slide 13: Takeaways ───────────────────────────── -->
-    <div class="slide" data-idx="12">
-      <span class="crumb">Mollie <b>/ Takeaways</b></span>
-      <div class="col">
-        <h3 class="sec-heading">Takeaways</h3>
-        <p class="proj-body">Designing for activation means designing for intention: not just moving merchants through steps, but helping them understand what those steps are for. Onboarding systems live at the intersection of compliance, trust, and conversion. Working across Product, Risk, and Compliance taught me that the best design decisions happen when you treat constraints as inputs, not obstacles.</p>
       </div>
     </div>
 
