@@ -67,7 +67,7 @@
     }
     .slide.active {
       opacity: 1;
-      filter: blur(0);
+      filter: none;   /* not blur(0) — avoids GPU compositing that blurs subpixels */
       pointer-events: auto;
     }
 
@@ -183,49 +183,71 @@
     @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     /* ════════════════════════════════════════════════════
-       SLIDE 2 — Sofia / About (flex row, photos tilt on hover)
+       SLIDE 2 — Sofia / About
+       Horizontal row per cluster (matches node 118:43282):
+       small | large | small — with individual tilts & scatter
     ════════════════════════════════════════════════════ */
     .s2-layout {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 60px;
+      gap: 40px;
     }
     .s2-photos {
-      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       flex-shrink: 0;
-      width: 148px;
-      height: 390px;
     }
+
+    /* Wrapper: drives the appear animation independently of the image's rotation */
+    .s2-photo-wrap {
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    /* Stagger left-to-right across all 6 photos */
+    .s2-photos--left  .s2-photo-wrap:nth-child(1) { transition-delay: 0.08s; }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2) { transition-delay: 0.15s; }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3) { transition-delay: 0.22s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(1) { transition-delay: 0.29s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(2) { transition-delay: 0.36s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(3) { transition-delay: 0.43s; }
+
+    .slide.active .s2-photo-wrap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .s2-photos img {
-      position: absolute;
       display: block;
-      border-radius: 3px;
-      /* white mat + bg-colour frame (invisible against page) + depth shadows */
+      border-radius: 6px;
       box-shadow:
-        0 0 0 7px #fff,
-        0 0 0 13px var(--bg),
-        0 16px 32px -4px rgba(12,12,13,0.10),
-        0 4px  4px  -4px rgba(12,12,13,0.05);
+        0 8px 24px rgba(0, 0, 0, 0.10),
+        0 2px 6px  rgba(0, 0, 0, 0.06);
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       cursor: default;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
     }
-    .s2-photos img:hover { z-index: 10; }
 
-    .s2-photos--left img:nth-child(1) { width: 128px; top: 0;    left: 10px; transform: rotate(-2deg);  }
-    .s2-photos--left img:nth-child(2) { width: 108px; top: 105px; left: 24px; transform: rotate(6.4deg);  z-index: 1; }
-    .s2-photos--left img:nth-child(3) { width: 108px; top: 212px; left: 4px;  transform: rotate(-9.2deg); z-index: 2; }
+    /* Left: dark(83px) → Q&A(96px) → wine(83px) */
+    .s2-photos--left  .s2-photo-wrap:nth-child(1) img { width: 83px;  transform: rotate(2deg)  translateY(4px);  }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2) img { width: 96px;  transform: rotate(-3deg) translateY(-5px); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3) img { width: 83px;  transform: rotate(3deg)  translateY(4px);  }
 
-    .s2-photos--right img:nth-child(1) { width: 128px; top: 0;    left: 10px; transform: rotate(2deg);   }
-    .s2-photos--right img:nth-child(2) { width: 108px; top: 100px; left: 0px;  transform: rotate(-6.4deg); z-index: 1; }
-    .s2-photos--right img:nth-child(3) { width: 108px; top: 208px; left: 22px; transform: rotate(9.2deg);  z-index: 2; }
+    /* Right: gym(96px) → chess(83px) → camera(83px) */
+    .s2-photos--right .s2-photo-wrap:nth-child(1) img { width: 96px;  transform: rotate(6deg)  translateY(-5px); }
+    .s2-photos--right .s2-photo-wrap:nth-child(2) img { width: 83px;  transform: rotate(-2deg) translateY(4px);  }
+    .s2-photos--right .s2-photo-wrap:nth-child(3) img { width: 83px;  transform: rotate(-5deg) translateY(2px);  }
 
-    .s2-photos--left  img:nth-child(1):hover { transform: rotate(-5deg)  scale(1.06) translateX(-4px); }
-    .s2-photos--left  img:nth-child(2):hover { transform: rotate(9deg)   scale(1.06) translateX(-4px); }
-    .s2-photos--left  img:nth-child(3):hover { transform: rotate(-12deg) scale(1.06) translateX(-4px); }
-    .s2-photos--right img:nth-child(1):hover { transform: rotate(5deg)   scale(1.06) translateX(4px);  }
-    .s2-photos--right img:nth-child(2):hover { transform: rotate(-9deg)  scale(1.06) translateX(4px);  }
-    .s2-photos--right img:nth-child(3):hover { transform: rotate(12deg)  scale(1.06) translateX(4px);  }
+    .s2-photos--left  .s2-photo-wrap:nth-child(1):hover img { transform: rotate(2deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2):hover img { transform: rotate(-3deg) translateY(-4px) scale(1.08); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3):hover img { transform: rotate(3deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(1):hover img { transform: rotate(6deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(2):hover img { transform: rotate(-2deg) translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(3):hover img { transform: rotate(-5deg) translateY(-4px) scale(1.08); }
 
     .s2-name {
       font-family: var(--serif);
@@ -363,10 +385,23 @@
       box-shadow:
         0 16px 40px rgba(30, 28, 24, 0.10),
         0 4px 8px  rgba(30, 28, 24, 0.06);
+      /* Maximum rendering quality on all screens */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
     }
     .mockup-img.phone {
       max-height: 66vh;
       border-radius: 28px;
+    }
+    /* Video: no image-rendering override (browsers handle video separately);
+       ensure it never scales above native resolution */
+    video.mockup-img {
+      image-rendering: auto;
+    }
+    /* Revolut phone — cap at half its native px height for 2× retina sharpness */
+    .s13-phone img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
     }
 
     /* ── Phone strip — 5 staggered phones ────────────────── */
@@ -458,33 +493,27 @@
       color: var(--text);
       letter-spacing: -0.025em;
     }
+    /* Phone starts straight; tilts to -5deg when slide activates.
+       Hover tilts further. No bounce — pure CSS transition. */
     .s13-phone img {
       height: clamp(280px, 48vh, 400px);
       display: block;
       border-radius: 22px;
+      transform: rotate(0deg);
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .slide.active .s13-phone img {
       transform: rotate(-5deg);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .s13-phone img:hover {
-      transform: rotate(-8deg) scale(1.04);
-    }
-    /* Entry bounce plays once on slide activation */
-    .s13-phone img.bounce-enter {
-      animation: phoneBounceIn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-    @keyframes phoneBounceIn {
-      0%   { transform: rotate(-3deg)  scale(0.97); }
-      40%  { transform: rotate(-7deg)  scale(1.02); }
-      65%  { transform: rotate(-4.5deg) scale(1.00); }
-      85%  { transform: rotate(-5.5deg) scale(1.01); }
-      100% { transform: rotate(-5deg)  scale(1);    }
+    .slide.active .s13-phone img:hover {
+      transform: rotate(-8deg) scale(1.03);
     }
 
     /* ── Reduced motion ───────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
       .hero-line.is-active::after { animation: none; }
       .link:hover { animation: none; }
-      .slide, #pbar, .dot, .s2-photos img, .s13-phone img,
+      .slide, #pbar, .dot, .s2-photos img, .s13-phone img, .s2-photo-wrap,
       .slide .slide-label, .slide .proj-name, .slide .sec-heading,
       .slide .s2-name, .slide .why-heading, .slide .slide-sub,
       .slide .proj-body, .slide .exp-list, .slide .wins-list,
@@ -494,8 +523,9 @@
       .slide .s2-name, .slide .why-heading, .slide .slide-sub,
       .slide .proj-body, .slide .exp-list, .slide .wins-list,
       .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
-      .slide .proj-meta, .slide .mockup-img { opacity: 1; transform: none; }
-      .s13-phone img.bounce-enter { animation: none; }
+      .slide .proj-meta, .slide .mockup-img,
+      .s2-photo-wrap { opacity: 1; transform: none; }
+      .s13-phone img { transition: none; }
     }
   </style>
 </head>
@@ -521,9 +551,9 @@
     <div class="slide" data-idx="1">
       <div class="s2-layout">
         <div class="s2-photos s2-photos--left">
-          <img src="photo-l1.png" alt="" />
-          <img src="photo-l2.png" alt="" />
-          <img src="photo-l3.png" alt="" />
+          <div class="s2-photo-wrap"><img src="photo-l1.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-l2.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-l3.png" alt="" /></div>
         </div>
         <div class="col">
           <p class="s2-name">Sofia</p>
@@ -539,9 +569,9 @@
           </p>
         </div>
         <div class="s2-photos s2-photos--right">
-          <img src="photo-r1.png" alt="" />
-          <img src="photo-r2.png" alt="" />
-          <img src="photo-r3.png" alt="" />
+          <div class="s2-photo-wrap"><img src="photo-r1.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-r2.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-r3.png" alt="" /></div>
         </div>
       </div>
     </div>
@@ -664,12 +694,12 @@
     <!-- ── Slide 9: Setup Guide — sidebar ────────────── -->
     <div class="slide" data-idx="8">
       <span class="crumb">Mollie <b>/ Setup Guide</b></span>
-      <video class="mockup-img" src="setup-guide.mp4" autoplay muted loop playsinline></video>
+      <video class="mockup-img" id="setup-video" src="setup-guide.mp4" muted playsinline></video>
     </div>
 
     <div class="slide" data-idx="9">
       <span class="crumb">Mollie <b>/ MBA onboarding</b></span>
-      <img class="mockup-img" src="mockup-web-mba.png" alt="Mollie MBA onboarding" />
+      <img class="mockup-img" src="mockup-web-mba-new.png" alt="Mollie MBA onboarding" />
     </div>
 
     <!-- ── Slide 11: Play / Wins ────────────────────────────── -->
@@ -803,23 +833,16 @@
       heroTimer = setTimeout(tick, 200)
     }
 
-    /* ── Phone entry bounce for slide 12 ────────────── */
-    const phoneImg = document.querySelector('.s13-phone img')
-
-    function triggerPhoneBounce() {
-      phoneImg.classList.remove('bounce-enter')
-      void phoneImg.offsetWidth // force reflow to restart animation
-      phoneImg.classList.add('bounce-enter')
-      phoneImg.addEventListener('animationend', () => {
-        phoneImg.classList.remove('bounce-enter')
-      }, { once: true })
-    }
-
     /* ── Navigation ──────────────────────────────────── */
     function setBar(idx) {
       pbar.classList.add('visible')
       pbar.style.transform = `scaleX(${(idx + 1) / total})`
     }
+
+    const setupVideo = document.getElementById('setup-video')
+    const videoSlideIdx = setupVideo
+      ? [...slides].indexOf(setupVideo.closest('.slide'))
+      : -1
 
     function goTo(n) {
       if (n === cur) return
@@ -828,7 +851,15 @@
       slides[cur].classList.add('active')
       setBar(cur)
       if (cur === 0) runHero()
-      if (cur === 13) triggerPhoneBounce()
+      // Video: play from start on entry, pause on exit
+      if (setupVideo) {
+        if (cur === videoSlideIdx) {
+          setupVideo.currentTime = 0
+          setupVideo.play()
+        } else {
+          setupVideo.pause()
+        }
+      }
     }
 
     // Initial state
