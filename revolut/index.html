@@ -121,7 +121,10 @@
     .slide .s2-body,
     .slide .tbl-wrap,
     .slide .proj-meta,
-    .slide .mockup-img {
+    .slide .mockup-img,
+    .slide .problem-stat,
+    .slide .problem-list,
+    .slide .takeaway-list {
       opacity: 0;
       transform: translateY(8px);
       transition: opacity 0.35s ease, transform 0.35s ease;
@@ -145,7 +148,10 @@
     .slide.active .s2-body,
     .slide.active .tbl-wrap,
     .slide.active .proj-meta,
-    .slide.active .mockup-img {
+    .slide.active .mockup-img,
+    .slide.active .problem-stat,
+    .slide.active .problem-list,
+    .slide.active .takeaway-list {
       opacity: 1;
       transform: translateY(0);
       transition-delay: 0.22s;
@@ -503,10 +509,104 @@
       transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .slide.active .s13-phone img {
-      transform: rotate(-5deg);
+      transform: rotate(5deg);
     }
     .slide.active .s13-phone img:hover {
-      transform: rotate(-8deg) scale(1.03);
+      transform: rotate(8deg) scale(1.03);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 5 — The problem (visual: stat + bullets)
+    ════════════════════════════════════════════════════ */
+    .problem-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 16px 0 20px;
+    }
+    .problem-stat-value {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .problem-stat-label {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+    .problem-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .problem-list li {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+      padding-left: 16px;
+      position: relative;
+    }
+    .problem-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 13 — Takeaways (visual: numbered list)
+    ════════════════════════════════════════════════════ */
+    .takeaway-list {
+      list-style: none;
+      counter-reset: takeaway;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .takeaway-list li {
+      counter-increment: takeaway;
+      display: flex;
+      gap: 14px;
+    }
+    .takeaway-list li::before {
+      content: counter(takeaway);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--orange);
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .takeaway-title {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1.5;
+    }
+    .takeaway-body {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      line-height: 1.55;
+      margin-top: 2px;
     }
 
     /* ── Reduced motion ───────────────────────────────── */
@@ -634,38 +734,47 @@
       <span class="crumb">Mollie</span>
       <div class="col">
         <h3 class="sec-heading">The problem</h3>
-        <p class="proj-body">New merchants signed up, completed KYC, and stalled. The 30-day activation rate sat at 22% in 2024: most merchants never reached their first payment. App-started journeys converted worse than desktop. The onboarding system was built for regulatory compliance, not for activation: fragmented across web, mobile, and MBA, with no clear signal of progress or next steps after KYC.</p>
+        <div class="problem-stat">
+          <span class="problem-stat-value">22%</span>
+          <span class="problem-stat-label">30-day activation rate in 2024</span>
+        </div>
+        <ul class="problem-list">
+          <li>App-started journeys converted worse than desktop</li>
+          <li>Onboarding built for compliance, not activation — fragmented across web, mobile, and MBA</li>
+          <li>No clear next step after KYC approval; merchants stalled between account approval and first payment</li>
+        </ul>
       </div>
     </div>
 
-    <!-- ── Slide 6: blinkoo case study table ─────────── -->
+    <!-- ── Slide 6: Vision table ─────────────────────── -->
     <div class="slide" data-idx="5">
       <span class="crumb">Mollie</span>
-      <div class="col" style="width:480px">
+      <div class="col" style="width:560px">
+        <h3 class="sec-heading">Vision</h3>
         <div class="tbl-wrap">
           <table class="tbl">
             <thead>
               <tr>
                 <th>Pillar</th>
                 <th>The problem</th>
-                <th>Success / expectation</th>
+                <th>Success</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="em">Market traction</td>
-                <td>Breaking into a competitive market</td>
-                <td class="em">500k+ downloads within the first quarter</td>
+                <td class="em">Mobile-first activation</td>
+                <td>App-started merchants had lower completion than desktop journeys</td>
+                <td class="em">1,700 merchants reached their first activation touchpoint in the new native experience</td>
               </tr>
               <tr>
-                <td class="em">UGC Focus</td>
-                <td>Encouraging users to record "raw" vs. "polished." videos</td>
-                <td class="em">5K uploads with 20K social interactions</td>
+                <td class="em">Self-serve B2B onboarding</td>
+                <td>Business Account legal entities required manual ops intervention to complete onboarding</td>
+                <td class="em">1,000 organisations onboarded, 68% start-to-completion rate</td>
               </tr>
               <tr>
-                <td class="em">Capital Validation</td>
-                <td>Proving the model to investors</td>
-                <td class="em">Funding secured</td>
+                <td class="em">Guided post-KYC moment</td>
+                <td>Merchants had no clear next step after KYC was approved</td>
+                <td class="em">Setup Guide v1 shipped, domain activation rate rose to 30%</td>
               </tr>
             </tbody>
           </table>
@@ -699,7 +808,7 @@
 
     <div class="slide" data-idx="9">
       <span class="crumb">Mollie <b>/ MBA onboarding</b></span>
-      <img class="mockup-img" src="mockup-web-mba-new.png" alt="Mollie MBA onboarding" />
+      <img class="mockup-img" src="mockup-web-mba-3x.png" alt="Mollie MBA onboarding" />
     </div>
 
     <!-- ── Slide 11: Play / Wins ────────────────────────────── -->
