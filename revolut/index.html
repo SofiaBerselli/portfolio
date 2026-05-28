@@ -41,13 +41,13 @@
     /* ── Progress bar ─────────────────────────────────── */
     #pbar {
       position: fixed; top: 0; left: 0; right: 0;
-      height: 2px;
+      height: 3px;
       background: var(--orange);
       transform-origin: left;
       transform: scaleX(0);
       z-index: 100;
       opacity: 0;
-      transition: transform 0.35s ease, opacity 0.2s ease;
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
     }
     #pbar.visible { opacity: 1; }
 
@@ -60,10 +60,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.4s ease;
+      opacity: 0;
+      filter: blur(6px);
+      pointer-events: none;
+      transition: opacity 0.45s ease, filter 0.45s ease;
     }
-    .slide.active { opacity: 1; pointer-events: auto; }
+    .slide.active {
+      opacity: 1;
+      filter: blur(0);
+      pointer-events: auto;
+    }
 
     /* ── Breadcrumb ───────────────────────────────────── */
     .crumb {
@@ -87,7 +93,7 @@
       text-decoration: none;
       cursor: pointer;
       padding-bottom: 5px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 3 Q2.5 1.2 5 3 Q7.5 4.8 10 3' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 3 Q2.5 0.5 5 3 Q7.5 5.5 10 3' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
       background-size:     10px 6px;
       background-position: 0 100%;
       background-repeat:   repeat-x;
@@ -96,6 +102,53 @@
     @keyframes link-wave {
       from { background-position-x: 0; }
       to   { background-position-x: -10px; }
+    }
+
+    /* ════════════════════════════════════════════════════
+       TEXT FADE-IN — title fades up first, body 120ms later
+       hero-stage deliberately excluded (typewriter drives slide 1)
+    ════════════════════════════════════════════════════ */
+    .slide .slide-label,
+    .slide .proj-name,
+    .slide .sec-heading,
+    .slide .s2-name,
+    .slide .why-heading,
+    .slide .slide-sub,
+    .slide .proj-body,
+    .slide .exp-list,
+    .slide .wins-list,
+    .slide .impact-stats,
+    .slide .s2-body,
+    .slide .tbl-wrap,
+    .slide .proj-meta,
+    .slide .mockup-img {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    /* Titles in first */
+    .slide.active .slide-label,
+    .slide.active .proj-name,
+    .slide.active .sec-heading,
+    .slide.active .s2-name,
+    .slide.active .why-heading {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.1s;
+    }
+    /* Body / subtitle / lists follow 120ms later */
+    .slide.active .slide-sub,
+    .slide.active .proj-body,
+    .slide.active .exp-list,
+    .slide.active .wins-list,
+    .slide.active .impact-stats,
+    .slide.active .s2-body,
+    .slide.active .tbl-wrap,
+    .slide.active .proj-meta,
+    .slide.active .mockup-img {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.22s;
     }
 
     /* ════════════════════════════════════════════════════
@@ -136,37 +189,43 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 48px;
+      gap: 60px;
     }
     .s2-photos {
       position: relative;
       flex-shrink: 0;
-      width: clamp(90px, 11vw, 140px);
-      height: clamp(170px, 26vh, 270px);
+      width: 148px;
+      height: 390px;
     }
     .s2-photos img {
       position: absolute;
-      width: 74%;
       display: block;
       border-radius: 3px;
-      box-shadow: 0 4px 16px rgba(30,28,24,0.16), 0 1px 3px rgba(30,28,24,0.09);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), z-index 0s;
+      /* white mat + bg-colour frame (invisible against page) + depth shadows */
+      box-shadow:
+        0 0 0 7px #fff,
+        0 0 0 13px var(--bg),
+        0 16px 32px -4px rgba(12,12,13,0.10),
+        0 4px  4px  -4px rgba(12,12,13,0.05);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       cursor: default;
-      object-fit: cover;
-      aspect-ratio: 3/4;
     }
-    .s2-photos--left img:nth-child(1) { top: 0;   left: 0;   transform: rotate(-4deg); z-index: 1; }
-    .s2-photos--left img:nth-child(2) { top: 29%; left: 18%; transform: rotate(2deg);  z-index: 2; }
-    .s2-photos--left img:nth-child(3) { top: 56%; left: 4%;  transform: rotate(-2deg); z-index: 1; }
-    .s2-photos--right img:nth-child(1) { top: 0;   right: 0;   transform: rotate(4deg);  z-index: 1; }
-    .s2-photos--right img:nth-child(2) { top: 29%; right: 18%; transform: rotate(-2deg); z-index: 2; }
-    .s2-photos--right img:nth-child(3) { top: 56%; right: 4%;  transform: rotate(2deg);  z-index: 1; }
-    .s2-photos--left img:nth-child(1):hover  { transform: rotate(-8deg) scale(1.08) translateY(-6px); z-index: 10; }
-    .s2-photos--left img:nth-child(2):hover  { transform: rotate(5deg)  scale(1.08) translateY(-6px); z-index: 10; }
-    .s2-photos--left img:nth-child(3):hover  { transform: rotate(-6deg) scale(1.08) translateY(-6px); z-index: 10; }
-    .s2-photos--right img:nth-child(1):hover { transform: rotate(8deg)  scale(1.08) translateY(-6px); z-index: 10; }
-    .s2-photos--right img:nth-child(2):hover { transform: rotate(-5deg) scale(1.08) translateY(-6px); z-index: 10; }
-    .s2-photos--right img:nth-child(3):hover { transform: rotate(6deg)  scale(1.08) translateY(-6px); z-index: 10; }
+    .s2-photos img:hover { z-index: 10; }
+
+    .s2-photos--left img:nth-child(1) { width: 128px; top: 0;    left: 10px; transform: rotate(-2deg);  }
+    .s2-photos--left img:nth-child(2) { width: 108px; top: 105px; left: 24px; transform: rotate(6.4deg);  z-index: 1; }
+    .s2-photos--left img:nth-child(3) { width: 108px; top: 212px; left: 4px;  transform: rotate(-9.2deg); z-index: 2; }
+
+    .s2-photos--right img:nth-child(1) { width: 128px; top: 0;    left: 10px; transform: rotate(2deg);   }
+    .s2-photos--right img:nth-child(2) { width: 108px; top: 100px; left: 0px;  transform: rotate(-6.4deg); z-index: 1; }
+    .s2-photos--right img:nth-child(3) { width: 108px; top: 208px; left: 22px; transform: rotate(9.2deg);  z-index: 2; }
+
+    .s2-photos--left  img:nth-child(1):hover { transform: rotate(-5deg)  scale(1.06) translateX(-4px); }
+    .s2-photos--left  img:nth-child(2):hover { transform: rotate(9deg)   scale(1.06) translateX(-4px); }
+    .s2-photos--left  img:nth-child(3):hover { transform: rotate(-12deg) scale(1.06) translateX(-4px); }
+    .s2-photos--right img:nth-child(1):hover { transform: rotate(5deg)   scale(1.06) translateX(4px);  }
+    .s2-photos--right img:nth-child(2):hover { transform: rotate(-9deg)  scale(1.06) translateX(4px);  }
+    .s2-photos--right img:nth-child(3):hover { transform: rotate(12deg)  scale(1.06) translateX(4px);  }
 
     .s2-name {
       font-family: var(--serif);
@@ -310,6 +369,23 @@
       border-radius: 28px;
     }
 
+    /* ── Phone strip — 5 staggered phones ────────────────── */
+    .phone-strip {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+    }
+    .phone-strip .mockup-img { max-height: 62vh; }
+    .phone-strip .mockup-img:nth-child(1) { --i: 0; }
+    .phone-strip .mockup-img:nth-child(2) { --i: 1; }
+    .phone-strip .mockup-img:nth-child(3) { --i: 2; }
+    .phone-strip .mockup-img:nth-child(4) { --i: 3; }
+    .phone-strip .mockup-img:nth-child(5) { --i: 4; }
+    .slide.active .phone-strip .mockup-img {
+      transition-delay: calc(0.06s + var(--i, 0) * 0.09s);
+    }
+
     /* ════════════════════════════════════════════════════
        SLIDE 9 — Play / Wins (Some fun style)
     ════════════════════════════════════════════════════ */
@@ -408,8 +484,17 @@
     @media (prefers-reduced-motion: reduce) {
       .hero-line.is-active::after { animation: none; }
       .link:hover { animation: none; }
-      .slide, #pbar, .dot,
-      .s2-photos img, .s13-phone img { transition: none; }
+      .slide, #pbar, .dot, .s2-photos img, .s13-phone img,
+      .slide .slide-label, .slide .proj-name, .slide .sec-heading,
+      .slide .s2-name, .slide .why-heading, .slide .slide-sub,
+      .slide .proj-body, .slide .exp-list, .slide .wins-list,
+      .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
+      .slide .proj-meta, .slide .mockup-img { transition: none; }
+      .slide .slide-label, .slide .proj-name, .slide .sec-heading,
+      .slide .s2-name, .slide .why-heading, .slide .slide-sub,
+      .slide .proj-body, .slide .exp-list, .slide .wins-list,
+      .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
+      .slide .proj-meta, .slide .mockup-img { opacity: 1; transform: none; }
       .s13-phone img.bounce-enter { animation: none; }
     }
   </style>
@@ -558,20 +643,37 @@
       </div>
     </div>
 
-    <!-- ── Slide 7: Native onboarding (phone) ────────── -->
+    <!-- ── Slide 7: Native onboarding — 5 phones ────────── -->
     <div class="slide" data-idx="6">
       <span class="crumb">Mollie <b>/ Native onboarding</b></span>
-      <img class="mockup-img phone" src="mockup-phone-native.png" alt="Mollie native onboarding" />
+      <div class="phone-strip">
+        <img class="mockup-img phone" src="slide-phone-1.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-2.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-3.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-4.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-5.png" alt="" />
+      </div>
     </div>
 
-    <!-- ── Slide 8: MBA onboarding (web) ─────────────── -->
+    <!-- ── Slide 8: Setup Guide — welcome ────────────── -->
     <div class="slide" data-idx="7">
+      <span class="crumb">Mollie <b>/ Setup Guide</b></span>
+      <img class="mockup-img" src="slide-mba-welcome.png" alt="Mollie Setup Guide welcome" />
+    </div>
+
+    <!-- ── Slide 9: Setup Guide — sidebar ────────────── -->
+    <div class="slide" data-idx="8">
+      <span class="crumb">Mollie <b>/ Setup Guide</b></span>
+      <img class="mockup-img" src="slide-setup-guide.png" alt="Mollie Setup Guide" />
+    </div>
+
+    <div class="slide" data-idx="9">
       <span class="crumb">Mollie <b>/ MBA onboarding</b></span>
       <img class="mockup-img" src="mockup-web-mba.png" alt="Mollie MBA onboarding" />
     </div>
 
-    <!-- ── Slide 9: Play / Wins (Some fun style, with links) ── -->
-    <div class="slide" data-idx="8">
+    <!-- ── Slide 11: Play / Wins ────────────────────────────── -->
+    <div class="slide" data-idx="10">
       <div class="col">
         <p class="slide-label" style="margin-bottom:16px">Play</p>
         <ul class="wins-list">
@@ -614,8 +716,8 @@
       </div>
     </div>
 
-    <!-- ── Slide 10: Impact (with metrics) ───────────── -->
-    <div class="slide" data-idx="9">
+    <!-- ── Slide 12: Impact ──────────────────────────────── -->
+    <div class="slide" data-idx="11">
       <span class="crumb">Mollie</span>
       <div class="col" style="width:460px">
         <h3 class="sec-heading">Impact</h3>
@@ -641,8 +743,8 @@
       </div>
     </div>
 
-    <!-- ── Slide 11: Takeaways ────────────────────────── -->
-    <div class="slide" data-idx="10">
+    <!-- ── Slide 13: Takeaways ───────────────────────────── -->
+    <div class="slide" data-idx="12">
       <span class="crumb">Mollie <b>/ Takeaways</b></span>
       <div class="col">
         <h3 class="sec-heading">Takeaways</h3>
@@ -650,8 +752,8 @@
       </div>
     </div>
 
-    <!-- ── Slide 12: Why Revolut (phone entry bounce) ── -->
-    <div class="slide s13" data-idx="11">
+    <!-- ── Slide 14: Why Revolut ─────────────────────────── -->
+    <div class="slide s13" data-idx="13">
       <div class="s13-left">
         <h2 class="why-heading">Why Revolut</h2>
       </div>
@@ -726,7 +828,7 @@
       slides[cur].classList.add('active')
       setBar(cur)
       if (cur === 0) runHero()
-      if (cur === 11) triggerPhoneBounce()
+      if (cur === 13) triggerPhoneBounce()
     }
 
     // Initial state
