@@ -1,0 +1,437 @@
+/* .back-bar styles live in base.css — shared with project pages */
+
+/* ── Dot-grid wrapper ──────────────────────────────────────────────
+   Carries the dot pattern for all sections after #home.
+   Each text column sets its own solid background + box-shadow to
+   stay legible over the dots.
+   ──────────────────────────────────────────────────────────────── */
+
+.post-home {
+  position: relative;
+}
+
+/* ── Experience section ────────────────────────────────────────────
+   Revealed when the user scrolls past the company list.
+   Blocks spaced 80 px apart, each fading in on scroll.
+   ──────────────────────────────────────────────────────────────── */
+
+.experience {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.experience__inner {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  position: relative;
+  background: var(--color-bg);
+  box-shadow: 0 0 30px 50px var(--color-bg);
+}
+
+/* ── Individual block ──────────────────────────────────────────── */
+.experience__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1); /* 8 px */
+  /* GSAP animates from opacity:0, y:24 on scroll reveal */
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* ── Label ─────────────────────────────────────────────────────── */
+.experience__label {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1rem;
+  color: #26251e;
+  line-height: var(--leading-snug);
+}
+
+/* ── Summary line (Work stuff block) ───────────────────────────── */
+.experience__summary {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: #787771;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+/* ── Experience list (company / date rows) ─────────────────────── */
+.experience__list {
+  list-style: none;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.experience__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 1.9;
+}
+
+.experience__company {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: var(--color-text-primary);
+}
+
+.experience__date {
+  font-family: var(--font-display);
+  font-size: 0.875rem; /* 14px — Figma spec */
+  color: #787771;
+  font-variation-settings: 'wdth' 100;
+}
+
+/* ── Approach text ─────────────────────────────────────────────── */
+.experience__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.experience__text p {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.experience__quote {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-style: italic;
+  font-weight: 500;
+  color: #787771;
+  margin-top: var(--space-1);
+  text-align: left;
+  letter-spacing: -0.01em;
+}
+
+/* ── Approach header + trigger ─────────────────────────────────── */
+.approach__header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.experience__block--approach {
+  position: relative;
+}
+
+/* Two tiny grey CSS-only placeholder rectangles */
+.approach__photos {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.approach__frame {
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  background: #e6e5e1;
+  border: 2px solid #f7f7f4;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+.approach__frame--back  { top: 0;    right: 0; transform: rotate(5deg);  z-index: 1; }
+.approach__frame--front { bottom: 0; left: 0;  transform: rotate(0deg);   z-index: 2; }
+
+/* Hover: cards "open" — fan apart like spreading a hand of cards */
+.approach__header:hover .approach__frame--back,
+.approach__photos:hover .approach__frame--back,
+.approach__photos.is-hinting .approach__frame--back  { transform: rotate(18deg) translate(2px, -3px); }
+.approach__header:hover .approach__frame--front,
+.approach__photos:hover .approach__frame--front,
+.approach__photos.is-hinting .approach__frame--front { transform: rotate(-10deg) translate(-2px, 3px); }
+
+/* ── Photo panel — 3 large photos, fanning to the right ────────── */
+.approach__panel {
+  position: absolute;
+  left: calc(100% + 48px);
+  top: -8px;
+  width: 320px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.approach__panel.is-visible {
+  pointer-events: auto;
+}
+
+.approach__photo-wrap {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  overflow: hidden;
+  border: 9px solid #f7f7f4;
+  border-radius: 14px;
+  box-shadow:
+    0 16px 32px -4px rgba(12, 12, 13, 0.10),
+    0 4px 4px -4px rgba(12, 12, 13, 0.05);
+  transition:
+    opacity  0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.approach__photo-wrap--1 {
+  top: 0;
+  left: 68px;
+  width: 130px;
+  z-index: 2;
+  transform: translateY(20px);
+  transition-delay: 0s;
+}
+
+.approach__photo-wrap--2 {
+  top: 66px;
+  left: 160px;
+  width: 125px;
+  z-index: 1;
+  transform: rotate(5deg) translateY(20px);
+  transition-delay: 0.06s;
+}
+
+.approach__photo-wrap--3 {
+  top: 65px;
+  left: 0;
+  width: 114px;
+  z-index: 5;
+  transform: rotate(-5deg) translateY(20px);
+  transition-delay: 0.12s;
+}
+
+.approach__photo {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Visible state — photos animate in with bounce */
+.approach__panel.is-visible .approach__photo-wrap { opacity: 1; }
+.approach__panel.is-visible .approach__photo-wrap--1 { transform: translateY(0); }
+.approach__panel.is-visible .approach__photo-wrap--2 { transform: rotate(5deg) translateY(0); }
+.approach__panel.is-visible .approach__photo-wrap--3 { transform: rotate(-5deg) translateY(0); }
+
+
+/* Bio panel — first photo sits below the other two in default state */
+#bio-panel .approach__photo-wrap--1 { z-index: 0; }
+
+@media (max-width: 1050px) {
+  .approach__photos { display: none; }
+  .approach__panel  { display: none; }
+}
+
+/* ── Wins list (Some fun block) ────────────────────────────────── */
+.experience__wins {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.experience__win {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.experience__win-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.experience__win-title {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: #26251e;
+  line-height: 1.9;
+}
+
+.experience__win-title.link {
+  padding-bottom: 2px;
+}
+
+.experience__win-sub {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: #787771;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.experience__win-year {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: #787771;
+  flex-shrink: 0;
+  line-height: 1.9;
+  letter-spacing: -0.01em;
+}
+
+/* ── About / Into the Rabbithole ───────────────────────────────── */
+.about {
+  position: relative;
+  background-color: transparent;
+}
+
+.about__inner {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+  position: relative;
+  z-index: 1;
+  background: var(--color-bg);
+  box-shadow: 0 0 30px 50px var(--color-bg);
+}
+
+.about__label {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1rem;
+  color: #26251e;
+  line-height: var(--leading-snug);
+  margin-bottom: var(--space-1);
+}
+
+.about__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.about__text p {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: #787771;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.about__text p + p {
+  padding-top: 16px;
+}
+
+/* .about__link removed — replaced by the universal .link class in base.css */
+
+/* Experience company links and about section links — inherit wavy underline from base .link */
+
+.about__signature {
+  font-family: 'Biro Script Reduced', 'Biro Script', cursive;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  color: #787771;
+  line-height: 1.9;
+  margin-top: var(--space-2);
+  display: block;               /* clip-path requires a box-level context */
+  clip-path: inset(0 100% 0 0); /* starts fully hidden — GSAP animates to inset(0 0% 0 0) */
+}
+
+/* ── Bio section (Behind the pixels) ──────────────────────────────
+   Full-viewport section between the experience blocks and the
+   Rabbithole. Content block is 400 px wide and centred; the
+   "Back to works" link floats at the content's left edge, 45 px
+   from the section top — matching the Figma spec exactly.
+   ──────────────────────────────────────────────────────────────── */
+.bio {
+  position: relative;
+  padding: 80px 0;
+  z-index: 1;
+  background: transparent;
+}
+
+.bio__content {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1); /* 8px — Figma gap between label and body */
+  position: relative;
+  z-index: 1;
+  background: var(--color-bg);
+  box-shadow: 0 0 30px 50px var(--color-bg);
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.bio__label {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1rem;
+  color: #26251e;
+  line-height: var(--leading-snug);
+}
+
+.bio__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4); /* 32px — Figma gap between the two paragraphs */
+}
+
+.bio__text p {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: #787771;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.bio__text em {
+  font-style: italic;
+}
+
+/* ── LinkedIn hover card ─────────────────────────────────────────── */
+.linkedin-hover {
+  position: fixed;
+  pointer-events: none;
+  z-index: 30;
+  width: 200px;
+  overflow: hidden;
+  border: 9px solid #f7f7f4;
+  border-radius: 14px;
+  box-shadow:
+    0 16px 32px -4px rgba(12, 12, 13, 0.10),
+    0 4px 4px -4px rgba(12, 12, 13, 0.05);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity  0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.linkedin-hover.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.linkedin-hover img {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -1,0 +1,148 @@
+/* ── Visual Hops gallery ─────────────────────────────────────── */
+
+.gallery {
+  display: none;
+  padding: var(--space-10) 0 var(--space-24);
+  background: var(--color-bg);
+  position: relative;
+  z-index: 1;
+}
+
+.gallery__inner {
+  max-width: 100%;
+  margin: 0 auto;
+  padding-inline: 16px;
+}
+
+.gallery__title {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: var(--space-4);
+  max-width: 480px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  text-align: left;
+}
+
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* display:contents makes the col wrappers invisible to the grid so
+   all 8 tiles become direct grid children in a 4-column layout */
+.gallery__col {
+  display: contents;
+}
+
+/* scroll-reveal wrapper — GSAP animates opacity + y on this */
+.gallery__wrap {
+  will-change: transform, opacity;
+}
+
+.gallery__tile {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-bg-hover);
+  cursor: pointer;
+}
+
+/* Background layer — painting, completely still */
+.gallery__tile-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Foreground layer — prototype/device UI; tilt is applied by JS only */
+.gallery__tile-fg {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+/* Per-tile foreground positioning — percentages of tile dimensions */
+.gallery__tile--l1 .gallery__tile-fg { left: 23.3%; top: 22%;    width: 53.6%; }
+.gallery__tile--l2 .gallery__tile-fg { left: 17.1%; top: 5%;     width: 66%;   }
+.gallery__tile--l3 .gallery__tile-fg { left: 29%;   top: 11%;    width: 42%;   }
+.gallery__tile--l4 .gallery__tile-fg { left: 20.2%; top: 28%;    width: 59.8%; }
+.gallery__tile--r1 .gallery__tile-fg { left: 20%;   top: 12%;    width: 60%;   }
+.gallery__tile--r2 .gallery__tile-fg { left: 22.9%; top: 27.6%;  width: 54.3%; }
+.gallery__tile--r3 .gallery__tile-fg { left: 12.9%; top: 18.9%;  width: 107.6%;}
+.gallery__tile--r4 .gallery__tile-fg { left: 22.1%; top: 24.3%;  width: 55.7%; }
+
+/* l4 background zoomed in */
+.gallery__tile--l4 .gallery__tile-bg { transform: scale(1.35); }
+
+/* Per-tile aspect ratios — matched so each row shares the same height
+   Row 1 (h ≈ 1.33 col): l1, l2 portrait (3:4) → l3 landscape (3:2 = 2× ratio)
+   Row 2 (h ≈ 1.5 col): l4 portrait (2:3)  → r1 landscape (2:1 = 3× ratio)
+   Row 3 (h ≈ 1 col):   r2 landscape (2:1 = 2× ratio) → r3, r4 square (1:1) */
+.gallery__tile--l1,
+.gallery__tile--l2  { aspect-ratio: 3 / 4; }
+.gallery__tile--l3  { aspect-ratio: 3 / 2; }
+.gallery__tile--l4  { aspect-ratio: 2 / 3; }
+.gallery__tile--r1  { aspect-ratio: 2 / 1; }
+.gallery__tile--r2  { aspect-ratio: 2 / 1; }
+.gallery__tile--r3,
+.gallery__tile--r4  { aspect-ratio: 1 / 1; }
+
+/* Bento spans — must be on .gallery__wrap (the actual grid child) since
+   .gallery__col is display:contents. Only non-default (span > 1) needed. */
+.gallery__wrap:has(.gallery__tile--l3) { grid-column: span 2; }
+.gallery__wrap:has(.gallery__tile--r1) { grid-column: span 3; }
+.gallery__wrap:has(.gallery__tile--r2) { grid-column: span 2; }
+
+.gallery__footer {
+  margin-top: var(--space-8);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.gallery__footer strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .gallery__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery__wrap:has(.gallery__tile--r1) { grid-column: span 2; }
+}
+
+@media (max-width: 640px) {
+  .gallery {
+    padding: var(--space-10) 0;
+  }
+
+  .gallery__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery__tile { aspect-ratio: 4 / 3; }
+}
+
+/* ── Reduced motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .gallery__tile-fg { transition: none; }
+}

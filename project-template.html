@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- TODO: update description and title -->
+    <meta name="description" content="Project Name, Sofia Berselli" />
+    <title>Project Name, Sofia Berselli</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&display=swap" />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/reset.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/pages/project.css" />
+  </head>
+  <body>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         PROGRESS BAR — do not modify
+         Fills orange (--color-accent) as the user scrolls.
+         Driven by project.js updateProgress().
+         ───────────────────────────────────────────────────────── -->
+    <div class="project__progress" aria-hidden="true"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BREADCRUMB BAR — update the crumb text
+         "Home" always links back to /. The span after the slash
+         is the current project name (.back-bar__crumb = dark color).
+         ───────────────────────────────────────────────────────── -->
+    <div class="back-bar is-visible" aria-hidden="true">
+      <div class="back-bar__inner">
+        <!-- TODO: update crumb text -->
+        <a href="/" class="back-bar__btn project__nav-home">Home <span class="back-bar__crumb">/ Project Name</span></a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project__left">
+        <main class="project__content">
+
+          <!-- ───────────────────────────────────────────────────────
+               HEADER — update name, description, role, timeline
+               No icon by default (removed). Add back if needed:
+               <div class="project__icon-wrap">
+                 <div class="project__icon" style="background: #RRGGBB;"></div>
+               </div>
+               ─────────────────────────────────────────────────── -->
+          <div class="project__context">
+            <div class="project__meta-header">
+              <!-- TODO: update -->
+              <h1 class="project__name">Project Name</h1>
+              <p class="project__desc">One or two sentences describing the company and the work. Keep it punchy and specific.</p>
+            </div>
+          </div>
+
+          <div class="project__meta-row">
+            <div class="project__field">
+              <span class="project__field-label">Role</span>
+              <!-- TODO: update -->
+              <span class="project__field-value">Your Role</span>
+            </div>
+            <div class="project__field">
+              <span class="project__field-label">Timeline</span>
+              <!-- TODO: update -->
+              <span class="project__field-value">YYYY – YYYY</span>
+            </div>
+          </div>
+
+          <!-- ───────────────────────────────────────────────────────
+               SECTIONS — add/remove as needed per project
+               Rules:
+               - Keep data-frame="default" unless per-section panel
+                 images exist (then use data-frame="section-id")
+               - No em dashes anywhere in copy
+               - Section IDs must match NEXT_ROUTE in project.js
+
+               Optional rich components inside a section:
+               ─ project__table (pillar/problem/success grid)
+               ─ project__stats (metric highlights row)
+               ─────────────────────────────────────────────────── -->
+
+          <div class="project__section" id="intro" data-frame="default">
+            <h2 class="project__section-label">Intro</h2>
+            <!-- TODO: write section body -->
+            <p class="project__section-body"></p>
+          </div>
+
+          <div class="project__section" id="problem" data-frame="default">
+            <h2 class="project__section-label">Problem</h2>
+            <p class="project__section-body"></p>
+          </div>
+
+          <div class="project__section" id="vision" data-frame="default">
+            <h2 class="project__section-label">Vision</h2>
+            <p class="project__section-body"></p>
+
+            <!-- OPTIONAL: pillar/problem/success table
+            <div class="project__table">
+              <div class="project__table-head">
+                <span>Pillar</span><span>The problem</span><span>Success</span>
+              </div>
+              <div class="project__table-row">
+                <span>Pillar label</span>
+                <span>Problem description</span>
+                <span>Success metric</span>
+              </div>
+            </div>
+            -->
+          </div>
+
+          <!-- TODO: add/rename/remove sections as needed for this project -->
+
+          <div class="project__section" id="takeaways" data-frame="default">
+            <h2 class="project__section-label">Takeaways</h2>
+            <p class="project__section-body"></p>
+          </div>
+
+          <!-- OPTIONAL: impact section with stats
+          <div class="project__section" id="impact" data-frame="default">
+            <h2 class="project__section-label">Impact</h2>
+            <p class="project__section-body"></p>
+            <div class="project__stats">
+              <div class="project__stat">
+                <span class="project__stat-value">Metric</span>
+                <span class="project__stat-label">Label</span>
+              </div>
+            </div>
+          </div>
+          -->
+
+          <!-- ───────────────────────────────────────────────────────
+               CLOSING CTA — keep structure, personalise if needed
+               The "Reach out" link should always point to LinkedIn.
+               ─────────────────────────────────────────────────── -->
+          <div class="project__cta-block">
+            <p class="project__cta-heading">Sneak peek is over</p>
+            <p class="project__cta-body">This is just a snapshot into my work. <a class="link" href="https://www.linkedin.com/in/sofia-berselli" target="_blank" rel="noopener">Reach out</a> to hear the full story.</p>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         RIGHT PANEL — update video src (or swap to <img> if no video)
+         The view-transition-name is set via project.css — do not add
+         inline styles here or it will break the page transition morph.
+         ───────────────────────────────────────────────────────── -->
+    <div class="project__panel" aria-hidden="true">
+      <!-- TODO: update video src -->
+      <video class="project__panel-frame is-active" data-frame="default"
+             src="/devices/PROJECT-right.mp4" autoplay muted loop playsinline></video>
+
+      <!-- To add per-section panel images when ready:
+      <img class="project__panel-frame" data-frame="section-id"
+           src="/PROJECT/screen-section.jpg" alt="">
+      Then add data-frame="section-id" to the matching project__section.
+      -->
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         JUMP CTA — do not modify
+         Cycles to the next project via NEXT_ROUTE in project.js.
+         To add this project to the cycle, update NEXT_ROUTE there.
+         ───────────────────────────────────────────────────────── -->
+    <div class="preloader__cta is-visible" id="project-cta" role="button" tabindex="0" aria-label="Jump to next case">
+      <span class="preloader__cta-label">
+        <svg class="preloader__cta-icon bunny-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear-left"><ellipse cx="8.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+            <g class="bunny__ear-right"><ellipse cx="15.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+            <g class="bunny__body">
+              <circle cx="12" cy="15.5" r="4.5"/>
+              <ellipse cx="12" cy="21" rx="4.5" ry="2.5"/>
+            </g>
+          </g>
+        </svg>
+        <span class="preloader__cta-roller">
+          <span class="preloader__cta-track">
+            <span class="preloader__cta-word">Jump</span>
+            <span class="preloader__cta-word">Next</span>
+          </span>
+        </span>
+      </span>
+      <span class="preloader__cta-shortcut">
+        <svg class="preloader__cta-cmd" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4.5 4.5h5v5h-5zM4.5 4.5V3a1.5 1.5 0 1 0-1.5 1.5h1.5zM9.5 4.5H11A1.5 1.5 0 1 0 9.5 3v1.5zM4.5 9.5H3A1.5 1.5 0 1 0 4.5 11V9.5zM9.5 9.5V11A1.5 1.5 0 1 0 11 9.5H9.5z"/>
+        </svg>
+        J
+      </span>
+    </div>
+
+    <script type="module" src="/src/scripts/pages/project.js"></script>
+  </body>
+</html>

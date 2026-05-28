@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Mollie, Sofia Berselli" />
+    <title>Mollie, Sofia Berselli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&display=swap" />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/reset.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/pages/project.css" />
+  </head>
+  <body>
+    <div class="project">
+      <div class="project__left">
+
+        <!-- Navigation -->
+        <aside class="project__nav">
+          <a href="/" class="project__nav-home">Home</a>
+          <nav class="project__menu" aria-label="Case study sections">
+            <a class="project__menu-item is-active" href="#intro">Intro</a>
+            <a class="project__menu-item" href="#problem">Problem</a>
+            <a class="project__menu-item" href="#solution">Solution</a>
+            <a class="project__menu-item" href="#impact">Impact</a>
+            <a class="project__menu-item" href="#takeaways">Takeaways</a>
+          </nav>
+        </aside>
+
+        <!-- Content -->
+        <main class="project__content">
+
+          <!-- Context: icon + name + description -->
+          <div class="project__context">
+            <div class="project__icon-wrap">
+              <div class="project__icon" style="background:#FF6B35;"></div>
+            </div>
+            <div class="project__meta-header">
+              <h1 class="project__name">Mollie</h1>
+              <p class="project__desc">Payment company building the best payments experience in Europe. Working across onboarding, activation, and the merchant dashboard to reduce friction and increase conversion.</p>
+            </div>
+          </div>
+
+          <!-- Role + Timeline -->
+          <div class="project__meta-row">
+            <div class="project__field">
+              <span class="project__field-label">Role</span>
+              <span class="project__field-value">Product Designer II</span>
+            </div>
+            <div class="project__field">
+              <span class="project__field-label">Timeline</span>
+              <span class="project__field-value">2025 – Now</span>
+            </div>
+          </div>
+
+          <!-- Case study sections -->
+          <div class="project__section" id="intro">
+            <h2 class="project__section-label">Intro</h2>
+            <p class="project__section-body">Mollie is one of Europe's fastest-growing payment service providers. I joined the Onboarding & Activation (BET) team to improve the merchant journey from signup to first payment, the most critical part of the funnel.</p>
+          </div>
+
+          <div class="project__section" id="problem">
+            <h2 class="project__section-label">Problem</h2>
+            <p class="project__section-body">New merchants faced a complex, multi-step onboarding flow with unclear progress, redundant verification steps, and high drop-off at key moments. The experience didn't reflect Mollie's brand promise of simplicity.</p>
+          </div>
+
+          <div class="project__section" id="solution">
+            <h2 class="project__section-label">Solution</h2>
+            <p class="project__section-body">Redesigned the onboarding flow with a linear task model, milestone moments, and contextual guidance. Reduced cognitive load by splitting the flow into clearly scoped steps with visible progress.</p>
+          </div>
+
+          <div class="project__section" id="impact">
+            <h2 class="project__section-label">Impact</h2>
+            <p class="project__section-body">Ongoing. Working closely with data, engineering, and product to ship iterative improvements. Tracking activation rate, time-to-first-payment, and support ticket volume as primary success metrics.</p>
+          </div>
+
+          <div class="project__section" id="takeaways">
+            <h2 class="project__section-label">Takeaways</h2>
+            <p class="project__section-body">Working inside a unicorn with mature design systems and processes reinforced the value of constraints. Every decision needs evidence, every change needs instrumentation, and clarity of intent is the real superpower.</p>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- Fixed right panel — view-transition-name mirrors home page -->
+    <div class="project__panel" aria-hidden="true"></div>
+
+    <!-- CTA — Restart -->
+    <div class="preloader__cta is-visible" id="project-cta" role="button" tabindex="0" aria-label="Jump to next case">
+      <span class="preloader__cta-label">
+        <svg class="preloader__cta-icon bunny-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear-left"><ellipse cx="8.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+            <g class="bunny__ear-right"><ellipse cx="15.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+            <g class="bunny__body">
+              <circle cx="12" cy="15.5" r="4.5"/>
+              <ellipse cx="12" cy="21" rx="4.5" ry="2.5"/>
+            </g>
+          </g>
+        </svg>
+        <span class="preloader__cta-roller">
+          <span class="preloader__cta-track">
+            <span class="preloader__cta-word">Jump</span>
+            <span class="preloader__cta-word">Next case</span>
+          </span>
+        </span>
+      </span>
+      <span class="preloader__cta-shortcut">
+        <svg class="preloader__cta-cmd" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4.5 4.5h5v5h-5zM4.5 4.5V3a1.5 1.5 0 1 0-1.5 1.5h1.5zM9.5 4.5H11A1.5 1.5 0 1 0 9.5 3v1.5zM4.5 9.5H3A1.5 1.5 0 1 0 4.5 11V9.5zM9.5 9.5V11A1.5 1.5 0 1 0 11 9.5H9.5z"/>
+        </svg>
+        J
+      </span>
+    </div>
+
+    <script type="module" src="/src/scripts/pages/project.js"></script>
+  </body>
+</html>

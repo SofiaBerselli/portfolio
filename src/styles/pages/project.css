@@ -1,0 +1,441 @@
+/* ── Scroll progress bar ─────────────────────────────────────────── */
+.project__progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--color-accent, #F54E00);
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 200;
+  will-change: transform;
+}
+
+/* ── Back-bar overrides for project pages ────────────────────────── */
+/* Mirror the project layout so the breadcrumb left-aligns with the content column.
+   Height inherits the base 120px so the fade zone covers the full padding-top of .project. */
+.back-bar {
+  padding-top: 20px;
+  padding-left: 80px;
+  padding-right: calc(clamp(137px, 19.24vw, 277px) + clamp(var(--space-4), 12vw, 175px) + 80px);
+  justify-content: center;
+}
+
+/* Extend the solid zone so scrolled content doesn't bleed through the fade */
+.back-bar::before {
+  background: linear-gradient(to bottom, var(--color-bg) 0%, var(--color-bg) 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+}
+
+.back-bar .back-bar__inner {
+  width: 440px;
+  max-width: 440px;
+  flex-shrink: 0;
+  margin: 0;
+  padding-inline: 0;
+}
+
+.back-bar .back-bar__btn {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.back-bar__crumb {
+  color: #26251e;
+  font-weight: 500;
+}
+
+/* ── Project page layout ────────────────────────────────────────── */
+.project {
+  display: flex;
+  flex-direction: row;
+  gap: 80px;
+  justify-content: center;
+  padding: 120px 80px 120px;
+  /* Right padding grows to match the fixed panel's footprint + 80px gap,
+     so the centered content is never obscured by the panel. */
+  padding-right: calc(clamp(137px, 19.24vw, 277px) + clamp(var(--space-4), 12vw, 175px) + 80px);
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+/* ── Left column: nav + content in a row ────────────────────────── */
+.project__left {
+  display: flex;
+  flex-direction: row;
+  gap: 80px;
+}
+
+/* ── Navigation sidebar ─────────────────────────────────────────── */
+.project__nav {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 72px;
+  align-self: flex-start; /* required: lets sticky work inside a flex parent */
+}
+
+
+.project__nav-home {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  text-decoration: none;
+  letter-spacing: 0;
+  transition: color 0.2s ease;
+}
+
+.project__nav-home:hover {
+  color: #26251e;
+}
+
+.project__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Each item hidden initially; stagger in when menu gets .is-revealed */
+.project__menu .project__menu-item {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.project__menu.is-revealed .project__menu-item { opacity: 1; transform: translateY(0); }
+.project__menu.is-revealed .project__menu-item:nth-child(1) { transition-delay:   0ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(2) { transition-delay:  55ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(3) { transition-delay: 110ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(4) { transition-delay: 165ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(5) { transition-delay: 220ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(6) { transition-delay: 275ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(7) { transition-delay: 330ms; }
+.project__menu.is-revealed .project__menu-item:nth-child(8) { transition-delay: 385ms; }
+
+.project__menu-item {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  text-decoration: none;
+  letter-spacing: 0;
+  transition: color 0.2s ease;
+}
+
+.project__menu-item.is-active {
+  font-weight: var(--weight-medium);
+  color: #26251e;
+}
+
+.project__menu-item:hover {
+  color: #26251e;
+}
+
+/* ── Main content column ────────────────────────────────────────── */
+.project__content {
+  width: 440px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* ── Context block: icon + company name + description ───────────── */
+.project__context {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.project__icon-wrap {
+  width: 80px;
+}
+
+.project__icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+}
+
+.project__meta-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project__name {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  color: #26251e;
+  line-height: 1.2;
+}
+
+.project__desc {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  line-height: 1.6;
+}
+
+/* ── Meta row: Role + Timeline ──────────────────────────────────── */
+.project__meta-row {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+}
+
+.project__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project__field-label {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: 1rem;
+  color: #26251e;
+}
+
+.project__field-value {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  line-height: 1.6;
+}
+
+/* ── Case study sections ─────────────────────────────────────────── */
+.project__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project__section-label {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: 1rem;
+  color: #26251e;
+}
+
+.project__section-body {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  line-height: 1.6;
+}
+
+/* ── Right panel — fixed, exact same size/position as home page panel */
+.project__panel {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: clamp(var(--space-4), 12vw, 175px);
+  width: clamp(137px, 19.24vw, 277px);
+  aspect-ratio: 390 / 844;
+  border-radius: 36px;
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+  z-index: 21; /* above back-bar (z-index: 20) so the gradient doesn't overlay it */
+  view-transition-name: panel-right;
+  pointer-events: none;
+}
+
+.project__panel-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.project__panel-frame.is-active { opacity: 1; }
+
+/* Two-card variant: stacks two landscape card images vertically inside the panel */
+.project__panel-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 12px;
+  justify-content: center;
+  align-items: stretch;
+  /* override the replaced-element defaults that only apply to img/video */
+  object-fit: unset;
+}
+
+.project__panel-card {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Vision pillar table ─────────────────────────────────────────── */
+.project__table {
+  border: 1px solid #e6e5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.project__table-head,
+.project__table-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.5fr;
+}
+
+.project__table-head {
+  border-bottom: 1px solid #e6e5e1;
+  background: #f3f2ef;
+}
+
+.project__table-head span {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #787771;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+}
+
+.project__table-row {
+  border-bottom: 1px solid #e6e5e1;
+}
+
+.project__table-row:last-child { border-bottom: none; }
+
+.project__table-row span {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  color: #26251e;
+  padding: 11px 14px;
+  line-height: 1.5;
+}
+
+.project__table-head span + span,
+.project__table-row span + span {
+  border-left: 1px solid #e6e5e1;
+}
+
+/* ── Impact stats row ────────────────────────────────────────────── */
+.project__stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: nowrap;
+  margin-top: 16px;
+}
+
+.project__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.project__stat-value {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #26251e;
+  letter-spacing: -0.02em;
+}
+
+.project__stat-label {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  color: #787771;
+  letter-spacing: -0.01em;
+}
+
+/* ── Closing CTA block ───────────────────────────────────────────── */
+.project__cta-block {
+  margin-top: 48px;
+  padding: 20px 24px;
+  background: #F2F1EE;
+  border: 1px solid #e6e5e1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project__cta-heading {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #26251e;
+}
+
+.project__cta-body {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: #787771;
+  line-height: 1.6;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+
+/* Match home panel: 28px radius at mid-range viewports */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .project__panel { border-radius: 28px; }
+}
+
+/* ≤1100px — panel disappears; reset the large padding-right that compensated for it */
+@media (max-width: 1100px) {
+  .project__panel { display: none; }
+  .project { padding-right: 80px; }
+}
+
+/* 769–1100px tablet — panel gone, layout still row; loosen spacing so content breathes */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .project { padding: 80px 48px; }
+  .project__left { gap: 48px; }
+  .project__content { width: auto; flex: 1; }
+}
+
+/* ≤768px mobile — stack everything into a single column */
+@media (max-width: 768px) {
+  .project {
+    padding: 80px 24px 80px;
+    flex-direction: column;
+  }
+
+  .project__left {
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .project__content {
+    width: 100%;
+  }
+
+  .project__menu {
+    display: none;
+  }
+
+  .project__nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--color-bg);
+    padding: 20px 24px;
+    gap: 0;
+  }
+}

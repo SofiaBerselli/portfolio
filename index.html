@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sofia Berselli, product designer" />
+    <title>Sofia Berselli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="video" type="video/mp4" href="/devices/leica-left.mp4">
+    <link rel="preload" as="video" type="video/mp4" href="/devices/leica-right.mp4">
+    <!-- Source Serif 4 loaded as variable font (wght 200–900) so
+         font-weight can be continuously interpolated by JS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&display=swap" />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/reset.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/pages/home.css" />
+    <link rel="stylesheet" href="/src/styles/pages/experience.css" />
+    <link rel="stylesheet" href="/src/styles/pages/gallery.css" />
+  </head>
+  <body class="is-loading">
+    <div id="preloader" role="status" aria-label="Loading">
+      <div class="preloader__stage" aria-hidden="true">
+        <div class="preloader__output"></div>
+      </div>
+
+    </div>
+
+    <!-- Fixed navigation button — revealed at end of preloader, stays on page -->
+    <div class="preloader__cta" aria-hidden="true" role="button" tabindex="0">
+      <span class="preloader__cta-label">
+        <svg class="preloader__cta-icon bunny-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear-left"><ellipse cx="8.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+            <g class="bunny__ear-right"><ellipse cx="15.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+            <g class="bunny__body">
+              <circle cx="12" cy="15.5" r="4.5"/>
+              <ellipse cx="12" cy="21" rx="4.5" ry="2.5"/>
+            </g>
+          </g>
+        </svg>
+        <!-- Clipping track — only one line visible at a time -->
+        <span class="preloader__cta-roller">
+          <span class="preloader__cta-track">
+            <span class="preloader__cta-word" id="cta-word-default">Jump</span>
+            <span class="preloader__cta-word" id="cta-word-hover">cases</span>
+          </span>
+        </span>
+      </span>
+      <span class="preloader__cta-shortcut">
+        <svg class="preloader__cta-cmd" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4.5 4.5h5v5h-5zM4.5 4.5V3a1.5 1.5 0 1 0-1.5 1.5h1.5zM9.5 4.5H11A1.5 1.5 0 1 0 9.5 3v1.5zM4.5 9.5H3A1.5 1.5 0 1 0 4.5 11V9.5zM9.5 9.5V11A1.5 1.5 0 1 0 11 9.5H9.5z"/>
+        </svg>
+        J
+      </span>
+    </div>
+
+    <!-- home-wrapper gives the sticky home section its scroll height -->
+    <div class="home-wrapper" id="home-wrapper">
+    <main class="home" id="home" aria-label="Works">
+      <!-- Left media panel — fixed, recolours on company change -->
+      <div class="home__panel home__panel--left" id="panel-left" aria-hidden="true">
+        <!-- Device frames — per-company, JS controls opacity -->
+        <img class="panel-frame" data-company="0" src="/devices/mollie-left.webp" alt="" aria-hidden="true">
+        <video class="panel-frame" data-company="1" loop muted playsinline preload="none" aria-hidden="true">
+          <source src="/devices/leica-left.mp4" type="video/mp4">
+        </video>
+        <video class="panel-frame" data-company="2" loop muted playsinline preload="none" aria-hidden="true">
+          <source src="/devices/blinkoo-left.mp4" type="video/mp4">
+        </video>
+        <!-- Logos revealed only when "& other fun places" is active -->
+        <!-- Left: Bain · Leica · Ferrari · Maserati · Amadeus (5) -->
+        <div class="panel-logos panel-logos--left" id="logos-left" aria-hidden="true">
+          <img class="panel-logo" src="/logos/bain.svg"     alt="Bain &amp; Company">
+          <img class="panel-logo" src="/logos/leica.svg"    alt="Leica">
+          <img class="panel-logo" src="/logos/ferrari.svg"  alt="Ferrari">
+          <img class="panel-logo" src="/logos/maserati.svg" alt="Maserati">
+          <img class="panel-logo" src="/logos/amadeus.svg"  alt="Amadeus">
+        </div>
+      </div>
+      <!-- Right media panel -->
+      <div class="home__panel home__panel--right" id="panel-right" aria-hidden="true">
+        <!-- Device frames — per-company, JS controls opacity -->
+        <video class="panel-frame" data-company="0" loop muted playsinline preload="none" aria-hidden="true">
+          <source src="/devices/mollie-right.mp4" type="video/mp4">
+        </video>
+        <video class="panel-frame" data-company="1" loop muted playsinline preload="none" aria-hidden="true">
+          <source src="/devices/leica-right.mp4" type="video/mp4">
+        </video>
+        <video class="panel-frame" data-company="2" loop muted playsinline preload="none" aria-hidden="true">
+          <source src="/devices/blinkoo-right.mp4" type="video/mp4">
+        </video>
+        <!-- Right: KLM · Haleon · MediaWorld · Chef · Polygon · Shiba (6) -->
+        <div class="panel-logos panel-logos--right" id="logos-right" aria-hidden="true">
+          <img class="panel-logo" src="/logos/klm.svg"        alt="KLM">
+          <img class="panel-logo" src="/logos/haleon.svg"     alt="Haleon">
+          <img class="panel-logo" src="/logos/mediaworld.svg" alt="MediaWorld">
+          <img class="panel-logo" src="/logos/chef.svg"       alt="Chef Express">
+          <img class="panel-logo" src="/logos/polygon.svg"    alt="Polygon">
+          <img class="panel-logo" src="/logos/shiba.svg"      alt="Shiba Inu">
+        </div>
+      </div>
+
+      <!-- Scrollable company list -->
+      <div class="home__scroll-area" aria-hidden="true">
+        <ul class="home__track" id="company-track" role="list">
+          <li class="home__item" data-index="0">
+            <span class="home__item-name">Mollie</span>
+          </li>
+          <li class="home__item" data-index="1">
+            <span class="home__item-name">Leica Camera</span>
+          </li>
+          <li class="home__item" data-index="2">
+            <span class="home__item-name">blinkoo</span>
+          </li>
+          <li class="home__item" data-index="3">
+            <span class="home__item-name">&amp; other<br>fun places</span>
+          </li>
+        </ul>
+      </div>
+    </main>
+    </div><!-- end .home-wrapper -->
+
+    <!-- Back-to-works bar — fixed top, revealed when experience section is visible -->
+    <div class="back-bar" id="back-bar" aria-hidden="true">
+      <div class="back-bar__inner">
+        <button class="back-bar__btn" id="back-bar-btn" type="button" aria-label="Back to works">Works</button>
+      </div>
+    </div>
+
+    <!-- Dot-grid wrapper — contains all sections after #home -->
+    <div class="post-home">
+
+    <!-- Experience section — flows naturally after the home wrapper -->
+    <section class="experience" id="experience" aria-label="Experience">
+      <div class="experience__inner">
+
+        <!-- Block 1: Approach -->
+        <div class="experience__block experience__block--approach">
+          <div class="approach__header">
+            <p class="experience__label">Approach</p>
+            <div class="approach__photos" id="approach-photos" role="button" tabindex="0" aria-label="View photos">
+              <span class="approach__frame approach__frame--back"></span>
+              <span class="approach__frame approach__frame--front"></span>
+            </div>
+          </div>
+          <!-- Photo panel — 3 large photos fanning to the right on hover -->
+          <div class="approach__panel" id="approach-panel" aria-hidden="true">
+            <div class="approach__photo-wrap approach__photo-wrap--1">
+              <img class="approach__photo" src="/approach/photo-1.jpg" alt="">
+            </div>
+            <div class="approach__photo-wrap approach__photo-wrap--2">
+              <img class="approach__photo" src="/approach/photo-2.jpg" alt="">
+            </div>
+            <div class="approach__photo-wrap approach__photo-wrap--3">
+              <img class="approach__photo" src="/approach/photo-3.jpg" alt="">
+            </div>
+          </div>
+          <div class="experience__text">
+            <p>Don't like hierarchy, default to "how could I automate this" &amp; I own product end to end. I stay involved through launch and iteration, not just handoff.</p>
+            <p>I guide structure, behaviour, and quality; prototyping using AI tools to build and iterate on flows and interfaces.</p>
+            <p class="experience__quote">"My competitive advantage is having fun."</p>
+          </div>
+        </div>
+
+        <!-- Block 2: Work history -->
+        <div class="experience__block">
+          <p class="experience__label">Work stuff</p>
+          <p class="experience__summary">
+            2x founding designer, 1x unicorn startup, top 3 management consulting, 3x agencies.
+          </p>
+          <ul class="experience__list">
+            <li class="experience__item">
+              <a class="experience__company link" href="https://www.mollie.com/" target="_blank" rel="noopener">Mollie</a>
+              <span class="experience__date">2025 – Now</span>
+            </li>
+            <li class="experience__item">
+              <a class="experience__company link" href="https://leica-camera.com/en-int/photography/leica-apps/leica-lux" target="_blank" rel="noopener">Leica Camera</a>
+              <span class="experience__date">2024 – 2025</span>
+            </li>
+            <li class="experience__item">
+              <a class="experience__company link" href="https://www.bain.com/vector-digital/innovation-design/" target="_blank" rel="noopener">Bain &amp; Company</a>
+              <span class="experience__date">2022 – 2024</span>
+            </li>
+            <li class="experience__item">
+              <a class="experience__company link" href="https://www.blinkoo.com/" target="_blank" rel="noopener">Blinkoo</a>
+              <span class="experience__date">2020 – 2022</span>
+            </li>
+            <li class="experience__item">
+              <a class="experience__company link" href="https://www.titaniumideas.it/" target="_blank" rel="noopener">Titanium Ideas</a>
+              <span class="experience__date">2019 – 2020</span>
+            </li>
+            <li class="experience__item">
+              <a class="experience__company link" href="https://www.ventisettedigital.com/" target="_blank" rel="noopener">Design agencies (intern)</a>
+              <span class="experience__date">2018 – 2020</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Behind the pixels — bio section -->
+    <section class="bio" id="bio" aria-label="Behind the pixels">
+      <div class="bio__content">
+        <div class="approach__header">
+          <p class="bio__label">Behind the pixels</p>
+          <div class="approach__photos" id="bio-photos" role="button" tabindex="0" aria-label="View photos">
+            <span class="approach__frame approach__frame--back"></span>
+            <span class="approach__frame approach__frame--front"></span>
+          </div>
+        </div>
+        <!-- Photo panel — 3 large photos fanning to the right on hover -->
+        <div class="approach__panel" id="bio-panel" aria-hidden="true">
+          <div class="approach__photo-wrap approach__photo-wrap--1">
+            <img class="approach__photo" src="/bio/photo-1.jpg" alt="">
+          </div>
+          <div class="approach__photo-wrap approach__photo-wrap--2">
+            <img class="approach__photo" src="/bio/photo-2.jpg" alt="">
+          </div>
+          <div class="approach__photo-wrap approach__photo-wrap--3">
+            <img class="approach__photo" src="/bio/photo-3.jpg" alt="">
+          </div>
+        </div>
+        <div class="bio__text">
+          <p>Spending free time making side projects.<br>Make prototypes, not Powerpoints.<br>I like games: chess, poker.<br>I've also been a photographer, a yoga teacher and a bartender.<br>Careers are weird and non-linear sometimes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Some fun — awards & wins -->
+    <section class="fun" id="fun" aria-label="Some fun">
+      <div class="experience__inner">
+        <div class="experience__block">
+          <p class="experience__label">Some fun</p>
+          <ul class="experience__wins">
+            <li class="experience__win">
+              <div class="experience__win-info">
+                <a class="experience__win-title link" href="https://apps.apple.com/si/iphone/story/id1860431912" target="_blank" rel="noopener">App Store "App of the Day"</a>
+                <span class="experience__win-sub">Leica LUX App</span>
+              </div>
+              <span class="experience__win-year">2025</span>
+            </li>
+            <li class="experience__win">
+              <div class="experience__win-info">
+                <a class="experience__win-title link" href="https://accel.centennialcollege.ca/entrepreneurs/sdg-innovation-lab/global-goals-jam-canada-winter-2024/" target="_blank" rel="noopener">Global Goal Jam Toronto</a>
+                <span class="experience__win-sub">Hackathon winner, Design for Gender Equity</span>
+              </div>
+              <span class="experience__win-year">2024</span>
+            </li>
+            <li class="experience__win">
+              <div class="experience__win-info">
+                <a class="experience__win-title link" href="https://buidlit.devpost.com/project-gallery" target="_blank" rel="noopener">Design for Web3</a>
+                <span class="experience__win-sub">Hackathon winner, Polygon</span>
+              </div>
+              <span class="experience__win-year">2023</span>
+            </li>
+            <li class="experience__win">
+              <div class="experience__win-info">
+                <a class="experience__win-title link" href="https://digitalsocietyschool.org/project/global-goals-jam/" target="_blank" rel="noopener">Global Goals Jam Amsterdam</a>
+                <span class="experience__win-sub">Hackathon winner, Design for Environmental Crisis</span>
+              </div>
+              <span class="experience__win-year">2022</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Into the Rabbithole — about section with dot-grid background -->
+    <section class="about" id="about" aria-label="Into the Rabbithole">
+      <div class="about__inner">
+        <div class="about__block experience__block">
+          <p class="about__label">Into the Rabbithole</p>
+          <div class="about__text">
+            <p>Did you know a rabbit can live nearly twice as long when allowed to roam free?<br>
+            I started exploring design and technology early, turning curiosity into a habit that pulled me out of my small hometown in Italy and into traveling the world.<br>
+            The white Rabbit stands for chasing ideas and stepping beyond comfort.<br>
+            Also a quiet tribute to my childhood bunny, who lived 8 happy, cage-free years.</p>
+            <p><a class="link" href="https://x.com/Sofia_Berselli" target="_blank" rel="noopener">X</a> ,
+            <a class="link" href="http://www.linkedin.com/in/sofia-berselli" target="_blank" rel="noopener">Linkedin</a></p>
+          </div>
+          <p class="about__signature">Sofia</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual hops gallery -->
+    <section class="gallery" id="gallery" aria-label="Visual hops">
+      <div class="gallery__inner">
+        <h2 class="gallery__title">Visual hops</h2>
+        <div class="gallery__grid">
+
+          <!-- Left column (485px wide in Figma) -->
+          <div class="gallery__col">
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--l1">
+                <img class="gallery__tile-bg" src="/gallery/tile-l1-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-l1-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--l2">
+                <img class="gallery__tile-bg" src="/gallery/tile-l2-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-l2-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--l3">
+                <img class="gallery__tile-bg" src="/gallery/tile-l3-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-l3-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--l4">
+                <img class="gallery__tile-bg" src="/gallery/tile-l4-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-l4-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column (619px wide in Figma) -->
+          <div class="gallery__col">
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--r1">
+                <img class="gallery__tile-bg" src="/gallery/tile-r1-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-r1-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--r2">
+                <img class="gallery__tile-bg" src="/gallery/tile-r2-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-r2-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--r3">
+                <img class="gallery__tile-bg" src="/gallery/tile-r3-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-r3-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+            <div class="gallery__wrap">
+              <div class="gallery__tile gallery__tile--r4">
+                <img class="gallery__tile-bg" src="/gallery/tile-r4-bg.jpg" alt="" loading="lazy">
+                <img class="gallery__tile-fg" src="/gallery/tile-r4-fg.png" alt="" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <p class="gallery__footer">
+          <a class="link" href="https://x.com/Sofia_Berselli" target="_blank" rel="noopener">Follow me on X</a> to keep going deeper into the rabbithole.
+        </p>
+      </div>
+    </section>
+
+    </div><!-- end .post-home -->
+
+    <script type="module" src="/src/scripts/pages/home.js"></script>
+  </body>
+</html>

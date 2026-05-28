@@ -1,0 +1,11 @@
+/* About page styles — placeholder until Figma design is implemented */
+
+.about-intro {
+  padding: var(--space-24) var(--container-pad) var(--space-16);
+}
+
+.about-intro__heading {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}

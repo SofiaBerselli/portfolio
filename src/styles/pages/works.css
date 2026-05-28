@@ -1,0 +1,18 @@
+/* Works page styles — placeholder until Figma design is implemented */
+
+.works-header {
+  padding: var(--space-24) var(--container-pad) var(--space-16);
+}
+
+.works-header__heading {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.works-grid {
+  padding: 0 var(--container-pad) var(--space-32);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+  gap: var(--space-6);
+}

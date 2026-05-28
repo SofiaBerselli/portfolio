@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bunny proposals, Sofia Berselli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&display=swap" />
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 64px 32px 80px;
+      gap: 64px;
+    }
+
+    header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+    }
+
+    header p {
+      font-size: 0.8125rem;
+      color: var(--color-text-secondary);
+    }
+
+    /* ── Grid ─────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+
+    /* ── Card ─────────────────────────────────────── */
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease;
+      overflow: visible;
+    }
+
+    .preview:hover {
+      background: var(--color-bg-hover);
+      border-color: var(--color-text-secondary);
+    }
+
+    .mini-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--color-text-primary);
+      border-radius: 8px;
+      font-family: var(--font-display, 'SF Pro', system-ui);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #f2f1ee;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+
+    .mini-cta:hover { background: #2e2c28; }
+
+    .card-name {
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+
+    .card-desc {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* ── Color demo ───────────────────────────────── */
+    .color-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .color-row p {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      width: 100%;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .color-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .color-pill:hover { opacity: 0.85; }
+    .color-pill--dark  { background: #1E1C18; color: #f2f1ee; }
+    .color-pill--orange { background: #F54E00; color: #fff; }
+    .color-pill--warm  { background: #8B7355; color: #fff; }
+
+    /* ─────────────────────────────────────────────────
+       BUNNY SVG SYSTEM
+       stroke="currentColor" on SVG — inherits color.
+       fill="none" on SVG — all shapes are outlines.
+       Eye overrides to fill="currentColor".
+    ───────────────────────────────────────────────── */
+    .bunny-icon {
+      overflow: visible;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* Transform pivot setup */
+    .bunny__all  { transform-box: fill-box; transform-origin: 50% 100%; }
+    .bunny__body { transform-box: fill-box; transform-origin: 50% 100%; }
+
+    /* Ears — pivot from base */
+    .bunny__ear,
+    .bunny__ear-left { transform-box: fill-box; transform-origin: 100% 100%; }
+    .bunny__ear-right,
+    .bunny__ear-back  { transform-box: fill-box; transform-origin: 0% 100%; }
+
+    /* Side-view legs — pivot from top (shoulder / hip) */
+    .bunny__front-legs { transform-box: fill-box; transform-origin: 50% 0%; }
+    .bunny__back-legs  { transform-box: fill-box; transform-origin: 50% 0%; }
+
+    /* Front-view paws — pivot from body attachment */
+    .bunny__front-leg-left  { transform-box: fill-box; transform-origin: 100% 0%; }
+    .bunny__front-leg-right { transform-box: fill-box; transform-origin: 0% 0%; }
+
+    /* ── Hover: ears wiggle ───── */
+    .bunny-icon.is-hovering .bunny__ear,
+    .bunny-icon.is-hovering .bunny__ear-left {
+      animation: earWiggleL 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .bunny-icon.is-hovering .bunny__ear-right,
+    .bunny-icon.is-hovering .bunny__ear-back {
+      animation: earWiggleR 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.04s forwards;
+    }
+
+    @keyframes earWiggleL {
+      0%   { transform: rotate(0deg); }
+      25%  { transform: rotate(-14deg); }
+      55%  { transform: rotate(8deg); }
+      80%  { transform: rotate(-4deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes earWiggleR {
+      0%   { transform: rotate(0deg); }
+      25%  { transform: rotate(12deg); }
+      55%  { transform: rotate(-6deg); }
+      80%  { transform: rotate(3deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* ── Click jump: 3 coordinated animations ──── */
+
+    /* Ears freeze during jump */
+    .bunny-icon.is-jumping .bunny__ear,
+    .bunny-icon.is-jumping .bunny__ear-left,
+    .bunny-icon.is-jumping .bunny__ear-right,
+    .bunny-icon.is-jumping .bunny__ear-back { animation: none; }
+
+    /* Whole bunny lifts (translateY only — no squash here) */
+    .bunny-icon.is-jumping .bunny__all {
+      animation: jumpLift 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Body squash/stretch independently */
+    .bunny-icon.is-jumping .bunny__body {
+      animation: jumpSquash 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Side-view front legs kick forward */
+    .bunny-icon.is-jumping .bunny__front-legs {
+      animation: jumpFrontKick 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Side-view back legs kick backward */
+    .bunny-icon.is-jumping .bunny__back-legs {
+      animation: jumpBackKick 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Front-view paws spread outward */
+    .bunny-icon.is-jumping .bunny__front-leg-left {
+      animation: jumpPawL 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .bunny-icon.is-jumping .bunny__front-leg-right {
+      animation: jumpPawR 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes jumpLift {
+      0%   { transform: translateY(0); }
+      18%  { transform: translateY(2px); }   /* crouch down */
+      45%  { transform: translateY(-16px); } /* peak air */
+      72%  { transform: translateY(-16px); } /* float */
+      90%  { transform: translateY(2px); }   /* overshoot land */
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes jumpSquash {
+      0%   { transform: scaleY(1); }
+      18%  { transform: scaleY(0.84); }  /* crouch compress */
+      45%  { transform: scaleY(1.08); }  /* air stretch */
+      72%  { transform: scaleY(1); }
+      90%  { transform: scaleY(0.82); }  /* land squash */
+      100% { transform: scaleY(1); }
+    }
+
+    @keyframes jumpFrontKick {
+      0%, 18% { transform: rotate(0deg); }
+      50%, 68% { transform: rotate(50deg); }  /* swing forward */
+      100%     { transform: rotate(0deg); }
+    }
+
+    @keyframes jumpBackKick {
+      0%, 18% { transform: rotate(0deg); }
+      50%, 68% { transform: rotate(-58deg); }  /* kick back */
+      100%     { transform: rotate(0deg); }
+    }
+
+    @keyframes jumpPawL {
+      0%, 18% { transform: rotate(0deg); }
+      50%, 68% { transform: rotate(-38deg); }
+      100%     { transform: rotate(0deg); }
+    }
+
+    @keyframes jumpPawR {
+      0%, 18% { transform: rotate(0deg); }
+      50%, 68% { transform: rotate(38deg); }
+      100%     { transform: rotate(0deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bunny__ear, .bunny__ear-left, .bunny__ear-right,
+      .bunny__ear-back, .bunny__all, .bunny__body,
+      .bunny__front-legs, .bunny__back-legs,
+      .bunny__front-leg-left, .bunny__front-leg-right {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Bunny icon proposals</h1>
+    <p>Hover the card to wiggle ears · Click to jump · Tell me which one</p>
+  </header>
+
+  <main style="display:flex;flex-direction:column;align-items:center;gap:48px;width:100%">
+  <div class="grid">
+
+    <!-- ════════════════════════════════════════
+         DESIGN 1 — RUN
+         Side profile, right-facing, like the reference.
+         Compact resting pose, legs visible below.
+    ════════════════════════════════════════ -->
+    <div class="card">
+      <div class="preview" data-bunny="b1-lg">
+        <svg id="b1-lg" class="bunny-icon"
+          viewBox="0 0 64 64" width="72" height="72"
+          fill="none" stroke="currentColor" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-label="Design 1: Run">
+          <g class="bunny__all">
+
+            <!-- Ear — rotates from base at top-right of path -->
+            <g class="bunny__ear">
+              <path d="M 40,10
+                C 40,4 36,1 32,3
+                C 28,5 28,9 32,12
+                C 34,13 37,12 40,10 Z"/>
+            </g>
+
+            <!-- Body + head (one merged organic path) + eye + tail -->
+            <g class="bunny__body">
+              <path d="M 56,32
+                C 60,24 60,14 52,10
+                C 48,8  42,8  40,10
+                C 34,12 26,14 18,20
+                C 12,24  8,30  8,38
+                C  8,44 12,50 20,54
+                C 28,56 38,56 48,52
+                C 54,50 58,44 60,36
+                C 60,32 58,32 56,32 Z"/>
+              <!-- Eye -->
+              <circle cx="52" cy="22" r="2" fill="currentColor" stroke="none"/>
+              <!-- Tail -->
+              <circle cx="6" cy="40" r="4"/>
+            </g>
+
+            <!-- Front legs (chest area, kick forward on jump) -->
+            <g class="bunny__front-legs">
+              <path d="M 50,52 C 46,56 42,60 40,63"/>
+              <path d="M 56,50 C 54,54 52,58 50,61"/>
+            </g>
+
+            <!-- Back legs (hip area, kick backward on jump) -->
+            <g class="bunny__back-legs">
+              <path d="M 14,52 C 10,56  8,60  8,63"/>
+              <path d="M 22,54 C 20,58 18,62 18,64"/>
+            </g>
+
+          </g>
+        </svg>
+      </div>
+
+      <div class="mini-cta" data-bunny="b1-sm">
+        <svg id="b1-sm" class="bunny-icon"
+          viewBox="0 0 64 64" width="16" height="16"
+          fill="none" stroke="currentColor" stroke-width="4"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear">
+              <path d="M 40,10 C 40,4 36,1 32,3 C 28,5 28,9 32,12 C 34,13 37,12 40,10 Z"/>
+            </g>
+            <g class="bunny__body">
+              <path d="M 56,32 C 60,24 60,14 52,10 C 48,8 42,8 40,10 C 34,12 26,14 18,20 C 12,24 8,30 8,38 C 8,44 12,50 20,54 C 28,56 38,56 48,52 C 54,50 58,44 60,36 C 60,32 58,32 56,32 Z"/>
+              <circle cx="52" cy="22" r="3" fill="currentColor" stroke="none"/>
+              <circle cx="6" cy="40" r="4"/>
+            </g>
+            <g class="bunny__front-legs">
+              <path d="M 50,52 C 46,56 42,60 40,63"/>
+              <path d="M 56,50 C 54,54 52,58 50,61"/>
+            </g>
+            <g class="bunny__back-legs">
+              <path d="M 14,52 C 10,56 8,60 8,63"/>
+              <path d="M 22,54 C 20,58 18,62 18,64"/>
+            </g>
+          </g>
+        </svg>
+        Jump
+      </div>
+
+      <p class="card-name">1: Run</p>
+      <p class="card-desc">Side · Right-facing<br>Like the reference</p>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DESIGN 2 — SIT
+         Side profile, right-facing, upright sitting.
+         Taller body, legs clearly below.
+    ════════════════════════════════════════ -->
+    <div class="card">
+      <div class="preview" data-bunny="b2-lg">
+        <svg id="b2-lg" class="bunny-icon"
+          viewBox="0 0 64 64" width="72" height="72"
+          fill="none" stroke="currentColor" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-label="Design 2: Sit">
+          <g class="bunny__all">
+
+            <g class="bunny__ear">
+              <path d="M 38,10
+                C 36,5 32,2 28,4
+                C 24,6 24,10 28,13
+                C 30,15 34,13 38,10 Z"/>
+            </g>
+
+            <g class="bunny__body">
+              <!-- Upright body: head at top-right, body extends down -->
+              <path d="M 56,26
+                C 62,20 60,10 52,8
+                C 48,6  42,6  38,10
+                C 34,14 30,22 28,30
+                C 26,36 26,44 28,50
+                C 30,54 34,58 40,58
+                C 46,58 52,54 54,48
+                C 56,42 58,34 58,28
+                C 58,26 57,26 56,26 Z"/>
+              <circle cx="52" cy="20" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="24" cy="46" r="4"/>
+            </g>
+
+            <g class="bunny__front-legs">
+              <path d="M 52,56 C 48,59 44,62 42,64"/>
+              <path d="M 58,52 C 56,56 54,60 52,63"/>
+            </g>
+
+            <g class="bunny__back-legs">
+              <path d="M 30,58 C 26,60 22,62 20,64"/>
+              <path d="M 40,58 C 38,60 36,63 34,64"/>
+            </g>
+
+          </g>
+        </svg>
+      </div>
+
+      <div class="mini-cta" data-bunny="b2-sm">
+        <svg id="b2-sm" class="bunny-icon"
+          viewBox="0 0 64 64" width="16" height="16"
+          fill="none" stroke="currentColor" stroke-width="4"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear">
+              <path d="M 38,10 C 36,5 32,2 28,4 C 24,6 24,10 28,13 C 30,15 34,13 38,10 Z"/>
+            </g>
+            <g class="bunny__body">
+              <path d="M 56,26 C 62,20 60,10 52,8 C 48,6 42,6 38,10 C 34,14 30,22 28,30 C 26,36 26,44 28,50 C 30,54 34,58 40,58 C 46,58 52,54 54,48 C 56,42 58,34 58,28 C 58,26 57,26 56,26 Z"/>
+              <circle cx="52" cy="20" r="3" fill="currentColor" stroke="none"/>
+              <circle cx="24" cy="46" r="4"/>
+            </g>
+            <g class="bunny__front-legs">
+              <path d="M 52,56 C 48,59 44,62 42,64"/>
+              <path d="M 58,52 C 56,56 54,60 52,63"/>
+            </g>
+            <g class="bunny__back-legs">
+              <path d="M 30,58 C 26,60 22,62 20,64"/>
+              <path d="M 40,58 C 38,60 36,63 34,64"/>
+            </g>
+          </g>
+        </svg>
+        Jump
+      </div>
+
+      <p class="card-name">2: Sit</p>
+      <p class="card-desc">Side · Right-facing<br>Upright sitting</p>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DESIGN 3 — FRONT
+         Front-facing, symmetrical. Two ears,
+         two eyes, two paws spread on jump.
+    ════════════════════════════════════════ -->
+    <div class="card">
+      <div class="preview" data-bunny="b3-lg">
+        <svg id="b3-lg" class="bunny-icon"
+          viewBox="0 0 64 64" width="72" height="72"
+          fill="none" stroke="currentColor" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-label="Design 3: Front">
+          <g class="bunny__all">
+
+            <!-- Left ear -->
+            <g class="bunny__ear-left">
+              <path d="M 22,24
+                C 20,17 16,9 12,6
+                C 10,4  8,4  8,7
+                C  8,10 10,16 14,19
+                C 16,21 18,23 22,24 Z"/>
+            </g>
+
+            <!-- Right ear -->
+            <g class="bunny__ear-right">
+              <path d="M 42,24
+                C 44,17 48,9 52,6
+                C 54,4 56,4 56,7
+                C 56,10 54,16 50,19
+                C 48,21 46,23 42,24 Z"/>
+            </g>
+
+            <!-- Head + body merged -->
+            <g class="bunny__body">
+              <path d="M 22,24
+                C 14,26 12,34 14,42
+                C 16,50 22,58 32,60
+                C 42,58 48,50 50,42
+                C 52,34 50,26 42,24
+                C 38,22 34,22 32,22
+                C 30,22 26,22 22,24 Z"/>
+              <!-- Eyes -->
+              <circle cx="24" cy="36" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="40" cy="36" r="2" fill="currentColor" stroke="none"/>
+              <!-- Nose hint -->
+              <path d="M 30,46 C 31,48 32,48 34,46" stroke-width="2"/>
+            </g>
+
+            <!-- Left paw -->
+            <g class="bunny__front-leg-left">
+              <path d="M 20,58 C 16,61 14,63 16,65"/>
+            </g>
+
+            <!-- Right paw -->
+            <g class="bunny__front-leg-right">
+              <path d="M 44,58 C 48,61 50,63 48,65"/>
+            </g>
+
+          </g>
+        </svg>
+      </div>
+
+      <div class="mini-cta" data-bunny="b3-sm">
+        <svg id="b3-sm" class="bunny-icon"
+          viewBox="0 0 64 64" width="16" height="16"
+          fill="none" stroke="currentColor" stroke-width="4"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear-left">
+              <path d="M 22,24 C 20,17 16,9 12,6 C 10,4 8,4 8,7 C 8,10 10,16 14,19 C 16,21 18,23 22,24 Z"/>
+            </g>
+            <g class="bunny__ear-right">
+              <path d="M 42,24 C 44,17 48,9 52,6 C 54,4 56,4 56,7 C 56,10 54,16 50,19 C 48,21 46,23 42,24 Z"/>
+            </g>
+            <g class="bunny__body">
+              <path d="M 22,24 C 14,26 12,34 14,42 C 16,50 22,58 32,60 C 42,58 48,50 50,42 C 52,34 50,26 42,24 C 38,22 34,22 32,22 C 30,22 26,22 22,24 Z"/>
+              <circle cx="24" cy="36" r="3" fill="currentColor" stroke="none"/>
+              <circle cx="40" cy="36" r="3" fill="currentColor" stroke="none"/>
+            </g>
+            <g class="bunny__front-leg-left">
+              <path d="M 20,58 C 16,61 14,63 16,65"/>
+            </g>
+            <g class="bunny__front-leg-right">
+              <path d="M 44,58 C 48,61 50,63 48,65"/>
+            </g>
+          </g>
+        </svg>
+        Jump
+      </div>
+
+      <p class="card-name">3: Front</p>
+      <p class="card-desc">Front-facing<br>Symmetrical, two eyes</p>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         DESIGN 4 — ¾
+         Three-quarter angle (front-left).
+         Front ear prominent, back ear partially
+         visible. One visible eye. Body angled.
+    ════════════════════════════════════════ -->
+    <div class="card">
+      <div class="preview" data-bunny="b4-lg">
+        <svg id="b4-lg" class="bunny-icon"
+          viewBox="0 0 64 64" width="72" height="72"
+          fill="none" stroke="currentColor" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-label="Design 4: Three-quarter">
+          <g class="bunny__all">
+
+            <!-- Front ear (prominent, left side) -->
+            <g class="bunny__ear">
+              <path d="M 28,22
+                C 26,15 22,8 18,5
+                C 16,3 14,4 14,7
+                C 14,10 16,16 20,20
+                C 22,21 24,22 28,22 Z"/>
+            </g>
+
+            <!-- Back ear (shorter, right/behind) -->
+            <g class="bunny__ear-back">
+              <path d="M 40,20
+                C 42,14 46,8 48,6
+                C 50,5 51,6 50,9
+                C 49,12 47,16 44,19
+                C 43,20 42,20 40,20 Z"/>
+            </g>
+
+            <g class="bunny__body">
+              <!-- Body at ¾ angle — wider on left (toward viewer) -->
+              <path d="M 28,22
+                C 20,24 16,32 16,40
+                C 16,48 20,56 28,60
+                C 36,62 46,60 52,54
+                C 56,48 56,40 54,32
+                C 52,26 46,20 40,20
+                C 36,20 32,20 28,22 Z"/>
+              <!-- Eye — on front face (right/upper area) -->
+              <circle cx="44" cy="30" r="2" fill="currentColor" stroke="none"/>
+              <!-- Tail — partially visible on left -->
+              <circle cx="13" cy="44" r="3.5"/>
+            </g>
+
+            <!-- Front leg (visible, right side of body) -->
+            <g class="bunny__front-legs">
+              <path d="M 48,56 C 46,59 44,62 44,65"/>
+              <path d="M 54,52 C 52,56 50,60 50,63"/>
+            </g>
+
+            <!-- Back leg (visible, left side) -->
+            <g class="bunny__back-legs">
+              <path d="M 20,58 C 18,61 16,63 16,65"/>
+            </g>
+
+          </g>
+        </svg>
+      </div>
+
+      <div class="mini-cta" data-bunny="b4-sm">
+        <svg id="b4-sm" class="bunny-icon"
+          viewBox="0 0 64 64" width="16" height="16"
+          fill="none" stroke="currentColor" stroke-width="4"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <g class="bunny__all">
+            <g class="bunny__ear">
+              <path d="M 28,22 C 26,15 22,8 18,5 C 16,3 14,4 14,7 C 14,10 16,16 20,20 C 22,21 24,22 28,22 Z"/>
+            </g>
+            <g class="bunny__ear-back">
+              <path d="M 40,20 C 42,14 46,8 48,6 C 50,5 51,6 50,9 C 49,12 47,16 44,19 C 43,20 42,20 40,20 Z"/>
+            </g>
+            <g class="bunny__body">
+              <path d="M 28,22 C 20,24 16,32 16,40 C 16,48 20,56 28,60 C 36,62 46,60 52,54 C 56,48 56,40 54,32 C 52,26 46,20 40,20 C 36,20 32,20 28,22 Z"/>
+              <circle cx="44" cy="30" r="3" fill="currentColor" stroke="none"/>
+              <circle cx="13" cy="44" r="3.5"/>
+            </g>
+            <g class="bunny__front-legs">
+              <path d="M 48,56 C 46,59 44,62 44,65"/>
+              <path d="M 54,52 C 52,56 50,60 50,63"/>
+            </g>
+            <g class="bunny__back-legs">
+              <path d="M 20,58 C 18,61 16,63 16,65"/>
+            </g>
+          </g>
+        </svg>
+        Jump
+      </div>
+
+      <p class="card-name">4: ¾</p>
+      <p class="card-desc">Three-quarter angle<br>Front-left perspective</p>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- Color demo — shows Design 1 in 3 different colors -->
+  <div class="color-row">
+    <p>Same icon, any color via <code style="font-size:0.7rem;background:#e8e6dd;padding:1px 5px;border-radius:3px">currentColor</code></p>
+
+    <div class="color-pill color-pill--dark" data-bunny="bc-dark">
+      <svg id="bc-dark" class="bunny-icon"
+        viewBox="0 0 64 64" width="16" height="16"
+        fill="none" stroke="currentColor" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"
+        aria-hidden="true">
+        <g class="bunny__all">
+          <g class="bunny__ear"><path d="M 40,10 C 40,4 36,1 32,3 C 28,5 28,9 32,12 C 34,13 37,12 40,10 Z"/></g>
+          <g class="bunny__body">
+            <path d="M 56,32 C 60,24 60,14 52,10 C 48,8 42,8 40,10 C 34,12 26,14 18,20 C 12,24 8,30 8,38 C 8,44 12,50 20,54 C 28,56 38,56 48,52 C 54,50 58,44 60,36 C 60,32 58,32 56,32 Z"/>
+            <circle cx="52" cy="22" r="3" fill="currentColor" stroke="none"/>
+            <circle cx="6" cy="40" r="4"/>
+          </g>
+          <g class="bunny__front-legs"><path d="M 50,52 C 46,56 42,60 40,63"/><path d="M 56,50 C 54,54 52,58 50,61"/></g>
+          <g class="bunny__back-legs"><path d="M 14,52 C 10,56 8,60 8,63"/><path d="M 22,54 C 20,58 18,62 18,64"/></g>
+        </g>
+      </svg>
+      Near-black
+    </div>
+
+    <div class="color-pill color-pill--orange" data-bunny="bc-orange">
+      <svg id="bc-orange" class="bunny-icon"
+        viewBox="0 0 64 64" width="16" height="16"
+        fill="none" stroke="currentColor" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"
+        aria-hidden="true">
+        <g class="bunny__all">
+          <g class="bunny__ear"><path d="M 40,10 C 40,4 36,1 32,3 C 28,5 28,9 32,12 C 34,13 37,12 40,10 Z"/></g>
+          <g class="bunny__body">
+            <path d="M 56,32 C 60,24 60,14 52,10 C 48,8 42,8 40,10 C 34,12 26,14 18,20 C 12,24 8,30 8,38 C 8,44 12,50 20,54 C 28,56 38,56 48,52 C 54,50 58,44 60,36 C 60,32 58,32 56,32 Z"/>
+            <circle cx="52" cy="22" r="3" fill="currentColor" stroke="none"/>
+            <circle cx="6" cy="40" r="4"/>
+          </g>
+          <g class="bunny__front-legs"><path d="M 50,52 C 46,56 42,60 40,63"/><path d="M 56,50 C 54,54 52,58 50,61"/></g>
+          <g class="bunny__back-legs"><path d="M 14,52 C 10,56 8,60 8,63"/><path d="M 22,54 C 20,58 18,62 18,64"/></g>
+        </g>
+      </svg>
+      Accent orange
+    </div>
+
+    <div class="color-pill color-pill--warm" data-bunny="bc-warm">
+      <svg id="bc-warm" class="bunny-icon"
+        viewBox="0 0 64 64" width="16" height="16"
+        fill="none" stroke="currentColor" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"
+        aria-hidden="true">
+        <g class="bunny__all">
+          <g class="bunny__ear"><path d="M 40,10 C 40,4 36,1 32,3 C 28,5 28,9 32,12 C 34,13 37,12 40,10 Z"/></g>
+          <g class="bunny__body">
+            <path d="M 56,32 C 60,24 60,14 52,10 C 48,8 42,8 40,10 C 34,12 26,14 18,20 C 12,24 8,30 8,38 C 8,44 12,50 20,54 C 28,56 38,56 48,52 C 54,50 58,44 60,36 C 60,32 58,32 56,32 Z"/>
+            <circle cx="52" cy="22" r="3" fill="currentColor" stroke="none"/>
+            <circle cx="6" cy="40" r="4"/>
+          </g>
+          <g class="bunny__front-legs"><path d="M 50,52 C 46,56 42,60 40,63"/><path d="M 56,50 C 54,54 52,58 50,61"/></g>
+          <g class="bunny__back-legs"><path d="M 14,52 C 10,56 8,60 8,63"/><path d="M 22,54 C 20,58 18,62 18,64"/></g>
+        </g>
+      </svg>
+      Warm brown
+    </div>
+
+  </div>
+  </main><!-- /main -->
+
+  <script>
+    document.querySelectorAll('[data-bunny]').forEach(trigger => {
+      const icon = document.getElementById(trigger.dataset.bunny)
+      if (!icon) return
+
+      trigger.addEventListener('mouseenter', () => icon.classList.add('is-hovering'))
+      trigger.addEventListener('mouseleave', () => icon.classList.remove('is-hovering'))
+
+      trigger.addEventListener('click', () => {
+        icon.classList.remove('is-jumping')
+        void icon.offsetWidth              // force reflow — restarts animation on rapid clicks
+        icon.classList.add('is-jumping')
+      })
+
+      // Remove is-jumping when the lift animation ends (fires once, reliable)
+      icon.addEventListener('animationend', e => {
+        if (e.animationName === 'jumpLift') icon.classList.remove('is-jumping')
+      })
+    })
+  </script>
+
+</body>
+</html>

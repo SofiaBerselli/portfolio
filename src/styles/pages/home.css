@@ -1,0 +1,243 @@
+/* ── Homepage ──────────────────────────────────────────────────── */
+
+.home-wrapper {
+  position: relative;
+  /* height set by JS: 100vh + scroll distance for all companies */
+}
+
+.home {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  opacity: 0; /* revealed by JS after preloader exits */
+  z-index: 2;
+}
+
+/* ── Side panels ───────────────────────────────────────────────── */
+.home__panel {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(137px, 19.24vw, 277px);
+  aspect-ratio: 390 / 844;
+  border-radius: 36px;
+  background: var(--color-bg-secondary);
+  box-shadow: 0px 1px 4px 0px rgba(12, 12, 13, 0.025), 0px 2px 8px 0px rgba(12, 12, 13, 0.05);
+  opacity: 0; /* animated in after text */
+  overflow: hidden;
+  transition: background-color 0.7s var(--ease-in-out-quart);
+  will-change: background-color, opacity, transform;
+  z-index: 1;
+}
+
+.home__panel.is-logos {
+  width: clamp(152px, 21.38vw, 308px);
+  box-shadow: none;
+}
+
+.home__panel--left  { left:  clamp(var(--space-4), 12vw, 175px); }
+.home__panel--right {
+  right: clamp(var(--space-4), 12vw, 175px);
+  /* Shared name with .project__panel — browser morphs this between pages */
+  view-transition-name: panel-right;
+}
+
+/* ── Scroll area — overflow clip only, no centering (GSAP owns it) */
+.home__scroll-area {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Bottom fade: text dissolves before it reaches the button.
+     Starts at 55 % of the viewport height, fully gone at 92 %. */
+  mask-image: linear-gradient(to bottom, black 55%, transparent 92%);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 92%);
+}
+
+/* ── Track — positioned absolutely so GSAP controls x + y cleanly */
+.home__track {
+  position: absolute;
+  top: 0;
+  left: 50%; /* GSAP applies xPercent: -50 to finish centering */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  list-style: none;
+  will-change: transform;
+}
+
+/* ── Each company slot ─────────────────────────────────────────── */
+.home__item {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Extra breathing room before the last entry.
+   margin-top is included in offsetTop, so the JS geometry
+   (which uses offsetTop + offsetHeight/2) stays accurate. */
+.home__item:last-child {
+  margin-top: 30px;
+  cursor: default;
+}
+
+.home__item-name {
+  font-family: var(--font-serif);
+  font-weight: var(--weight-regular);
+  letter-spacing: -0.02em;
+  text-align: center;
+  line-height: var(--leading-snug);
+  white-space: nowrap;
+  display: inline-block;
+  position: relative;
+  /* Inactive colour — exact value, no interpolation */
+  color: #CFCFCB;
+  /* Only colour transitions, and only when is-active toggles.
+     font-size is written by JS each frame — no transition on it. */
+  transition: color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Active colour — switches cleanly on class toggle */
+.home__item.is-active .home__item-name {
+  color: #26251E;
+}
+
+/* Hover colour — all items darken on hover */
+.home__item:hover .home__item-name {
+  color: #26251E;
+}
+
+/* Wavy orange underline — only on the active item, on hover */
+.home__item.is-active:not(:last-child) .home__item-name {
+  padding-bottom: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M0 5 Q3 -1 6 5 Q9 11 12 5' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size:     12px 6px;
+  background-position: 0 100%;
+  background-repeat:   repeat-x;
+}
+
+.home__item.is-active:not(:last-child):hover .home__item-name {
+  animation: link-wave 1.2s linear infinite;
+}
+
+/* ── Device frames — one per company, stacked inside panel ─────── */
+.panel-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0; /* controlled by JS */
+  will-change: opacity;
+}
+
+/* ── Logo grids — shown only for "& other fun places" ─────────── */
+/*
+   Figma spec: panel 487px wide, logo group 340px centred, gap 38px,
+   two rows of 3. Our panels are max 324px so we scale proportionally.
+   Logo fills are already warm-gray (#787771) — no colour filter needed.
+*/
+.panel-logos {
+  position: absolute;
+  inset: 0;
+  /*
+    Flex-wrap with a single gap value makes row-gap === column-gap exactly.
+    Logo heights are tuned per-SVG so their natural aspect-ratio widths
+    produce 3 per row — no grid needed, no max-width distortion.
+  */
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: clamp(16px, 1.5vw, 22px);
+  padding: clamp(14px, 1.4vw, 20px);
+  pointer-events: none;
+}
+
+.panel-logo {
+  display: block;
+  width: auto;
+  flex-shrink: 0;   /* keep natural width derived from height + aspect ratio */
+  opacity: 0;
+}
+
+/* ── Per-logo heights from Figma (scaled, responsive via vw) ───── */
+
+/* Left panel: bain(14.4) leica(16.8) ferrari(16.8) maserati(12) amadeus(14.4) */
+#logos-left .panel-logo:nth-child(1) { height: clamp( 9px, 0.97vw, 14px); } /* bain     */
+#logos-left .panel-logo:nth-child(2) { height: clamp(14px, 1.4vw, 20px);  } /* leica    */
+#logos-left .panel-logo:nth-child(3) { height: clamp(11px, 1.11vw, 16px); } /* ferrari  */
+#logos-left .panel-logo:nth-child(4) { height: clamp( 8px, 0.83vw, 12px); } /* maserati */
+#logos-left .panel-logo:nth-child(5) { height: clamp( 9px, 0.97vw, 14px); } /* amadeus  */
+
+/* Right panel: klm(18) haleon(14) mediaworld(14) chef(18) polygon(17) shiba(17) */
+#logos-right .panel-logo:nth-child(1) { height: clamp(12px, 1.25vw, 18px); } /* klm        */
+#logos-right .panel-logo:nth-child(2) { height: clamp( 9px, 0.97vw, 14px); } /* haleon     */
+#logos-right .panel-logo:nth-child(3) { height: clamp( 9px, 0.97vw, 14px); } /* mediaworld */
+#logos-right .panel-logo:nth-child(4) { height: clamp(12px, 1.25vw, 18px); } /* chef       */
+#logos-right .panel-logo:nth-child(5) { height: clamp(11px, 1.11vw, 16px); } /* polygon    */
+#logos-right .panel-logo:nth-child(6) { height: clamp(11px, 1.11vw, 16px); } /* shiba      */
+
+/* ── Responsive — hide panels on narrow screens ────────────────── */
+@media (max-width: 640px) {
+  .home__panel { display: none; }
+
+  .home__item        { height: 80px; }
+  .home__item-name   { white-space: normal; }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .home__panel {
+    border-radius: 27px;
+  }
+}
+
+/* ── Reduced-motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .home__panel { transition: none; }
+}
+
+/* ── Building cursor pill ───────────────────────────────────────── */
+.building-pill {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 2px;
+  background: #F54E00;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: #EBEAE6;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  will-change: transform;
+}
+
+.building-pill.is-visible {
+  opacity: 1;
+}
+
+.building-pill__cursor {
+  display: inline-block;
+  width: 1px;
+  height: 19px;
+  background: #F7F7F4;
+  animation: pill-cursor-blink 0.75s step-end infinite;
+}
+
+@keyframes pill-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}

@@ -1,0 +1,627 @@
+/* Base — shared typography, layout primitives, nav, footer */
+
+/* ── Cross-document View Transitions ───────────────────────────────
+   Opts every same-origin navigation into the View Transitions API.
+   panel-right is a shared element that persists across pages — it
+   gets its own morph track and skips the root crossfade entirely.
+   ──────────────────────────────────────────────────────────────── */
+@view-transition {
+  navigation: auto;
+}
+
+/* Sequential fade: old out → background visible → new in. No overlap. */
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+}
+
+/* Background fills the gap between old and new */
+::view-transition {
+  background-color: #F8F7F4;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.6s ease both;
+}
+
+/* Delayed by the exit duration so it only starts once old is gone */
+::view-transition-new(root) {
+  animation: vt-fade-in 0.7s ease 0.6s both;
+}
+
+/* Panel image: suppress crossfade so it never dips to transparent */
+::view-transition-old(panel-right),
+::view-transition-new(panel-right) {
+  animation: none;
+}
+
+/* Panel old hidden, new visible — seamless persistence */
+::view-transition-old(panel-right) { opacity: 0; }
+::view-transition-new(panel-right) { opacity: 1; }
+
+/* Position/size morph for project→project changes */
+::view-transition-group(panel-right) {
+  animation-duration: 0.52s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ── Back-to-works bar — shared across home and project pages ────── */
+.back-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 20px;
+}
+
+/* Blur + tinted gradient lives on ::before so the text inside is never masked */
+.back-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    var(--color-bg) 25%,
+    transparent 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 100%);
+}
+
+.back-bar__inner {
+  position: relative; /* stacks above ::before */
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding-inline: 24px;
+}
+
+.back-bar.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-bar__btn {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #787771;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  letter-spacing: 0;
+  transition: color 0.2s ease;
+  font-variation-settings: 'wdth' 100;
+}
+
+.back-bar__btn:hover {
+  color: #26251e;
+}
+
+
+::selection {
+  background: #FDDCCC;
+  color: #26251e;
+}
+
+/* ── Focus-visible ring ─────────────────────────────────────────────
+   Shows only on keyboard navigation (not mouse/touch).
+   Orange outline matches the accent colour; suppressed on elements
+   that have bespoke focus treatments.
+   ──────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* The CTA pill has its own hover/active treatment; suppress the ring */
+.preloader__cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent);
+}
+
+/* ── Page transition overlay ────────────────────────────────────────
+   Full-screen div injected by page-transition.js. Starts transparent;
+   fades to the page background before navigation and reveals the new
+   page on load. Works in all browsers without view-transition support.
+   ──────────────────────────────────────────────────────────────── */
+#pt-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+}
+
+body.is-loading {
+  overflow: hidden;
+}
+
+/* Global orange scrollbar */
+html {
+  scrollbar-color: var(--color-accent) transparent;
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar       { width: 1px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  {
+  background: var(--color-accent);
+  border-radius: 2px;
+}
+
+/* ── Container ─────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+/* ── Nav ───────────────────────────────────────────── */
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--nav-height);
+  z-index: var(--nav-z);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--container-pad);
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  backdrop-filter: blur(12px);
+  transition: background var(--dur-base) var(--ease-out-expo);
+}
+
+.nav__logo {
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-inline-start: auto;
+}
+
+.nav__link {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  transition: color var(--dur-fast) var(--ease-out-expo);
+}
+
+.nav__link:hover,
+.nav__link[aria-current="page"] {
+  color: var(--color-text-primary);
+}
+
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-half);
+  padding: var(--space-1);
+  margin-inline-start: auto;
+}
+
+.nav__toggle span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--color-fg);
+  transition: transform var(--dur-base) var(--ease-out-expo),
+              opacity var(--dur-base) var(--ease-out-expo);
+}
+
+.nav__toggle[aria-expanded="true"] span:first-child {
+  transform: translateY(6.5px) rotate(45deg);
+}
+.nav__toggle[aria-expanded="true"] span:last-child {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+@media (max-width: 640px) {
+  .nav__toggle {
+    display: flex;
+  }
+
+  .nav__links {
+    position: fixed;
+    inset: var(--nav-height) 0 0;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--color-bg);
+    gap: var(--space-4);
+    font-size: var(--text-xl);
+    transform: translateX(100%);
+    transition: transform var(--dur-slow) var(--ease-out-expo);
+    pointer-events: none;
+  }
+
+  .nav.is-open .nav__links {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .nav__link {
+    font-size: var(--text-xl);
+    text-transform: none;
+    letter-spacing: -0.02em;
+    opacity: 1;
+  }
+}
+
+/* ── Main content offset ───────────────────────────── */
+#main {
+  padding-top: var(--nav-height);
+}
+
+/* ── Footer ────────────────────────────────────────── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--container-pad);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.footer__links {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.footer__links a {
+  transition: color var(--dur-fast) var(--ease-out-expo);
+}
+
+/* ── Universal inline link ────────────────────────────────────────
+   Add class="link" to any anchor or clickable text to get:
+   • wavy orange underline (static by default, flows on hover)
+   • orange 10 % background highlight on hover
+   Works on inline elements without changing display.
+   ──────────────────────────────────────────────────────────────── */
+.link {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  padding-bottom: 5px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M0 5 Q3 -1 6 5 Q9 11 12 5' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size:     12px 6px;
+  background-position: 0 100%;
+  background-repeat:   repeat-x;
+}
+
+.link:hover {
+  animation: link-wave 1.2s linear infinite;
+}
+
+@keyframes link-wave {
+  from { background-position-x: 0; }
+  to   { background-position-x: -12px; }
+}
+
+.footer__links a:hover {
+  color: var(--color-fg);
+}
+
+/* ── Reveal — initial hidden state set by JS ───────── */
+[data-reveal] {
+  opacity: 0;
+}
+
+/* ── Button ────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-button);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+  transition: background var(--dur-fast) var(--ease-out-expo),
+              color var(--dur-fast) var(--ease-out-expo);
+}
+
+.btn:hover {
+  background: var(--color-button-hover);
+}
+
+.btn--accent {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn--accent:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+/* ── Preloader ─────────────────────────────────────── */
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.preloader__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 4.5rem; /* 72px — reserves space so layout doesn't jump between frames */
+  justify-content: center;
+}
+
+.preloader__output {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Each typed line */
+.preloader__line {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2.5vw, 1.5rem); /* 16–24px, fluid */
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+  white-space: pre;                       /* preserves trailing space on "Designing, " */
+  min-height: 1lh;                        /* keeps height stable on empty lines */
+}
+
+/* Blinking cursor rendered as ::after on the active line.
+   vertical-align: baseline anchors the cursor bottom to the text baseline;
+   height: 1cap extends it exactly to the font's cap height. */
+.preloader__line.is-active::after {
+  content: '';
+  display: inline-block;
+  width: 1.5px;
+  height: 1em;
+  background: var(--color-accent);
+  margin-left: 0.08em;
+  vertical-align: baseline;
+  animation: cursor-blink 0.75s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Reduced-motion: skip animation, show content instantly */
+@media (prefers-reduced-motion: reduce) {
+  .preloader__line.is-active::after { animation: none; }
+  .link:hover { animation: none; }
+}
+
+/* ── Preloader selection highlight ────────────────── */
+/* Container sits inside the fixed #preloader overlay */
+.preloader__hl-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Individual rect per typed line, transitions in together */
+.preloader__hl {
+  position: absolute;
+  background: rgba(245, 78, 0, 0.15); /* --color-accent at 15 % */
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.preloader__hl-container.is-visible .preloader__hl {
+  opacity: 1;
+}
+
+/* ── Preloader CTA button ──────────────────────────── */
+.preloader__cta:hover {
+  background: color-mix(in srgb, var(--color-text-primary) 95%, white);
+}
+
+.preloader__cta {
+  position: fixed;
+  bottom: clamp(var(--space-6), 9vh, var(--space-8));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10; /* sits above home scroll content */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  width: auto;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.35s var(--ease-out-expo);
+  white-space: nowrap;
+}
+
+.preloader__cta.is-visible {
+  opacity: 1;
+}
+
+.preloader__cta-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-half);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: var(--weight-medium);
+  color: #f2f1ee;
+  letter-spacing: -0.02em;
+  transition: opacity 0.18s ease;
+}
+
+/* Rolling text track */
+.preloader__cta-roller {
+  overflow: hidden;
+  display: block;
+  height: 1.4em;
+}
+
+.preloader__cta-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s var(--ease-out-expo);
+  will-change: transform;
+}
+
+.preloader__cta-word {
+  display: block;
+  height: 1.4em;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.preloader__cta:hover .preloader__cta-track {
+  transform: translateY(-50%);
+}
+
+.preloader__cta-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  overflow: visible; /* ears animate outside the icon bounding box */
+}
+
+.preloader__cta-icon {
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+/* ── Bunny icon ────────────────────────────────────────── */
+.bunny-icon {
+  color: var(--bunny-color, currentColor);
+}
+
+.bunny__all {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.bunny__ear-left,
+.bunny__ear-right {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.bunny-icon.is-hovering .bunny__ear-left {
+  animation: earWiggleLeft 0.5s var(--ease-out-expo) forwards;
+}
+.bunny-icon.is-hovering .bunny__ear-right {
+  animation: earWiggleRight 0.5s var(--ease-out-expo) 0.06s forwards;
+}
+
+@keyframes earWiggleLeft {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(-14deg); }
+  55%  { transform: rotate(9deg); }
+  80%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes earWiggleRight {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(14deg); }
+  55%  { transform: rotate(-9deg); }
+  80%  { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.bunny-icon.is-jumping .bunny__all {
+  animation: bunnyJump 0.55s var(--ease-out-expo) forwards;
+}
+
+.bunny-icon.is-jumping .bunny__ear-left,
+.bunny-icon.is-jumping .bunny__ear-right {
+  animation: none;
+}
+
+@keyframes bunnyJump {
+  0%   { transform: translateY(0)    scaleY(1); }
+  25%  { transform: translateY(-4px) scaleY(1.08); }
+  50%  { transform: translateY(-6px) scaleY(1); }
+  75%  { transform: translateY(0)    scaleY(0.88); }
+  88%  { transform: translateY(-1px) scaleY(1.04); }
+  100% { transform: translateY(0)    scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bunny__ear-left,
+  .bunny__ear-right,
+  .bunny__all { animation: none !important; }
+}
+
+/* Hide keyboard shortcut on touch devices — ⌘J is irrelevant without a keyboard */
+@media (hover: none) {
+  .preloader__cta-shortcut { display: none; }
+}
+
+.preloader__cta-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: var(--weight-regular);
+  color: var(--color-border);
+  letter-spacing: -0.02em;
+}
+
+.preloader__cta-cmd {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
