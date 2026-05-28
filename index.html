@@ -12,7 +12,7 @@
     <link rel="preload" as="video" type="video/mp4" href="/devices/leica-right.mp4">
     <!-- Source Serif 4 loaded as variable font (wght 200–900) so
          font-weight can be continuously interpolated by JS -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&family=Caveat:wght@400&display=swap" />
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/reset.css" />
     <link rel="stylesheet" href="/src/styles/base.css" />
@@ -71,10 +71,9 @@
           <source src="/devices/blinkoo-left.mp4" type="video/mp4">
         </video>
         <!-- Logos revealed only when "& other fun places" is active -->
-        <!-- Left: Bain · Leica · Ferrari · Maserati · Amadeus (5) -->
+        <!-- Left: Bain · Ferrari · Maserati · Amadeus (4) -->
         <div class="panel-logos panel-logos--left" id="logos-left" aria-hidden="true">
           <img class="panel-logo" src="/logos/bain.svg"     alt="Bain &amp; Company">
-          <img class="panel-logo" src="/logos/leica.svg"    alt="Leica">
           <img class="panel-logo" src="/logos/ferrari.svg"  alt="Ferrari">
           <img class="panel-logo" src="/logos/maserati.svg" alt="Maserati">
           <img class="panel-logo" src="/logos/amadeus.svg"  alt="Amadeus">
@@ -119,6 +118,19 @@
             <span class="home__item-name">&amp; other<br>fun places</span>
           </li>
         </ul>
+      </div>
+      <!-- Mobile-only logo grid — animated by JS when "& other fun places" is active -->
+      <div id="logos-mobile" class="mobile-logos" aria-hidden="true">
+        <img class="panel-logo" src="/logos/bain.svg"       alt="Bain &amp; Company">
+        <img class="panel-logo" src="/logos/ferrari.svg"    alt="Ferrari">
+        <img class="panel-logo" src="/logos/maserati.svg"   alt="Maserati">
+        <img class="panel-logo" src="/logos/amadeus.svg"    alt="Amadeus">
+        <img class="panel-logo" src="/logos/klm.svg"        alt="KLM">
+        <img class="panel-logo" src="/logos/haleon.svg"     alt="Haleon">
+        <img class="panel-logo" src="/logos/mediaworld.svg" alt="MediaWorld">
+        <img class="panel-logo" src="/logos/chef.svg"       alt="Chef Express">
+        <img class="panel-logo" src="/logos/polygon.svg"    alt="Polygon">
+        <img class="panel-logo" src="/logos/shiba.svg"      alt="Shiba Inu">
       </div>
     </main>
     </div><!-- end .home-wrapper -->

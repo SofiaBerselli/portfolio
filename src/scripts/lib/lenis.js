@@ -4,8 +4,9 @@ import { gsap, ScrollTrigger } from './gsap-setup.js'
 let lenis
 
 export function initLenis() {
+  const isTouch = navigator.maxTouchPoints > 0
   lenis = new Lenis({
-    lerp: 0.08,         // smoothing factor — lower = smoother, higher = snappier
+    lerp:            isTouch ? 1    : 0.08,
     wheelMultiplier: 1,
     touchMultiplier: 2,
   })

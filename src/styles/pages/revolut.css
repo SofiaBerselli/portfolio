@@ -1,0 +1,267 @@
+/* ── Revolut Interview Presentation — Deck Styles ──────────────── */
+
+/* Ensure full-viewport coverage, no scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+/* ── Orange progress bar (top) ─────────────────────────────────── */
+.deck__progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-accent);
+  transform-origin: left;
+  transform: scaleX(0.1); /* slide 1 = 10% */
+  transition: transform 0.4s var(--ease-out-expo);
+  z-index: 100;
+}
+
+/* ── Slide container ────────────────────────────────────────────── */
+.deck {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Individual slide ───────────────────────────────────────────── */
+.deck__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  padding: 48px;
+}
+
+.deck__slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Slide inner — constrained content column ───────────────────── */
+.deck__inner {
+  max-width: 700px;
+  width: 100%;
+}
+
+/* ── Slide number (top-right, subtle) ───────────────────────────── */
+.deck__num {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: var(--weight-regular);
+  color: var(--color-border);
+  letter-spacing: 0.04em;
+  z-index: 50;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Orange rule above heading ──────────────────────────────────── */
+.deck__rule {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--color-accent);
+  margin-bottom: 20px;
+}
+
+/* ── Heading ────────────────────────────────────────────────────── */
+.deck__heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 500;
+  color: #26251e;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 24px;
+}
+
+/* Hero slide: larger name */
+.deck__slide--hero .deck__heading {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: 16px;
+}
+
+/* ── Sub-heading (role/company line under hero name) ────────────── */
+.deck__sub {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+/* ── Body text ──────────────────────────────────────────────────── */
+.deck__body {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-regular);
+  color: #787771;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+}
+
+.deck__body:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Key line — highlighted sentence in orange ──────────────────── */
+.deck__key {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  color: #26251e;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  margin: 24px 0 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--color-accent);
+}
+
+/* ── Bullet list ────────────────────────────────────────────────── */
+.deck__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deck__list li {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  color: #787771;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  padding-left: 18px;
+  position: relative;
+}
+
+.deck__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* ── Three-column layout (used on Mollie overview slide) ────────── */
+.deck__cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 8px;
+}
+
+.deck__col-label {
+  font-family: var(--font-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #26251e;
+  margin-bottom: 6px;
+}
+
+.deck__col-body {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  color: #787771;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+/* ── Dot navigation (bottom center) ────────────────────────────── */
+.deck__dots {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 50;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: none;
+  background: none;
+}
+
+.deck__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d9d7cf;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.deck__dot:hover {
+  background: #b0aea8;
+}
+
+.deck__dot.is-active {
+  background: var(--color-accent);
+  transform: scale(1.4);
+}
+
+/* ── Keyboard hint (bottom right) ──────────────────────────────── */
+.deck__hint {
+  position: fixed;
+  bottom: 24px;
+  right: 32px;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  color: var(--color-border);
+  letter-spacing: 0.02em;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.deck__hint-key {
+  display: inline-block;
+  padding: 2px 5px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  font-size: 0.625rem;
+  line-height: 1.4;
+}
+
+@media (hover: none) {
+  .deck__hint { display: none; }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .deck__slide { transition: none; }
+  .deck__progress { transition: none; }
+  .deck__dot { transition: none; }
+}
+
+/* ── Mobile adjustments ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .deck__slide { padding: 32px 24px; }
+  .deck__cols { grid-template-columns: 1fr; gap: 16px; }
+}

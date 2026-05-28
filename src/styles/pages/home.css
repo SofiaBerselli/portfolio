@@ -110,8 +110,9 @@
   color: #26251E;
 }
 
-/* Wavy orange underline — only on the active item, on hover */
-.home__item.is-active:not(:last-child) .home__item-name {
+/* Wavy orange underline — active item always, all project items on hover */
+.home__item.is-active:not(:last-child) .home__item-name,
+.home__item:not(:last-child):hover .home__item-name {
   padding-bottom: 4px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M0 5 Q3 -1 6 5 Q9 11 12 5' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
   background-size:     12px 6px;
@@ -119,7 +120,8 @@
   background-repeat:   repeat-x;
 }
 
-.home__item.is-active:not(:last-child):hover .home__item-name {
+.home__item.is-active:not(:last-child):hover .home__item-name,
+.home__item:not(:last-child):hover .home__item-name {
   animation: link-wave 1.2s linear infinite;
 }
 
@@ -166,12 +168,11 @@
 
 /* ── Per-logo heights from Figma (scaled, responsive via vw) ───── */
 
-/* Left panel: bain(14.4) leica(16.8) ferrari(16.8) maserati(12) amadeus(14.4) */
+/* Left panel: bain(14.4) ferrari(16.8) maserati(12) amadeus(14.4) */
 #logos-left .panel-logo:nth-child(1) { height: clamp( 9px, 0.97vw, 14px); } /* bain     */
-#logos-left .panel-logo:nth-child(2) { height: clamp(14px, 1.4vw, 20px);  } /* leica    */
-#logos-left .panel-logo:nth-child(3) { height: clamp(11px, 1.11vw, 16px); } /* ferrari  */
-#logos-left .panel-logo:nth-child(4) { height: clamp( 8px, 0.83vw, 12px); } /* maserati */
-#logos-left .panel-logo:nth-child(5) { height: clamp( 9px, 0.97vw, 14px); } /* amadeus  */
+#logos-left .panel-logo:nth-child(2) { height: clamp(11px, 1.11vw, 16px); } /* ferrari  */
+#logos-left .panel-logo:nth-child(3) { height: clamp( 8px, 0.83vw, 12px); } /* maserati */
+#logos-left .panel-logo:nth-child(4) { height: clamp( 9px, 0.97vw, 14px); } /* amadeus  */
 
 /* Right panel: klm(18) haleon(14) mediaworld(14) chef(18) polygon(17) shiba(17) */
 #logos-right .panel-logo:nth-child(1) { height: clamp(12px, 1.25vw, 18px); } /* klm        */
@@ -240,4 +241,43 @@
 @keyframes pill-cursor-blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
+}
+
+@media (hover: none) {
+  .building-pill { display: none; }
+}
+
+/* ── Mobile logos — shown below "& other fun places" on narrow screens */
+#logos-mobile {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  #logos-mobile {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px 20px;
+    width: 85vw;
+    max-width: 300px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #logos-mobile .panel-logo { height: 12px; }
+  #logos-mobile .panel-logo:nth-child(1)  { height: 10px; } /* bain     */
+  #logos-mobile .panel-logo:nth-child(2)  { height: 11px; } /* ferrari  */
+  #logos-mobile .panel-logo:nth-child(3)  { height:  9px; } /* maserati */
+  #logos-mobile .panel-logo:nth-child(4)  { height: 10px; } /* amadeus  */
+  #logos-mobile .panel-logo:nth-child(5)  { height: 13px; } /* klm      */
+  #logos-mobile .panel-logo:nth-child(6)  { height: 10px; } /* haleon   */
+  #logos-mobile .panel-logo:nth-child(7)  { height: 10px; } /* mediaw.  */
+  #logos-mobile .panel-logo:nth-child(8)  { height: 13px; } /* chef     */
+  #logos-mobile .panel-logo:nth-child(9)  { height: 12px; } /* polygon  */
+  #logos-mobile .panel-logo:nth-child(10) { height: 12px; } /* shiba    */
 }

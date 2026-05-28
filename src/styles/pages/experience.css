@@ -340,7 +340,7 @@
 /* Experience company links and about section links — inherit wavy underline from base .link */
 
 .about__signature {
-  font-family: 'Biro Script Reduced', 'Biro Script', cursive;
+  font-family: 'Biro Script Reduced', 'Biro Script', 'Caveat', cursive;
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;

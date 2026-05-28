@@ -604,11 +604,6 @@ html {
   .bunny__all { animation: none !important; }
 }
 
-/* Hide keyboard shortcut on touch devices — ⌘J is irrelevant without a keyboard */
-@media (hover: none) {
-  .preloader__cta-shortcut { display: none; }
-}
-
 .preloader__cta-shortcut {
   display: flex;
   align-items: center;
@@ -624,4 +619,19 @@ html {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
+}
+
+/* ── Touch / mobile overrides ───────────────────────────────────── */
+@media (hover: none) {
+  .preloader__cta-shortcut { display: none; }
+}
+
+@media (max-width: 640px) {
+  .preloader__cta {
+    padding: var(--space-2) var(--space-3);
+  }
+  .preloader__cta-icon {
+    width: 26px;
+    height: 26px;
+  }
 }

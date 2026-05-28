@@ -41,8 +41,9 @@ const panelRight  = document.getElementById('panel-right')
 const items       = [...track.querySelectorAll('.home__item')]
 const names       = items.map(el => el.querySelector('.home__item-name'))
 
-const logosLeft  = [...document.querySelectorAll('#logos-left  .panel-logo')]
-const logosRight = [...document.querySelectorAll('#logos-right .panel-logo')]
+const logosLeft   = [...document.querySelectorAll('#logos-left  .panel-logo')]
+const logosRight  = [...document.querySelectorAll('#logos-right .panel-logo')]
+const logosMobile = [...document.querySelectorAll('#logos-mobile .panel-logo')]
 
 const framesLeft  = [...document.querySelectorAll('#panel-left  .panel-frame')]
 const framesRight = [...document.querySelectorAll('#panel-right .panel-frame')]
@@ -119,12 +120,13 @@ function showFrames(idx) {
 }
 
 
-// Left has 5 logos (rows of 3+2), right has 6 (rows of 3+3)
+// Left has 4 logos (rows of 2+2), right has 6 (rows of 3+3)
 const LOGO_STAGGER_ORDER = [
   logosRight[0], logosRight[1], logosRight[2],   // right row 1
-  logosLeft[0],  logosLeft[1],  logosLeft[2],    // left row 1
+  logosLeft[0],  logosLeft[1],                   // left row 1
   logosRight[3], logosRight[4], logosRight[5],   // right row 2
-  logosLeft[3],  logosLeft[4],                   // left row 2
+  logosLeft[2],  logosLeft[3],                   // left row 2
+  ...logosMobile,                                 // mobile-only grid
 ]
 
 function showLogos() {
