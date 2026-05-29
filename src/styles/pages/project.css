@@ -410,6 +410,19 @@
 
 /* ≤768px mobile — stack everything into a single column */
 @media (max-width: 768px) {
+  /* ── Back-bar: reset the desktop padding that breaks on phone-width screens ── */
+  .back-bar {
+    height: 60px;          /* smaller than the 120px desktop value */
+    padding-top: 14px;
+    padding-left: 24px;
+    padding-right: 24px;   /* removes the complex panel-offset formula */
+  }
+  .back-bar .back-bar__inner {
+    width: auto;
+    max-width: 100%;
+  }
+
+  /* ── Project: push content below the 60px mobile back-bar ── */
   .project {
     padding: 80px 24px 80px;
     flex-direction: column;
@@ -437,5 +450,56 @@
     background: var(--color-bg);
     padding: 20px 24px;
     gap: 0;
+  }
+
+  /* ── Table: stack each row vertically — 3-col grid is too narrow on mobile ── */
+  .project__table-head {
+    display: none;          /* column labels are implied by the stacked layout */
+  }
+
+  .project__table-row {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    gap: 6px;
+    border-bottom: 1px solid #e6e5e1;
+  }
+
+  .project__table-row:last-child { border-bottom: none; }
+
+  .project__table-row span {
+    padding: 0;
+    border-left: none;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* Pillar label: small caps treatment */
+  .project__table-row span:first-child {
+    font-weight: 600;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #787771;
+  }
+
+  /* Problem: muted body */
+  .project__table-row span:nth-child(2) {
+    color: #787771;
+  }
+
+  /* Success: prominent */
+  .project__table-row span:nth-child(3) {
+    color: #26251e;
+    font-weight: 500;
+    border-top: 1px solid #e6e5e1;
+    padding-top: 6px;
+    margin-top: 2px;
+  }
+
+  /* Remove the vertical border rule that applies globally to span + span */
+  .project__table-head span + span,
+  .project__table-row span + span {
+    border-left: none;
   }
 }

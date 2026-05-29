@@ -160,8 +160,9 @@ function trackY(index) {
 // ── Wrapper height ─────────────────────────────────────────────────
 // Total = one viewport (first view) + scroll distance through all companies
 function updateWrapperHeight() {
+  const lastExtra = window.innerWidth < 640 ? 80 : LAST_EXTRA
   homeWrapper.style.height =
-    window.innerHeight + SCROLL_PER_COMPANY * LAST_IDX + LAST_EXTRA + 'px'
+    window.innerHeight + SCROLL_PER_COMPANY * LAST_IDX + lastExtra + 'px'
 }
 
 // ── Scroll → track position ────────────────────────────────────────
@@ -371,7 +372,7 @@ const CTA_CONFIG = {
   experience:  { word: 'Jump',  hover: 'About',      target: () => bioEl        },
   bio:         { word: 'Jump',  hover: 'Fun',        target: () => funEl        },
   fun:         { word: 'Jump',  hover: 'Rabbit',     target: () => aboutEl      },
-  about:       { word: 'Jump',  hover: 'Gallery',    target: () => galleryEl    },
+  about:       { word: 'Case',  hover: 'Leica',      target: null, href: '/leica/' },
   gallery:     { word: 'Jump',  hover: 'Top',        target: null               },
 }
 
@@ -451,8 +452,12 @@ cta?.addEventListener('click', () => {
     return
   }
 
-  const { target } = CTA_CONFIG[state] ?? CTA_CONFIG.home
-  const el = target?.()
+  const cfg = CTA_CONFIG[state] ?? CTA_CONFIG.home
+  if (cfg.href) {
+    window.location.href = cfg.href
+    return
+  }
+  const el = cfg.target?.()
   if (el) {
     const rect = el.getBoundingClientRect()
     const scrollTop = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2

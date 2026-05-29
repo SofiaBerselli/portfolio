@@ -255,7 +255,7 @@
 @media (max-width: 640px) {
   #logos-mobile {
     position: absolute;
-    bottom: 90px;
+    top: calc(50% + 88px); /* below the text which JS centres at 50vh */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
