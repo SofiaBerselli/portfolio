@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Sofia Berselli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&display=swap" />
+  <style>
+    @font-face {
+      font-family: 'SF Pro';
+      src: local('SF Pro'), local('SF Pro Text'), local('SF Pro Display');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #F8F7F4;
+      --text:   #26251e;
+      --muted:  #787771;
+      --border: #D9D7CF;
+      --orange: #F54E00;
+      --serif:  'Source Serif 4', Georgia, serif;
+      --sans:   'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Progress bar ─────────────────────────────────── */
+    #pbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--orange);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+    }
+    #pbar.visible { opacity: 1; }
+
+    /* ── Deck ─────────────────────────────────────────── */
+    .deck { position: fixed; inset: 0; }
+
+    /* ── Slide ────────────────────────────────────────── */
+    .slide {
+      position: absolute; inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      filter: blur(6px);
+      pointer-events: none;
+      transition: opacity 0.45s ease, filter 0.45s ease;
+    }
+    .slide.active {
+      opacity: 1;
+      filter: none;   /* not blur(0) — avoids GPU compositing that blurs subpixels */
+      pointer-events: auto;
+    }
+
+    /* ── Breadcrumb ───────────────────────────────────── */
+    .crumb {
+      position: absolute; top: 24px; left: 28px;
+      font-family: var(--sans);
+      font-size: 13px; font-weight: 400;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+    .crumb b { font-weight: 500; color: var(--text); }
+
+    /* ── Content column ───────────────────────────────── */
+    .col { width: 400px; max-width: 88vw; }
+
+    /* ── Dot nav — hidden, replaced by top progress bar ── */
+    .dots { display: none; }
+
+    /* ── Wavy link underline (mirrors base.css .link) ─── */
+    .link {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      padding-bottom: 5px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 3 Q2.5 0.5 5 3 Q7.5 5.5 10 3' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size:     10px 6px;
+      background-position: 0 100%;
+      background-repeat:   repeat-x;
+    }
+    .link:hover { animation: link-wave 1.2s linear infinite; }
+    @keyframes link-wave {
+      from { background-position-x: 0; }
+      to   { background-position-x: -10px; }
+    }
+
+    /* ════════════════════════════════════════════════════
+       TEXT FADE-IN — title fades up first, body 120ms later
+       hero-stage deliberately excluded (typewriter drives slide 1)
+    ════════════════════════════════════════════════════ */
+    .slide .slide-label,
+    .slide .proj-name,
+    .slide .sec-heading,
+    .slide .s2-name,
+    .slide .why-heading,
+    .slide .slide-sub,
+    .slide .proj-body,
+    .slide .exp-list,
+    .slide .wins-list,
+    .slide .impact-stats,
+    .slide .s2-body,
+    .slide .tbl-wrap,
+    .slide .proj-meta,
+    .slide .mockup-img,
+    .slide .problem-stat,
+    .slide .problem-list,
+    .slide .takeaway-list {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    /* Titles in first */
+    .slide.active .slide-label,
+    .slide.active .proj-name,
+    .slide.active .sec-heading,
+    .slide.active .s2-name,
+    .slide.active .why-heading {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.1s;
+    }
+    /* Body / subtitle / lists follow 120ms later */
+    .slide.active .slide-sub,
+    .slide.active .proj-body,
+    .slide.active .exp-list,
+    .slide.active .wins-list,
+    .slide.active .impact-stats,
+    .slide.active .s2-body,
+    .slide.active .tbl-wrap,
+    .slide.active .proj-meta,
+    .slide.active .mockup-img,
+    .slide.active .problem-stat,
+    .slide.active .problem-list,
+    .slide.active .takeaway-list {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.22s;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 1 — Hero (typewriter, matches portfolio preloader)
+    ════════════════════════════════════════════════════ */
+    .hero-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .hero-line {
+      font-family: var(--serif);
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      white-space: pre;
+      min-height: 1lh;
+    }
+    /* Blinking cursor on the active typing line */
+    .hero-line.is-active::after {
+      content: '';
+      display: inline-block;
+      width: 1.5px;
+      height: 1em;
+      background: var(--orange);
+      margin-left: 0.08em;
+      vertical-align: baseline;
+      animation: cursor-blink 0.75s step-end infinite;
+    }
+    @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 2 — Sofia / About
+       Horizontal row per cluster (matches node 118:43282):
+       small | large | small — with individual tilts & scatter
+    ════════════════════════════════════════════════════ */
+    .s2-layout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+    .s2-photos {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Wrapper: drives the appear animation independently of the image's rotation */
+    .s2-photo-wrap {
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    /* Stagger left-to-right across all 6 photos */
+    .s2-photos--left  .s2-photo-wrap:nth-child(1) { transition-delay: 0.08s; }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2) { transition-delay: 0.15s; }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3) { transition-delay: 0.22s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(1) { transition-delay: 0.29s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(2) { transition-delay: 0.36s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(3) { transition-delay: 0.43s; }
+
+    .slide.active .s2-photo-wrap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .s2-photos img {
+      display: block;
+      border-radius: 12px;
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.10),
+        0 2px 6px  rgba(0, 0, 0, 0.06);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: default;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+
+    /* Left: dark(83px) → Q&A(96px) → wine(83px) */
+    .s2-photos--left  .s2-photo-wrap:nth-child(1) img { width: 83px;  transform: rotate(2deg)  translateY(4px);  }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2) img { width: 96px;  transform: rotate(-3deg) translateY(-5px); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3) img { width: 83px;  transform: rotate(3deg)  translateY(4px);  }
+
+    /* Right: gym(96px) → chess(83px) → camera(83px) */
+    .s2-photos--right .s2-photo-wrap:nth-child(1) img { width: 96px;  transform: rotate(6deg)  translateY(-5px); }
+    .s2-photos--right .s2-photo-wrap:nth-child(2) img { width: 83px;  transform: rotate(-2deg) translateY(4px);  }
+    .s2-photos--right .s2-photo-wrap:nth-child(3) img { width: 83px;  transform: rotate(-5deg) translateY(2px);  }
+
+    .s2-photos--left  .s2-photo-wrap:nth-child(1):hover img { transform: rotate(2deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2):hover img { transform: rotate(-3deg) translateY(-4px) scale(1.08); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3):hover img { transform: rotate(3deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(1):hover img { transform: rotate(6deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(2):hover img { transform: rotate(-2deg) translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(3):hover img { transform: rotate(-5deg) translateY(-4px) scale(1.08); }
+
+    .s2-name {
+      font-family: var(--serif);
+      font-size: 1.0625rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .s2-body {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.7;
+      letter-spacing: -0.01em;
+    }
+    .s2-body em { font-style: italic; }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 3 — What I've built (Work stuff style)
+    ════════════════════════════════════════════════════ */
+    .slide-label {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .slide-sub {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .exp-list { list-style: none; margin-top: 4px; display: flex; flex-direction: column; }
+    .exp-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      line-height: 1.9;
+    }
+    .exp-company {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+    .exp-date {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDES 4+ — Project / Mollie pattern
+    ════════════════════════════════════════════════════ */
+    .proj-name {
+      font-family: var(--serif);
+      font-size: 1.625rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+    .proj-body {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+      letter-spacing: -0.01em;
+    }
+    .proj-meta { display: flex; gap: 48px; margin-top: 32px; }
+    .proj-meta-label {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .proj-meta-value {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+    .sec-heading {
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 6 — Table
+    ════════════════════════════════════════════════════ */
+    .tbl-wrap { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    .tbl th {
+      font-family: var(--sans);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 8px 12px 7px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tbl td {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      padding: 10px 12px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .tbl td.em { font-weight: 600; color: var(--text); }
+    .tbl tr:last-child td { border-bottom: none; }
+
+    /* ════════════════════════════════════════════════════
+       SLIDES 7, 8 — Device mockups (centered, rounded, shadow)
+    ════════════════════════════════════════════════════ */
+    .mockup-img {
+      max-height: 72vh;
+      max-width: 85vw;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+      box-shadow:
+        0 16px 40px rgba(30, 28, 24, 0.10),
+        0 4px 8px  rgba(30, 28, 24, 0.06);
+      /* Maximum rendering quality on all screens */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+    .mockup-img.phone {
+      max-height: 66vh;
+      border-radius: 28px;
+    }
+    /* Video: no image-rendering override (browsers handle video separately);
+       ensure it never scales above native resolution */
+    video.mockup-img {
+      image-rendering: auto;
+    }
+    /* Revolut phone — cap at half its native px height for 2× retina sharpness */
+    .s13-phone img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+
+    /* ── Phone strip — 5 staggered phones ────────────────── */
+    .phone-strip {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+    }
+    .phone-strip .mockup-img { max-height: 62vh; }
+    .phone-strip .mockup-img:nth-child(1) { --i: 0; }
+    .phone-strip .mockup-img:nth-child(2) { --i: 1; }
+    .phone-strip .mockup-img:nth-child(3) { --i: 2; }
+    .phone-strip .mockup-img:nth-child(4) { --i: 3; }
+    .phone-strip .mockup-img:nth-child(5) { --i: 4; }
+    .slide.active .phone-strip .mockup-img {
+      transition-delay: calc(0.06s + var(--i, 0) * 0.09s);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 9 — Play / Wins (Some fun style)
+    ════════════════════════════════════════════════════ */
+    .wins-list { list-style: none; display: flex; flex-direction: column; }
+    .wins-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .wins-info { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+    .wins-title {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.9;
+    }
+    .wins-sub {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    .wins-yr {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      line-height: 1.9;
+      letter-spacing: -0.01em;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 10 — Impact stats
+    ════════════════════════════════════════════════════ */
+    .impact-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: nowrap;
+      margin-top: 20px;
+    }
+    .impact-stat { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .impact-stat-value {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .impact-stat-label {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 12 — Why Revolut (phone tilt + entry bounce)
+    ════════════════════════════════════════════════════ */
+    .s13 { gap: 0; justify-content: center; }
+    .s13-left { padding-right: 56px; }
+    .why-heading {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.025em;
+    }
+    /* Phone starts straight; tilts to -5deg when slide activates.
+       Hover tilts further. No bounce — pure CSS transition. */
+    .s13-phone img {
+      height: clamp(280px, 48vh, 400px);
+      display: block;
+      border-radius: 22px;
+      transform: rotate(0deg);
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .slide.active .s13-phone img {
+      transform: rotate(3deg);
+    }
+    .slide.active .s13-phone img:hover {
+      transform: rotate(5deg) scale(1.03);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 5 — The problem (visual: stat + bullets)
+    ════════════════════════════════════════════════════ */
+    .problem-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 16px 0 20px;
+    }
+    .problem-stat-value {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.65;
+      letter-spacing: -0.01em;
+    }
+    .problem-stat-label {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      line-height: 1.65;
+    }
+    .problem-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .problem-list li {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+      padding-left: 16px;
+      position: relative;
+    }
+    .problem-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 13 — Takeaways (visual: numbered list)
+    ════════════════════════════════════════════════════ */
+    .takeaway-list {
+      list-style: none;
+      counter-reset: takeaway;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .takeaway-list li {
+      counter-increment: takeaway;
+      display: flex;
+      gap: 14px;
+    }
+    .takeaway-list li::before {
+      content: counter(takeaway);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--orange);
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .takeaway-title {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1.5;
+    }
+    .takeaway-body {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      line-height: 1.55;
+      margin-top: 2px;
+    }
+
+    /* ── Reduced motion ───────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-line.is-active::after { animation: none; }
+      .link:hover { animation: none; }
+      .slide, #pbar, .dot, .s2-photos img, .s13-phone img, .s2-photo-wrap,
+      .slide .slide-label, .slide .proj-name, .slide .sec-heading,
+      .slide .s2-name, .slide .why-heading, .slide .slide-sub,
+      .slide .proj-body, .slide .exp-list, .slide .wins-list,
+      .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
+      .slide .proj-meta, .slide .mockup-img { transition: none; }
+      .slide .slide-label, .slide .proj-name, .slide .sec-heading,
+      .slide .s2-name, .slide .why-heading, .slide .slide-sub,
+      .slide .proj-body, .slide .exp-list, .slide .wins-list,
+      .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
+      .slide .proj-meta, .slide .mockup-img,
+      .s2-photo-wrap { opacity: 1; transform: none; }
+      .s13-phone img { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="pbar"></div>
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <div class="deck" id="deck">
+
+    <!-- ── Slide 1: Hero (typewriter) ────────────────── -->
+    <div class="slide active" data-idx="0">
+      <div class="col">
+        <div class="hero-stage">
+          <span class="hero-line is-active"></span>
+          <span class="hero-line"></span>
+          <span class="hero-line"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 2: Sofia / About ─────────────────────── -->
+    <div class="slide" data-idx="1">
+      <div class="s2-layout">
+        <div class="s2-photos s2-photos--left">
+          <div class="s2-photo-wrap"><img src="photo-l1.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-l2.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-l3.png" alt="" /></div>
+        </div>
+        <div class="col">
+          <p class="s2-name">Sofia</p>
+          <p class="s2-body">
+            I don't like hierarchy,<br>
+            default to "how could I automate this",<br>
+            I own product end to end.<br>
+            I stay involved through launch and iteration, not just handoff.<br>
+            I guide structure, behaviour, and quality;<br>
+            prototyping using AI tools to build and iterate on flows and interfaces.<br>
+            <br>
+            <em>"My competitive advantage is having fun".</em>
+          </p>
+        </div>
+        <div class="s2-photos s2-photos--right">
+          <div class="s2-photo-wrap"><img src="photo-r1.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-r2.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="photo-r3.png" alt="" /></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 3: What I've built (Work stuff style) ── -->
+    <div class="slide" data-idx="2">
+      <div class="col">
+        <p class="slide-label">What I've built</p>
+        <p class="slide-sub">2x founding designer, 1x unicorn startup, top 3 management consulting, multiple agencies.</p>
+        <ul class="exp-list">
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.mollie.com/" target="_blank" rel="noopener">Mollie</a>
+            <span class="exp-date">2025 – Now</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://leica-camera.com/en-int/photography/leica-apps/leica-lux" target="_blank" rel="noopener">Leica Camera</a>
+            <span class="exp-date">2024 – 2025</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.bain.com/vector-digital/innovation-design/" target="_blank" rel="noopener">Bain &amp; Company</a>
+            <span class="exp-date">2022 – 2024</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.blinkoo.com/" target="_blank" rel="noopener">Blinkoo</a>
+            <span class="exp-date">2020 – 2024</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.titaniumideas.it/" target="_blank" rel="noopener">Titanium Ideas</a>
+            <span class="exp-date">2019 – 2020</span>
+          </li>
+          <li class="exp-item">
+            <span class="exp-company link">3x Design agencies (intern)</span>
+            <span class="exp-date">2018 – 2020</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Slide 4: Mollie overview ───────────────────── -->
+    <div class="slide" data-idx="3">
+      <span class="crumb">Mollie</span>
+      <div class="col">
+        <h2 class="proj-name">Mollie</h2>
+        <p class="proj-body">Europe's fastest-growing payments company. I joined the Onboarding &amp; Activation team to redesign how merchants go from signup to their first payment: the most critical and complex part of the funnel.</p>
+        <div class="proj-meta">
+          <div>
+            <p class="proj-meta-label">Role</p>
+            <p class="proj-meta-value">Product Designer II</p>
+          </div>
+          <div>
+            <p class="proj-meta-label">Timeline</p>
+            <p class="proj-meta-value">2025 - 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 5: The problem ───────────────────────── -->
+    <div class="slide" data-idx="4">
+      <span class="crumb">Mollie</span>
+      <div class="col">
+        <h3 class="sec-heading">The problem</h3>
+        <div class="problem-stat">
+          <span class="problem-stat-value">22%</span>
+          <span class="problem-stat-label">30-day activation rate in 2024</span>
+        </div>
+        <ul class="problem-list">
+          <li>App-started journeys converted worse than desktop</li>
+          <li>Onboarding built for compliance, not activation — fragmented across web, mobile, and MBA</li>
+          <li>No clear next step after KYC approval; merchants stalled between account approval and first payment</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Slide 6: Vision table ─────────────────────── -->
+    <div class="slide" data-idx="5">
+      <span class="crumb">Mollie</span>
+      <div class="col" style="width:560px">
+        <h3 class="sec-heading">Vision</h3>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Pillar</th>
+                <th>The problem</th>
+                <th>Success</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="em">Mobile-first activation</td>
+                <td>App-started merchants had lower completion than desktop journeys</td>
+                <td class="em">1,700 merchants reached their first activation touchpoint in the new native experience</td>
+              </tr>
+              <tr>
+                <td class="em">Self-serve B2B onboarding</td>
+                <td>Business Account legal entities required manual ops intervention to complete onboarding</td>
+                <td class="em">1,000 organisations onboarded, 68% start-to-completion rate</td>
+              </tr>
+              <tr>
+                <td class="em">Guided post-KYC moment</td>
+                <td>Merchants had no clear next step after KYC was approved</td>
+                <td class="em">Setup Guide v1 shipped, domain activation rate rose to 30%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 7: Native onboarding — 5 phones ────────── -->
+    <div class="slide" data-idx="6">
+      <span class="crumb">Mollie <b>/ Native onboarding</b></span>
+      <div class="phone-strip">
+        <img class="mockup-img phone" src="slide-phone-1.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-2.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-3.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-4.png" alt="" />
+        <img class="mockup-img phone" src="slide-phone-5.png" alt="" />
+      </div>
+    </div>
+
+    <!-- ── Slide 8: Setup Guide — welcome ────────────── -->
+    <div class="slide" data-idx="7">
+      <span class="crumb">Mollie <b>/ Setup Guide</b></span>
+      <img class="mockup-img" src="slide-mba-welcome.png" alt="Mollie Setup Guide welcome" />
+    </div>
+
+    <!-- ── Slide 9: Setup Guide — sidebar ────────────── -->
+    <div class="slide" data-idx="8">
+      <span class="crumb">Mollie <b>/ Setup Guide</b></span>
+      <video class="mockup-img" id="setup-video" src="setup-guide.mp4" muted playsinline></video>
+    </div>
+
+    <div class="slide" data-idx="9">
+      <span class="crumb">Mollie <b>/ MBA onboarding</b></span>
+      <img class="mockup-img" src="mockup-web-mba-3x.png" alt="Mollie MBA onboarding" />
+    </div>
+
+    <!-- ── Slide 11: Impact ──────────────────────────────── -->
+    <div class="slide" data-idx="10">
+      <span class="crumb">Mollie</span>
+      <div class="col" style="width:460px">
+        <h3 class="sec-heading">Impact</h3>
+        <p class="proj-body">Onboarding became a strategic multi-product activation engine, not just a compliance gate.</p>
+        <div class="impact-stats">
+          <div class="impact-stat">
+            <span class="impact-stat-value">+8pp</span>
+            <span class="impact-stat-label">30-day activation rate (22% → 30%)</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">1,700+</span>
+            <span class="impact-stat-label">Merchants in App Native Onboarding</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">68%</span>
+            <span class="impact-stat-label">MBA completion rate</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">1,000+</span>
+            <span class="impact-stat-label">Organisations in MBA onboarding</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 12: Takeaways ───────────────────────────── -->
+    <div class="slide" data-idx="11">
+      <span class="crumb">Mollie <b>/ Takeaways</b></span>
+      <div class="col">
+        <h3 class="sec-heading">Takeaways</h3>
+        <ol class="takeaway-list">
+          <li>
+            <div>
+              <span class="takeaway-title">Design for intention, not just completion</span>
+              <span class="takeaway-body">Move merchants through steps by helping them understand what each step is for.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="takeaway-title">Compliance is a design input, not an obstacle</span>
+              <span class="takeaway-body">Constraints from Product, Risk, and Legal clarify the best solution — they don't block it.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="takeaway-title">Onboarding lives at the intersection of trust and conversion</span>
+              <span class="takeaway-body">The best activation experience makes merchants feel set up to succeed, not just processed.</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ── Slide 13: Play / Wins ─────────────────────────── -->
+    <div class="slide" data-idx="12">
+      <div class="col">
+        <p class="slide-label" style="margin-bottom:16px">Play</p>
+        <ul class="wins-list">
+          <li class="wins-item">
+            <div class="wins-info">
+              <span class="wins-title link">Epoi host</span>
+              <span class="wins-sub">Community events organisation</span>
+            </div>
+            <span class="wins-yr">2026</span>
+          </li>
+          <li class="wins-item">
+            <div class="wins-info">
+              <a class="wins-title link" href="https://apps.apple.com/si/iphone/story/id1860431912" target="_blank" rel="noopener">App Store "App of the Day"</a>
+              <span class="wins-sub">Leica LUX App</span>
+            </div>
+            <span class="wins-yr">2025</span>
+          </li>
+          <li class="wins-item">
+            <div class="wins-info">
+              <a class="wins-title link" href="https://accel.centennialcollege.ca/entrepreneurs/sdg-innovation-lab/global-goals-jam-canada-winter-2024/" target="_blank" rel="noopener">Global Goal Jam Toronto</a>
+              <span class="wins-sub">Hackathon winner, Design for Gender Equity</span>
+            </div>
+            <span class="wins-yr">2024</span>
+          </li>
+          <li class="wins-item">
+            <div class="wins-info">
+              <a class="wins-title link" href="https://buidlit.devpost.com/project-gallery" target="_blank" rel="noopener">Design for Web3</a>
+              <span class="wins-sub">Hackathon winner, Polygon</span>
+            </div>
+            <span class="wins-yr">2023</span>
+          </li>
+          <li class="wins-item">
+            <div class="wins-info">
+              <a class="wins-title link" href="https://digitalsocietyschool.org/project/global-goals-jam/" target="_blank" rel="noopener">Global Goals Jam Amsterdam</a>
+              <span class="wins-sub">Hackathon winner, Design for Environmental Crisis</span>
+            </div>
+            <span class="wins-yr">2022</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Slide 14: Why Revolut ─────────────────────────── -->
+    <div class="slide s13" data-idx="13">
+      <div class="s13-left">
+        <h2 class="why-heading">Why Revolut</h2>
+      </div>
+      <div class="s13-phone">
+        <img src="mockup-phone-revolut.png" alt="Revolut app" />
+      </div>
+    </div>
+
+  </div><!-- /.deck -->
+
+  <script>
+    const slides  = [...document.querySelectorAll('.slide')]
+    const pbar    = document.getElementById('pbar')
+    const total   = slides.length
+    let cur = 0
+
+    /* ── Typewriter for slide 1 ──────────────────────── */
+    const HERO_LINES = ['Sofia Berselli.', 'Designing, ', 'Building.']
+    const heroLineEls = [...document.querySelectorAll('.hero-line')]
+    let heroTimer = null
+
+    function runHero() {
+      if (heroTimer) clearTimeout(heroTimer)
+      heroLineEls.forEach(el => { el.textContent = ''; el.classList.remove('is-active') })
+
+      let li = 0, ci = 0
+      heroLineEls[0].classList.add('is-active')
+
+      function tick() {
+        if (li >= HERO_LINES.length) return
+        const line = HERO_LINES[li]
+        heroLineEls[li].textContent = line.slice(0, ci + 1)
+        ci++
+        if (ci >= line.length) {
+          li++; ci = 0
+          if (li < HERO_LINES.length) {
+            heroLineEls[li - 1].classList.remove('is-active')
+            heroLineEls[li].classList.add('is-active')
+            heroTimer = setTimeout(tick, 110)
+          }
+          // last line stays active (cursor keeps blinking)
+        } else {
+          heroTimer = setTimeout(tick, 65)
+        }
+      }
+
+      heroTimer = setTimeout(tick, 200)
+    }
+
+    /* ── Navigation ──────────────────────────────────── */
+    function setBar(idx) {
+      pbar.classList.add('visible')
+      pbar.style.transform = `scaleX(${(idx + 1) / total})`
+    }
+
+    const setupVideo = document.getElementById('setup-video')
+    const videoSlideIdx = setupVideo
+      ? [...slides].indexOf(setupVideo.closest('.slide'))
+      : -1
+
+    function goTo(n) {
+      if (n === cur) return
+      slides[cur].classList.remove('active')
+      cur = Math.max(0, Math.min(n, total - 1))
+      slides[cur].classList.add('active')
+      setBar(cur)
+      if (cur === 0) runHero()
+      // Video: play from start on entry, pause on exit
+      if (setupVideo) {
+        if (cur === videoSlideIdx) {
+          setupVideo.currentTime = 0
+          setupVideo.play()
+        } else {
+          setupVideo.pause()
+        }
+      }
+    }
+
+    // Initial state
+    setBar(0)
+    runHero()
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(cur + 1) }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                   { e.preventDefault(); goTo(cur - 1) }
+    })
+
+    let tx = 0
+    document.addEventListener('touchstart', e => { tx = e.touches[0].clientX }, { passive: true })
+    document.addEventListener('touchend',   e => {
+      const d = tx - e.changedTouches[0].clientX
+      if (Math.abs(d) > 50) goTo(d > 0 ? cur + 1 : cur - 1)
+    }, { passive: true })
+  </script>
+
+  <script type="module">
+    import { createRoot } from 'react-dom/client'
+    import { createElement } from 'react'
+    import { Agentation } from 'agentation'
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+    createRoot(el).render(createElement(Agentation))
+  </script>
+
+</body>
+</html>
