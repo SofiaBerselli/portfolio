@@ -105,24 +105,13 @@
   color: #26251E;
 }
 
-/* Hover colour — all items darken on hover */
-.home__item:hover .home__item-name {
+/* Hover colour — inactive items darken, active item goes orange (last item is not clickable, no hover) */
+.home__item:not(.is-active):not(:last-child):hover .home__item-name {
   color: #26251E;
 }
 
-/* Wavy orange underline — active item always, all project items on hover */
-.home__item.is-active:not(:last-child) .home__item-name,
-.home__item:not(:last-child):hover .home__item-name {
-  padding-bottom: 4px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M0 5 Q3 -1 6 5 Q9 11 12 5' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-size:     12px 6px;
-  background-position: 0 100%;
-  background-repeat:   repeat-x;
-}
-
-.home__item.is-active:not(:last-child):hover .home__item-name,
-.home__item:not(:last-child):hover .home__item-name {
-  animation: link-wave 1.2s linear infinite;
+.home__item.is-active:not(:last-child):hover .home__item-name {
+  color: #F54E00;
 }
 
 /* ── Device frames — one per company, stacked inside panel ─────── */

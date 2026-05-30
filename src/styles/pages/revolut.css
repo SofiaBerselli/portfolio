@@ -123,7 +123,7 @@ html, body {
 /* ── Key line — highlighted sentence in orange ──────────────────── */
 .deck__key {
   font-family: var(--font-serif);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #26251e;
   line-height: 1.5;

@@ -1,3 +1,4 @@
+import { gsap, SplitText } from '../lib/gsap-setup.js'
 import { initTransitionIn, navigateTo } from '../lib/page-transition.js'
 import { initVideoLoader } from '../lib/video-loader.js'
 
@@ -128,3 +129,38 @@ document.addEventListener('keydown', e => {
     goNext()
   }
 })
+
+// ── Scroll-reveal: line-by-line for text, whole-block for structure ─
+function initContentReveal() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  const FROM = { opacity: 0, y: 16, filter: 'blur(8px)' }
+  const ST   = { start: 'top 92%', once: true }
+
+  // Line-by-line for text elements
+  document.querySelectorAll(
+    '.project__name, .project__desc, .project__section-label, .project__section-body'
+  ).forEach(el => {
+    const split = new SplitText(el, { type: 'lines' })
+    gsap.set(el, { opacity: 1 }) // parent visible; lines manage their own state
+    gsap.fromTo(split.lines, FROM, {
+      opacity: 1, y: 0, filter: 'blur(0px)',
+      duration: 0.45, ease: 'power3.out', stagger: 0.05,
+      scrollTrigger: { trigger: el, ...ST },
+    })
+  })
+
+  // Whole-block for non-text elements
+  document.querySelectorAll(
+    '.project__meta-row, .project__table, .project__stats, .project__cta-block'
+  ).forEach(el => {
+    gsap.to(el, {
+      opacity: 1, y: 0, filter: 'blur(0px)',
+      duration: 0.45, ease: 'power3.out',
+      scrollTrigger: { trigger: el, ...ST },
+    })
+  })
+}
+
+// Wait for fonts so SplitText line-breaks match rendered output
+document.fonts.ready.then(initContentReveal)

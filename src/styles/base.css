@@ -112,10 +112,14 @@
   letter-spacing: 0;
   transition: color 0.2s ease;
   font-variation-settings: 'wdth' 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
+
 .back-bar__btn:hover {
-  color: #26251e;
+  color: #F54E00;
 }
 
 
@@ -313,29 +317,18 @@ html {
 }
 
 /* ── Universal inline link ────────────────────────────────────────
-   Add class="link" to any anchor or clickable text to get:
-   • wavy orange underline (static by default, flows on hover)
-   • orange 10 % background highlight on hover
-   Works on inline elements without changing display.
+   Add class="link" to any anchor or clickable text to get
+   an orange colour shift on hover.
    ──────────────────────────────────────────────────────────────── */
 .link {
   color: var(--color-text-primary);
   text-decoration: none;
   cursor: pointer;
-  padding-bottom: 5px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M0 5 Q3 -1 6 5 Q9 11 12 5' fill='none' stroke='%23F54E00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-size:     12px 6px;
-  background-position: 0 100%;
-  background-repeat:   repeat-x;
+  transition: color 0.2s ease;
 }
 
 .link:hover {
-  animation: link-wave 1.2s linear infinite;
-}
-
-@keyframes link-wave {
-  from { background-position-x: 0; }
-  to   { background-position-x: -12px; }
+  color: #F54E00;
 }
 
 .footer__links a:hover {
@@ -439,7 +432,6 @@ html {
 /* Reduced-motion: skip animation, show content instantly */
 @media (prefers-reduced-motion: reduce) {
   .preloader__line.is-active::after { animation: none; }
-  .link:hover { animation: none; }
 }
 
 /* ── Preloader selection highlight ────────────────── */

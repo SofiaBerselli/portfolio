@@ -90,7 +90,7 @@
 }
 
 .project__nav-home:hover {
-  color: #26251e;
+  color: #F54E00;
 }
 
 .project__menu {
@@ -132,7 +132,7 @@
 }
 
 .project__menu-item:hover {
-  color: #26251e;
+  color: #F54E00;
 }
 
 /* ── Main content column ────────────────────────────────────────── */
@@ -179,7 +179,7 @@
 
 .project__desc {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: var(--weight-regular);
   color: #787771;
   line-height: 1.6;
@@ -199,15 +199,15 @@
 }
 
 .project__field-label {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
   font-weight: var(--weight-medium);
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: #26251e;
 }
 
 .project__field-value {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: var(--weight-regular);
   color: #787771;
   line-height: 1.6;
@@ -221,15 +221,15 @@
 }
 
 .project__section-label {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
   font-weight: var(--weight-medium);
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: #26251e;
 }
 
 .project__section-body {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: var(--weight-regular);
   color: #787771;
   line-height: 1.6;
@@ -379,6 +379,21 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: #26251e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project__cta-heading::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-image: url('/favicon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
 }
 
 .project__cta-body {
@@ -386,6 +401,40 @@
   font-size: 0.875rem;
   color: #787771;
   line-height: 1.6;
+}
+
+/* ── Scroll-reveal initial state ─────────────────────────────────── */
+/* Text: hidden to prevent flash before fonts.ready; parent set to opacity:1 by GSAP before per-line animation */
+.project__name,
+.project__desc,
+.project__section-label,
+.project__section-body {
+  opacity: 0;
+}
+
+/* Blocks: whole-element hidden state */
+.project__meta-row,
+.project__table,
+.project__stats,
+.project__cta-block {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project__name,
+  .project__desc,
+  .project__section-label,
+  .project__section-body,
+  .project__meta-row,
+  .project__table,
+  .project__stats,
+  .project__cta-block {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
 /* ── Responsive ─────────────────────────────────────────────────── */

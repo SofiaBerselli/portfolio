@@ -1,4 +1,4 @@
-import { gsap, ScrollTrigger }        from '../lib/gsap-setup.js'
+import { gsap, ScrollTrigger, SplitText } from '../lib/gsap-setup.js'
 import { initPreloader }               from '../components/preloader.js'
 import { initTransitionIn } from '../lib/page-transition.js'
 import { initDotCanvas }               from '../lib/dot-canvas.js'
@@ -435,6 +435,17 @@ document.addEventListener('keydown', e => {
   }
 })
 
+// ── Arrow keys navigate the company track ─────────────────────────
+document.addEventListener('keydown', e => {
+  if (expVisible || bioVisible || funVisible || aboutVisible) return
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+  e.preventDefault()
+  const next = e.key === 'ArrowDown'
+    ? Math.min(active + 1, LAST_IDX)
+    : Math.max(active - 1, 0)
+  if (next !== active) window.scrollTo({ top: next * SCROLL_PER_COMPANY, behavior: 'smooth' })
+})
+
 // Enter / Space activate the CTA for keyboard users (div-as-button pattern)
 cta?.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -585,30 +596,50 @@ function initGalleryReveal() {
 // ── Experience scroll reveals ──────────────────────────────────────
 function initExperienceReveal() {
   ScrollTrigger.refresh()
+
+  const FROM     = { opacity: 0, y: 16, filter: 'blur(8px)' }
+  const TO_LINES = { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, ease: 'power3.out', stagger: 0.05 }
+  const TO_ROWS  = { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', stagger: 0.07 }
+
   document.querySelectorAll('.experience__block').forEach((block, i) => {
-    gsap.to(block, {
-      opacity: 1,
-      y: 0,
-      duration: 0.7,
-      ease: 'power3.out',
-      delay: i === 0 ? 0.1 : 0,
-      scrollTrigger: { trigger: block, start: 'top 82%', toggleActions: 'play none none reverse' },
-    })
+    const textEls  = [...block.querySelectorAll(
+      '.experience__label, .experience__summary, .experience__text p, ' +
+      '.experience__win-title, .experience__win-sub, ' +
+      '.about__label, .about__text p, .bio__label'
+    )]
+    const listItems = [...block.querySelectorAll('.experience__item')]
+
+    if (!textEls.length && !listItems.length) return
+
+    gsap.set(block, { opacity: 1 }) // parent visible; children animate from hidden
+    const ST = { trigger: block, start: 'top 82%', toggleActions: 'play none none reverse' }
+
+    if (textEls.length) {
+      const allLines = textEls.flatMap(el => new SplitText(el, { type: 'lines' }).lines)
+      gsap.fromTo(allLines, FROM, { ...TO_LINES, delay: i === 0 ? 0.1 : 0, scrollTrigger: ST })
+    }
+
+    if (listItems.length) {
+      gsap.set(listItems, { opacity: 0, y: 12 })
+      gsap.to(listItems, { ...TO_ROWS, scrollTrigger: ST })
+    }
   })
 
-  // Bio section scroll reveal
+  // Bio section — split paragraphs line-by-line
   const bioContent = document.querySelector('.bio__content')
   if (bioContent) {
-    gsap.to(bioContent, {
-      opacity: 1,
-      y: 0,
-      duration: 0.7,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: bioContent, start: 'top 82%', toggleActions: 'play none none reverse' },
-    })
+    gsap.set(bioContent, { opacity: 1 })
+    const lines = [...bioContent.querySelectorAll('p')]
+      .flatMap(p => new SplitText(p, { type: 'lines' }).lines)
+    if (lines.length) {
+      gsap.fromTo(lines, FROM, {
+        ...TO_LINES,
+        scrollTrigger: { trigger: bioContent, start: 'top 82%', toggleActions: 'play none none reverse' },
+      })
+    }
   }
 
-  // Signature handwriting reveal
+  // Signature handwriting reveal (clip-path, not blur — unchanged)
   const aboutSection = document.getElementById('about')
   const aboutBlock   = aboutSection?.querySelector('.about__block')
   const sig = document.querySelector('.about__signature')
@@ -619,7 +650,7 @@ function initExperienceReveal() {
       ease: 'power2.inOut',
       scrollTrigger: {
         trigger: aboutBlock,
-        start: 'top center',        // identical to the dots trigger
+        start: 'top center',
         toggleActions: 'play none none reverse',
       },
     })
@@ -634,15 +665,19 @@ window.addEventListener('resize', () => {
 })
 
 // ── Reusable photo cluster: hover/click/bounce/hint ───────────────
-function initPhotoCluster(photosEl, panelEl, hoverEl = photosEl) {
+function initPhotoCluster(photosEl, panelEl, hoverEl = photosEl, secondaryPanelEl = null) {
   if (!photosEl || !panelEl) return null
   let locked = false
 
-  const show = () => { panelEl.classList.add('is-visible'); panelEl.setAttribute('aria-hidden', 'false') }
+  const show = () => {
+    panelEl.classList.add('is-visible'); panelEl.setAttribute('aria-hidden', 'false')
+    secondaryPanelEl?.classList.add('is-visible'); secondaryPanelEl?.setAttribute('aria-hidden', 'false')
+  }
   const hide = () => {
     panelEl.classList.remove('is-visible')
     panelEl.setAttribute('aria-hidden', 'true')
     panelEl.querySelectorAll('.approach__photo-wrap').forEach(w => { w.style.zIndex = '' })
+    secondaryPanelEl?.classList.remove('is-visible'); secondaryPanelEl?.setAttribute('aria-hidden', 'true')
   }
 
   hoverEl.addEventListener('mouseenter', show)
@@ -685,7 +720,7 @@ function initPhotoCluster(photosEl, panelEl, hoverEl = photosEl) {
   return {
     isLocked: () => locked,
     close:    () => { locked = false; hide() },
-    contains: el => hoverEl.contains(el) || panelEl.contains(el),
+    contains: el => hoverEl.contains(el) || panelEl.contains(el) || !!secondaryPanelEl?.contains(el),
   }
 }
 
@@ -728,10 +763,12 @@ function initHome() {
     stagger: 0.1,
   })
 
-  // Init experience + gallery reveals (ScrollTrigger can watch from the start)
-  initExperienceReveal()
-  initGalleryReveal()
-  initGalleryTilt()
+  // Init experience + gallery reveals — fonts.ready ensures SplitText line-breaks match rendered output
+  document.fonts.ready.then(() => {
+    initExperienceReveal()
+    initGalleryReveal()
+    initGalleryTilt()
+  })
 
   // Start observing sections only now — wrapper height is set, so no
   // false-positive intersections that would flash the back bar.
@@ -742,7 +779,7 @@ function initHome() {
 
   // ── Photo clusters (Approach + Behind the pixels) ────────────────
   const clusters = [
-    initPhotoCluster(document.getElementById('approach-photos'), document.getElementById('approach-panel'), document.querySelector('#experience .approach__header')),
+    initPhotoCluster(document.getElementById('approach-photos'), document.getElementById('approach-panel'), document.querySelector('#experience .approach__header'), document.getElementById('approach-panel-left')),
     initPhotoCluster(document.getElementById('bio-photos'),      document.getElementById('bio-panel'),      document.querySelector('#bio .approach__header')),
   ].filter(Boolean)
 
