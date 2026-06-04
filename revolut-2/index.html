@@ -1,0 +1,1970 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>Sofia Berselli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&display=swap" />
+  <style>
+    @font-face {
+      font-family: 'SF Pro';
+      src: local('SF Pro'), local('SF Pro Text'), local('SF Pro Display');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #F8F7F4;
+      --text:   #26251e;
+      --muted:  #787771;
+      --border: #D9D7CF;
+      --orange: #F54E00;
+      --serif:  'Source Serif 4', Georgia, serif;
+      --sans:   'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav hint ─────────────────────────────────────── */
+    @keyframes hint-in {
+      from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes hint-out {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to   { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    }
+    #nav-hint {
+      position: fixed;
+      top: 20px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap; opacity: 0;
+      pointer-events: none; z-index: 50;
+    }
+    #nav-hint.in  { animation: hint-in  0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    #nav-hint.out { animation: hint-out 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .nav-hint__key {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--bg); border: 1px solid var(--border);
+      box-shadow: 0 1.5px 0 var(--border);
+      font-size: 11px; font-weight: 500; color: var(--text); line-height: 1;
+    }
+    .nav-hint__label {
+      font-size: 11.5px; font-weight: 400;
+      color: var(--muted); letter-spacing: -0.01em;
+    }
+
+    /* ── Preloader ────────────────────────────────────── */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .preloader__stage {
+      position: relative;
+      min-height: 4.5rem;
+      display: flex; align-items: center;
+    }
+    .preloader__output {
+      display: flex; flex-direction: column; align-items: flex-start;
+    }
+    .preloader__line {
+      font-family: var(--serif);
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 500; font-style: italic; line-height: 1.3;
+      color: var(--text); letter-spacing: -0.01em;
+      white-space: pre; min-height: 1lh;
+    }
+    .preloader__line.is-active::after {
+      content: '';
+      display: inline-block; width: 1.5px; height: 1em;
+      background: var(--orange); margin-left: 0.08em;
+      vertical-align: baseline;
+      animation: pl-blink 0.75s step-end infinite;
+    }
+    @keyframes pl-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .preloader__hl-container {
+      position: fixed; inset: 0; pointer-events: none;
+    }
+    .preloader__hl {
+      position: absolute;
+      background: rgba(245, 78, 0, 0.15);
+      border-radius: 2px; opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .preloader__hl-container.is-visible .preloader__hl { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .preloader__line.is-active::after { animation: none; }
+    }
+
+    /* ── Progress bar ─────────────────────────────────── */
+    #pbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--orange);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+    }
+    #pbar.visible { opacity: 1; }
+
+    /* ── Deck ─────────────────────────────────────────── */
+    .deck { position: fixed; inset: 0; }
+
+    /* ── Slide ────────────────────────────────────────── */
+    .slide {
+      position: absolute; inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      filter: blur(6px);
+      pointer-events: none;
+      transition: opacity 0.45s ease, filter 0.45s ease;
+    }
+    .slide.active {
+      opacity: 1;
+      filter: none;   /* not blur(0): avoids GPU compositing that blurs subpixels */
+      pointer-events: auto;
+    }
+
+    /* ── Breadcrumb ───────────────────────────────────── */
+    .crumb {
+      position: absolute; top: 24px; left: 28px;
+      font-family: var(--sans);
+      font-size: 13px; font-weight: 400;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+    .crumb b { font-weight: 500; color: var(--text); }
+
+    /* ── Content column ───────────────────────────────── */
+    .col { width: 400px; max-width: 88vw; position: relative; }
+
+    /* ── Dot nav: hidden, replaced by top progress bar ── */
+    .dots { display: none; }
+
+    /* ── Link: matches base.css .link ─────────────────── */
+    .link {
+      color: var(--text);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .link:hover { color: var(--orange); }
+
+    /* ════════════════════════════════════════════════════
+       TEXT FADE-IN: title fades up first, body 120ms later
+       hero-stage deliberately excluded (typewriter drives slide 1)
+    ════════════════════════════════════════════════════ */
+    .slide .slide-label,
+    .slide .proj-name,
+    .slide .sec-heading,
+    .slide .s2-name,
+    .slide .why-heading,
+    .slide .ty-heading,
+    .slide .ty-btns,
+    .slide .slide-sub,
+    .slide .proj-body,
+    .slide .exp-list,
+    .slide .wins-list,
+    .slide .impact-stats,
+    .slide .s2-body,
+    .slide .tbl-wrap,
+    .slide .proj-meta,
+    .slide .mockup-img,
+    .slide .problem-stat,
+    .slide .problem-list,
+    .slide .takeaway-list,
+    .slide .ux-flow,
+    .slide .ux-alts,
+    .slide .ux-edge,
+    .slide .tweet-card-wrap,
+    .slide .sg-preview__btn {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    /* Titles in first */
+    .slide.active .slide-label,
+    .slide.active .proj-name,
+    .slide.active .sec-heading,
+    .slide.active .s2-name,
+    .slide.active .why-heading,
+    .slide.active .ty-heading {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.1s;
+    }
+    /* Body / subtitle / lists follow 120ms later */
+    .slide.active .slide-sub,
+    .slide.active .proj-body,
+    .slide.active .exp-list,
+    .slide.active .wins-list,
+    .slide.active .impact-stats,
+    .slide.active .s2-body,
+    .slide.active .tbl-wrap,
+    .slide.active .proj-meta,
+    .slide.active .mockup-img,
+    .slide.active .problem-stat,
+    .slide.active .problem-list,
+    .slide.active .takeaway-list,
+    .slide.active .ux-flow,
+    .slide.active .ux-alts,
+    .slide.active .ux-edge,
+    .slide.active .tweet-card-wrap,
+    .slide.active .sg-preview__btn,
+    .slide.active .ty-btns {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.22s;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 1: Hero (typewriter, matches portfolio preloader)
+    ════════════════════════════════════════════════════ */
+    .hero-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .hero-line {
+      font-family: var(--serif);
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 500;
+      font-style: italic;
+      line-height: 1.3;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      white-space: pre;
+      min-height: 1lh;
+    }
+    /* Blinking cursor on the active typing line */
+    .hero-line.is-active::after {
+      content: '';
+      display: inline-block;
+      width: 1.5px;
+      height: 1em;
+      background: var(--orange);
+      margin-left: 0.08em;
+      vertical-align: baseline;
+      animation: cursor-blink 0.75s step-end infinite;
+    }
+    @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 2: Sofia / About
+       Horizontal row per cluster (matches node 118:43282):
+       small | large | small: with individual tilts & scatter
+    ════════════════════════════════════════════════════ */
+    .s2-layout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 64px;
+    }
+    .s2-photos {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Wrapper: drives the appear animation independently of the image's rotation */
+    .s2-photo-wrap {
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      cursor: grab;
+      user-select: none;
+    }
+    .s2-photo-wrap.is-dragging { cursor: grabbing; transition: none; z-index: 10; }
+    /* Stagger left-to-right across all 6 photos */
+    .s2-photos--left  .s2-photo-wrap:nth-child(1) { transition-delay: 0.08s; }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2) { transition-delay: 0.15s; }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3) { transition-delay: 0.22s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(1) { transition-delay: 0.29s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(2) { transition-delay: 0.36s; }
+    .s2-photos--right .s2-photo-wrap:nth-child(3) { transition-delay: 0.43s; }
+
+    .slide.active .s2-photo-wrap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .s2-photos img {
+      display: block;
+      border-radius: 5px;
+      box-shadow:
+        0 0 0 1.5px rgba(255,255,255,0.85),
+        0 8px 24px rgba(0, 0, 0, 0.10),
+        0 2px 6px  rgba(0, 0, 0, 0.06);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: inherit;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+
+    /* Left: dark(83px) → Q&A(96px) → wine(83px) */
+    .s2-photos--left  .s2-photo-wrap:nth-child(1) img { width: 83px;  transform: rotate(2deg)  translateY(4px);  }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2) img { width: 96px;  transform: rotate(-3deg) translateY(-5px); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3) img { width: 83px;  transform: rotate(3deg)  translateY(4px);  }
+
+    /* Right: gym(96px) → chess(83px) → camera(83px) */
+    .s2-photos--right .s2-photo-wrap:nth-child(1) img { width: 96px;  transform: rotate(6deg)  translateY(-5px); }
+    .s2-photos--right .s2-photo-wrap:nth-child(2) img { width: 83px;  transform: rotate(-2deg) translateY(4px);  }
+    .s2-photos--right .s2-photo-wrap:nth-child(3) img { width: 83px;  transform: rotate(-5deg) translateY(2px);  }
+
+    .s2-photos--left  .s2-photo-wrap:nth-child(1):hover img { transform: rotate(2deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(2):hover img { transform: rotate(-3deg) translateY(-4px) scale(1.08); }
+    .s2-photos--left  .s2-photo-wrap:nth-child(3):hover img { transform: rotate(3deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(1):hover img { transform: rotate(6deg)  translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(2):hover img { transform: rotate(-2deg) translateY(-4px) scale(1.08); }
+    .s2-photos--right .s2-photo-wrap:nth-child(3):hover img { transform: rotate(-5deg) translateY(-4px) scale(1.08); }
+
+    .s2-name {
+      font-family: var(--serif);
+      font-size: 1.0625rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .s2-body {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.7;
+      letter-spacing: -0.01em;
+    }
+    .s2-body em { font-style: italic; }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 2: Tweet card (replaces em quote)
+    ════════════════════════════════════════════════════ */
+    .tweet-card-wrap {
+      position: absolute;
+      top: calc(100% + 120px);
+      left: 0;
+      width: 100%;
+      cursor: grab;
+      user-select: none;
+    }
+    .tweet-card-wrap.is-dragging { cursor: grabbing; transition: none; z-index: 10; }
+    .tweet-card {
+      width: 100%;
+      background: #F7F7F4;
+      border: 1px solid #EFF3F4;
+      border-radius: 16px;
+      overflow: hidden;
+      transform: rotate(2deg) scale(0.88);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow:
+        0 0 0 1.5px rgba(255, 255, 255, 0.85),
+        0 8px 24px rgba(0, 0, 0, 0.10),
+        0 2px 6px  rgba(0, 0, 0, 0.06);
+    }
+    .tweet-card-wrap:not(.is-dragging):hover .tweet-card {
+      transform: rotate(3deg) scale(0.91) translateY(-6px);
+    }
+    .tw-repost {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px 4px;
+    }
+    .tw-repost-icon {
+      width: 48px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: #536471;
+    }
+    .tw-repost-label {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      color: #536471;
+      line-height: 16px;
+    }
+    .tw-row {
+      display: flex;
+      align-items: flex-start;
+      padding: 0 16px 12px;
+    }
+    .tw-avatar-col {
+      width: 48px;
+      flex-shrink: 0;
+    }
+    .tw-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: block;
+      object-fit: cover;
+      margin-top: 2px;
+    }
+    .tw-content { flex: 1; min-width: 0; }
+    .tw-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+    .tw-user {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .tw-name {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: #0F1419;
+      line-height: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .tw-badge { flex-shrink: 0; }
+    .tw-handle {
+      font-family: var(--sans);
+      font-size: 14px;
+      color: #536471;
+      line-height: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tw-more {
+      flex-shrink: 0;
+      color: #536471;
+      font-size: 16px;
+      letter-spacing: 1px;
+      padding-left: 8px;
+    }
+    .tw-text {
+      font-family: var(--sans);
+      font-size: 14.5px;
+      color: #0F1419;
+      line-height: 20px;
+      margin: 0;
+    }
+    .tw-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-top: 10px;
+    }
+    .tw-action {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      color: #536471;
+      line-height: 16px;
+    }
+    .tw-repost-count { color: #00BA7C; }
+    .tw-like         { color: #F91880; }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 3: What I've built (Work stuff style)
+    ════════════════════════════════════════════════════ */
+    .slide-label {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 0.875rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .slide-sub {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .exp-list { list-style: none; margin-top: 4px; display: flex; flex-direction: column; }
+    .exp-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      line-height: 1.9;
+    }
+    .exp-company {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+    .exp-date {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDES 4+: Project / Mollie pattern
+    ════════════════════════════════════════════════════ */
+    .proj-name {
+      font-family: var(--serif);
+      font-size: 1.625rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+    .proj-body {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+      letter-spacing: -0.01em;
+    }
+    .proj-meta { display: flex; gap: 48px; margin-top: 32px; }
+    .proj-meta-label {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .proj-meta-value {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+    .sec-heading {
+      font-family: var(--serif);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 6: Table
+    ════════════════════════════════════════════════════ */
+    .tbl-wrap { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    .tbl th {
+      font-family: var(--sans);
+      font-size: 0.6875rem;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 8px 12px 7px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tbl td {
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      padding: 10px 12px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .tbl td.em { font-weight: 400; color: var(--text); }
+    .tbl tr:last-child td { border-bottom: none; }
+
+    /* ════════════════════════════════════════════════════
+       SLIDES 7, 8: Device mockups (centered, rounded, shadow)
+    ════════════════════════════════════════════════════ */
+    .mockup-img {
+      max-height: 72vh;
+      max-width: 85vw;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+      box-shadow:
+        0 16px 40px rgba(30, 28, 24, 0.10),
+        0 4px 8px  rgba(30, 28, 24, 0.06);
+      /* Maximum rendering quality on all screens */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+    .mockup-img.phone {
+      max-height: 66vh;
+      border-radius: 28px;
+    }
+    /* Video: no image-rendering override (browsers handle video separately);
+       ensure it never scales above native resolution */
+    video.mockup-img {
+      image-rendering: auto;
+    }
+    /* Revolut phone: cap at half its native px height for 2× retina sharpness */
+    .s13-phone img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+
+    /* ── Phone strip: 5 staggered phones ────────────────── */
+    .phone-strip {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+    }
+    .phone-strip .mockup-img { max-height: 62vh; }
+    .phone-strip .mockup-img:nth-child(1) { --i: 0; }
+    .phone-strip .mockup-img:nth-child(2) { --i: 1; }
+    .phone-strip .mockup-img:nth-child(3) { --i: 2; }
+    .phone-strip .mockup-img:nth-child(4) { --i: 3; }
+    .phone-strip .mockup-img:nth-child(5) { --i: 4; }
+    .slide.active .phone-strip .mockup-img {
+      transition-delay: calc(0.06s + var(--i, 0) * 0.09s);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 9: Play / Wins (Some fun style)
+    ════════════════════════════════════════════════════ */
+    .wins-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+    .wins-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .wins-info { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+    .wins-title {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .wins-sub {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    .wins-yr {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      line-height: 1.9;
+      letter-spacing: -0.01em;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 10: Impact stats
+    ════════════════════════════════════════════════════ */
+    .impact-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: nowrap;
+      margin-top: 20px;
+    }
+    .impact-stat { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .impact-stat-value {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .impact-stat-label {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 12: Why Revolut (phone tilt + entry bounce)
+    ════════════════════════════════════════════════════ */
+    .s13 { gap: 0; justify-content: center; }
+    .s13-left { padding-right: 56px; }
+    .why-heading {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text);
+      letter-spacing: -0.025em;
+    }
+    /* Phone starts straight; tilts to -5deg when slide activates.
+       Hover tilts further. No bounce: pure CSS transition. */
+    .s13-phone img {
+      height: clamp(280px, 48vh, 400px);
+      display: block;
+      border-radius: 22px;
+      transform: rotate(0deg);
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .slide.active .s13-phone img {
+      transform: rotate(3deg);
+    }
+    .slide.active .s13-phone img:hover {
+      transform: rotate(5deg) scale(1.03);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 5: The problem (visual: stat + bullets)
+    ════════════════════════════════════════════════════ */
+    .problem-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 16px 0 20px;
+    }
+    .problem-stat-value {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.65;
+      letter-spacing: -0.01em;
+    }
+    .problem-stat-label {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      line-height: 1.65;
+    }
+    .problem-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .problem-list li {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+      padding-left: 16px;
+      position: relative;
+    }
+    .problem-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE: UX Thinking
+    ════════════════════════════════════════════════════ */
+    .ux-col { width: 540px; max-width: 90vw; }
+
+    /* Journey flow strip */
+    .ux-flow {
+      display: flex; align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .ux-flow-step {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 6px; flex: 1; min-width: 0;
+    }
+    .ux-flow-node {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+    }
+    .ux-flow-node.drop {
+      background: var(--orange);
+      box-shadow: 0 0 0 3px rgba(245,78,0,0.12);
+    }
+    .ux-flow-label {
+      font-family: var(--sans); font-size: 0.6875rem;
+      color: var(--muted); text-align: center;
+      line-height: 1.3; letter-spacing: -0.01em;
+    }
+    .ux-flow-label.drop { color: var(--orange); font-weight: 400; }
+    .ux-flow-connector {
+      flex: 1; height: 1px; background: var(--border);
+      margin-top: 3px; align-self: flex-start;
+    }
+    .ux-flow-connector.drop {
+      background: none;
+      border-top: 1.5px dashed rgba(245,78,0,0.45);
+    }
+
+    /* Alternatives list */
+    .ux-alts { display: flex; flex-direction: column; gap: 10px; }
+    .ux-alt { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline; }
+    .ux-alt-tried {
+      font-family: var(--sans); font-size: 0.625rem; font-weight: 400;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted); border: 1px solid var(--border);
+      border-radius: 100px; padding: 2px 8px; white-space: nowrap;
+    }
+    .ux-alt-text {
+      font-family: var(--sans); font-size: 0.8125rem;
+      color: var(--text); line-height: 1.5; letter-spacing: -0.01em;
+    }
+    .ux-alt-text em { color: var(--muted); font-style: normal; }
+
+    /* Edge case footer */
+    .ux-edge {
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--sans); font-size: 0.8125rem;
+      color: var(--muted); line-height: 1.55; letter-spacing: -0.01em;
+    }
+    .ux-edge strong { color: var(--text); font-weight: 400; }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE 13: Takeaways (visual: numbered list)
+    ════════════════════════════════════════════════════ */
+    .takeaway-list {
+      list-style: none;
+      counter-reset: takeaway;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .takeaway-list li {
+      counter-increment: takeaway;
+      display: flex;
+      gap: 14px;
+    }
+    .takeaway-list li::before {
+      content: counter(takeaway);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--orange);
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .takeaway-title {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1.5;
+    }
+    .takeaway-body {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      line-height: 1.55;
+      margin-top: 2px;
+    }
+
+    /* ════════════════════════════════════════════════════
+       SLIDE: Thank you
+    ════════════════════════════════════════════════════ */
+    .ty-layout {
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 36px;
+    }
+    .ty-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 500; font-style: italic;
+      color: var(--text); letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    /* Setup Guide solution slide */
+    .sg-solution {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .sg-preview__btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      width: fit-content;
+      padding: 8px 16px;
+      background: none;
+      border: 1px solid var(--border); border-radius: 8px;
+      cursor: pointer; text-decoration: none;
+      font-family: var(--sans); font-size: 0.8125rem; font-weight: 400;
+      color: var(--muted); letter-spacing: -0.02em;
+      white-space: nowrap;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .sg-preview__btn:hover { border-color: var(--text); color: var(--text); }
+
+    .ty-btns {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    /* Follow button: mirrors portfolio preloader CTA */
+    .ty-follow {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--text); border-radius: 8px;
+      cursor: pointer; text-decoration: none;
+      white-space: nowrap; border: none;
+      transition: background 0.2s ease;
+    }
+    .ty-follow:hover { background: color-mix(in srgb, var(--text) 88%, white); }
+    .ty-follow-icon {
+      width: 20px; height: 20px; flex-shrink: 0; overflow: visible;
+      color: #f2f1ee;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bunny__all { transform-box: fill-box; transform-origin: 50% 100%; }
+    .bunny__ear-left, .bunny__ear-right { transform-box: fill-box; transform-origin: 50% 100%; }
+    .ty-follow-icon.is-hovering .bunny__ear-left  { animation: tyEarL 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .ty-follow-icon.is-hovering .bunny__ear-right { animation: tyEarR 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s forwards; }
+    .ty-follow-icon.is-jumping  .bunny__all        { animation: tyJump 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .ty-follow-icon.is-jumping  .bunny__ear-left,
+    .ty-follow-icon.is-jumping  .bunny__ear-right  { animation: none; }
+    @keyframes tyEarL {
+      0%   { transform: rotate(0deg); }   25%  { transform: rotate(-14deg); }
+      55%  { transform: rotate(9deg); }   80%  { transform: rotate(-4deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes tyEarR {
+      0%   { transform: rotate(0deg); }   25%  { transform: rotate(14deg); }
+      55%  { transform: rotate(-9deg); }  80%  { transform: rotate(4deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes tyJump {
+      0%   { transform: translateY(0)    scaleY(1); }
+      25%  { transform: translateY(-4px) scaleY(1.08); }
+      50%  { transform: translateY(-6px) scaleY(1); }
+      75%  { transform: translateY(0)    scaleY(0.88); }
+      88%  { transform: translateY(-1px) scaleY(1.04); }
+      100% { transform: translateY(0)    scaleY(1); }
+    }
+
+    /* Rolling label inside Follow button */
+    .ty-follow-roller { overflow: hidden; display: block; height: 1.4em; }
+    .ty-follow-track {
+      display: flex; flex-direction: column;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ty-follow:hover .ty-follow-track { transform: translateY(-50%); }
+    .ty-follow-word {
+      display: block; height: 1.4em; line-height: 1.4;
+      white-space: nowrap;
+      font-family: var(--sans); font-size: 0.875rem; font-weight: 400;
+      color: #f2f1ee; letter-spacing: -0.02em;
+    }
+
+    /* Resume button: ghost/outline */
+    .ty-resume {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 18px;
+      background: none;
+      border: 1px solid var(--border); border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--sans); font-size: 0.875rem; font-weight: 400;
+      color: var(--muted); letter-spacing: -0.02em;
+      white-space: nowrap;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .ty-resume:hover { border-color: var(--text); color: var(--text); }
+
+    /* ── Reduced motion ───────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-line.is-active::after { animation: none; }
+      .slide, #pbar, .dot, .s2-photos img, .s13-phone img, .s2-photo-wrap,
+      .slide .slide-label, .slide .proj-name, .slide .sec-heading,
+      .slide .s2-name, .slide .why-heading, .slide .slide-sub,
+      .slide .proj-body, .slide .exp-list, .slide .wins-list,
+      .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
+      .slide .proj-meta, .slide .mockup-img,
+      .slide .tweet-card-wrap,
+      .tweet-card { transition: none; }
+      .slide .slide-label, .slide .proj-name, .slide .sec-heading,
+      .slide .s2-name, .slide .why-heading, .slide .slide-sub,
+      .slide .proj-body, .slide .exp-list, .slide .wins-list,
+      .slide .impact-stats, .slide .s2-body, .slide .tbl-wrap,
+      .slide .proj-meta, .slide .mockup-img,
+      .s2-photo-wrap,
+      .slide .tweet-card-wrap,
+      .tweet-card { opacity: 1; transform: none; }
+      .s13-phone img { transition: none; }
+    }
+
+    /* All SF Pro text → Regular weight */
+    body { font-weight: 400; }
+    strong, b, .crumb b { font-weight: 400; }
+
+    /* ── Exploration grid ───────────────────────────── */
+    .expl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: min(720px, 88vw);
+    }
+    .expl-thumb {
+      position: relative;
+      cursor: zoom-in;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s ease;
+      background: var(--bg);
+    }
+    .expl-thumb:hover { box-shadow: 0 4px 16px rgba(30,28,24,0.10); }
+    .expl-thumb img {
+      width: 100%; display: block;
+      object-fit: cover;
+      aspect-ratio: 16 / 11;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+    .expl-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 10px 8px;
+      font-family: var(--sans); font-size: 11px;
+      color: var(--muted); letter-spacing: -0.01em;
+      background: linear-gradient(transparent, rgba(248,247,244,0.92));
+    }
+
+    /* ── Exploration lightbox ───────────────────────── */
+    .expl-lightbox {
+      position: fixed; inset: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      background: rgba(248,247,244,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .expl-lightbox.visible { opacity: 1; pointer-events: auto; }
+    .expl-lightbox img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow:
+        0 24px 64px rgba(30,28,24,0.18),
+        0 4px 12px  rgba(30,28,24,0.08);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+    .expl-lb-label {
+      position: absolute; bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--sans); font-size: 12px;
+      color: var(--muted); letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    /* ── Project switcher nav ───────────────────────── */
+    #proj-hover-zone {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 56px; z-index: 200;
+    }
+    #proj-nav {
+      position: absolute; top: 0; left: 0; right: 0; height: 48px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #proj-nav.visible { opacity: 1; pointer-events: auto; }
+    .proj-pill {
+      padding: 5px 14px; border-radius: 100px;
+      font-family: var(--sans); font-size: 12px; font-weight: 400;
+      color: var(--muted); background: var(--bg);
+      border: 1px solid var(--border); cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      letter-spacing: -0.01em;
+    }
+    .proj-pill.active { color: var(--orange); border-color: var(--orange); }
+    .proj-pill:hover:not(.active) { color: var(--text); border-color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <div id="pbar"></div>
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <!-- ── Nav hint ──────────────────────────────────────── -->
+  <div id="nav-hint" aria-hidden="true">
+    <span class="nav-hint__key">←</span>
+    <span class="nav-hint__label">arrow keys</span>
+    <span class="nav-hint__key">→</span>
+  </div>
+
+  <!-- ── Project switcher ────────────────────────────── -->
+  <div id="proj-hover-zone">
+    <nav id="proj-nav" aria-label="Project navigation">
+      <button class="proj-pill active" data-project="setup" type="button">1/2 Setup Guide</button>
+      <button class="proj-pill" data-project="mba" type="button">2/2 MBA Onboarding</button>
+    </nav>
+  </div>
+
+  <div class="deck" id="deck">
+
+    <!-- ── Slide 0: About Sofia ──────────────────────────────────────── -->
+    <div class="slide active" data-idx="0">
+      <div class="s2-layout">
+        <div class="s2-photos s2-photos--left">
+          <div class="s2-photo-wrap"><img src="../revolut/photo-l1.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="../revolut/photo-l2.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="../revolut/photo-l3.png" alt="" /></div>
+        </div>
+        <div class="col">
+          <p class="s2-name">Sofia</p>
+          <p class="s2-body">
+            I don't like hierarchy,<br>
+            default to "how could I automate this",<br>
+            I own product end to end.<br>
+            I stay involved through launch and iteration, not just handoff.<br>
+            I guide structure, behaviour, and quality;<br>
+            prototyping using AI tools to build and iterate on flows and interfaces.
+          </p>
+          <!-- Tweet card: replaces em quote -->
+          <div class="tweet-card-wrap">
+          <div class="tweet-card">
+            <div class="tw-repost">
+              <span class="tw-repost-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.37H4V8.38L2.353 9.91.647 8.09l4.103-4.3zM15.066 5.02L10.56 9.32l1.706 1.82 1.634-1.51V17h2V9.63l1.74 1.52 1.706-1.82-4.48-4.3z"/></svg>
+              </span>
+              <span class="tw-repost-label">You reposted</span>
+            </div>
+            <div class="tw-row">
+              <div class="tw-avatar-col">
+                <img class="tw-avatar" src="../revolut/tweet-avatar.png" alt="" />
+              </div>
+              <div class="tw-content">
+                <div class="tw-header">
+                  <div class="tw-user">
+                    <span class="tw-name">Jay Alto</span>
+                    <svg class="tw-badge" width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1D9BF0" d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-2-2.19-3.34-2.19s-2.67.88-3.34 2.19c-1.39-.46-2.9-.2-3.91.81S3.49 6.6 3.95 8c-1.31.66-2.19 2-2.19 3.34s.88 2.67 2.19 3.34c-.46 1.39-.2 2.9.81 3.91s2.52 1.27 3.91.81c.66 1.31 2 2.19 3.34 2.19s2.67-.88 3.34-2.19c1.39.46 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.66 2.19-2 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"/></svg>
+                    <span class="tw-handle">@theJayAlto · Dec 21, 2025</span>
+                  </div>
+                  <span class="tw-more">···</span>
+                </div>
+                <p class="tw-text">my competitive advantage is i'm having fun</p>
+                <div class="tw-actions">
+                  <span class="tw-action">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M1.751 10c0-4.42 3.584-8 8-8h4.498c4.43 0 8.002 3.58 8.002 8s-3.572 8-8.002 8H9.748c-1.93 0-3.71-.69-5.1-1.84H3.5c-.41 0-.75-.34-.75-.75V14.1c-.476-1.23-.749-2.6-.749-4.1z"/></svg>
+                    123
+                  </span>
+                  <span class="tw-action tw-repost-count">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.38H4V8.38L2.353 9.91.647 8.09l4.103-4.3zM15.066 5.02L10.56 9.32l1.706 1.82 1.634-1.51V17h2V9.63l1.74 1.52 1.706-1.82-4.48-4.3z"/></svg>
+                    2.4K
+                  </span>
+                  <span class="tw-action tw-like">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.807 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91z"/></svg>
+                    9.8K
+                  </span>
+                  <span class="tw-action">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21l.004-10h2L6 21H4zm9.248 0v-7h2v7h-2z"/></svg>
+                    472K
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div><!-- /.tweet-card-wrap -->
+        </div>
+        <div class="s2-photos s2-photos--right">
+          <div class="s2-photo-wrap"><img src="../revolut/photo-r1.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="../revolut/photo-r2.png" alt="" /></div>
+          <div class="s2-photo-wrap"><img src="../revolut/photo-r3.png" alt="" /></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 1: Work experience ──────────────────────────────────── -->
+    <div class="slide" data-idx="1">
+      <div class="col">
+        <p class="slide-label">What I've built</p>
+        <p class="slide-sub">2x founding designer, 1x unicorn startup, top 3 management consulting, multiple agencies.</p>
+        <ul class="exp-list">
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.mollie.com/" target="_blank" rel="noopener">Mollie</a>
+            <span class="exp-date">2025 – Now</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://leica-camera.com/en-int/photography/leica-apps/leica-lux" target="_blank" rel="noopener">Leica Camera</a>
+            <span class="exp-date">2024 – 2025</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.bain.com/vector-digital/innovation-design/" target="_blank" rel="noopener">Bain &amp; Company</a>
+            <span class="exp-date">2022 – 2024</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.blinkoo.com/" target="_blank" rel="noopener">Blinkoo</a>
+            <span class="exp-date">2020 – 2024</span>
+          </li>
+          <li class="exp-item">
+            <a class="exp-company link" href="https://www.titaniumideas.it/" target="_blank" rel="noopener">Titanium Ideas</a>
+            <span class="exp-date">2019 – 2020</span>
+          </li>
+          <li class="exp-item">
+            <span class="exp-company">3x Design agencies (intern)</span>
+            <span class="exp-date">2018 – 2020</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Slide 2: Project overview ──────────────────────────────────── -->
+    <div class="slide" data-idx="2">
+      <div class="col">
+        <h2 class="proj-name">1/2 Setup Guide</h2>
+        <p class="proj-body">A post-KYC activation surface that tells merchants exactly what to do the moment they're approved.</p>
+        <div class="proj-meta">
+          <div>
+            <p class="proj-meta-label">Role</p>
+            <p class="proj-meta-value">Product Designer II</p>
+          </div>
+          <div>
+            <p class="proj-meta-label">Timeline</p>
+            <p class="proj-meta-value">2025–2026</p>
+          </div>
+          <div>
+            <p class="proj-meta-label">Team</p>
+            <p class="proj-meta-value">1 designer · 2 engineers · 1 PM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 3: The problem ──────────────────────────────────────── -->
+    <div class="slide" data-idx="3">
+      <span class="crumb">1/2 Setup Guide <b>/ The problem</b></span>
+      <div class="col">
+        <h3 class="sec-heading">The problem</h3>
+        <div class="problem-stat">
+          <span class="problem-stat-value">35%</span>
+          <span class="problem-stat-label">of merchants express intent to use multiple Mollie products: only 8% actually do</span>
+        </div>
+        <ul class="problem-list">
+          <li>6% of self-serve merchants become long-term customers, yet generate 71% of total self-serve revenue</li>
+          <li>Merchants who activate 2+ products in month one are measurably stickier: the current experience captures neither signal</li>
+          <li>Nothing exists between KYC approval and first payment</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Slide 4: Where the journey breaks ─────────────────────────── -->
+    <div class="slide" data-idx="4">
+      <span class="crumb">1/2 Setup Guide <b>/ Context</b></span>
+      <div class="ux-col">
+        <h3 class="sec-heading">Where the journey breaks</h3>
+        <div class="ux-flow">
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Sign up</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">KYC<br>submit</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Under<br>review</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Approved</span>
+          </div>
+          <div class="ux-flow-connector drop"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node drop"></div>
+            <span class="ux-flow-label drop">No next<br>step</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">First<br>payment</span>
+          </div>
+        </div>
+        <p class="proj-body">Three scenarios land here: a Shopify NL merchant (700/month) who selected only online payments and rarely returns to the dashboard; a merchant who expressed multi-product intent at signup but never completed the second product; and a merchant lost after KYC because the existing get-started page is crowded and non-directive.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 5: What was tried ───────────────────────────────────── -->
+    <div class="slide" data-idx="5">
+      <span class="crumb">1/2 Setup Guide <b>/ Process</b></span>
+      <div class="ux-col">
+        <h3 class="sec-heading">What we evaluated</h3>
+        <div class="ux-alts">
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Patch the existing get-started page: <em>the problem was the IA, not the content. Adding copy would have made it more crowded, not clearer</em></p>
+          </div>
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Reuse the Payments domain PM activation page (1 year old): <em>static list of 5 PMs, no personalisation, layout constraints prevented the recommender pattern</em></p>
+          </div>
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Full 4-step journey upfront (PM activation + integration verification + payment testing + MBA upsell): <em>ideal experience: deliberately deferred steps 2 and 3 to validate the core hypothesis first</em></p>
+          </div>
+        </div>
+        <p class="ux-edge"><strong>The scope decision:</strong> Build only steps 1 (payment methods) and 4 (MBA upsell) for the first experiment. Validate whether we can cross-sell MBA to single-product merchants before committing to the complete journey.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 6: The starting point ─────────────────────────────────── -->
+    <div class="slide" data-idx="6">
+      <span class="crumb">Setup Guide <b>/ The starting point</b></span>
+      <img class="mockup-img" src="starting-point.png" alt="Setup Guide: the starting point" />
+    </div>
+
+    <!-- ── Slide 7: Explorations (click to expand) ──────────────────── -->
+    <div class="slide" data-idx="7">
+      <span class="crumb">Setup Guide <b>/ Explorations</b></span>
+      <div class="expl-grid">
+        <div class="expl-thumb" data-label="Product Spotlight">
+          <img src="expl-1.png" alt="Product Spotlight" />
+          <span class="expl-label">Product Spotlight</span>
+        </div>
+        <div class="expl-thumb" data-label="Integrated companion">
+          <img src="expl-2.png" alt="Integrated companion" />
+          <span class="expl-label">Integrated companion</span>
+        </div>
+        <div class="expl-thumb" data-label="Integrated in homepage">
+          <img src="expl-3.png" alt="Integrated in homepage" />
+          <span class="expl-label">Integrated in homepage</span>
+        </div>
+        <div class="expl-thumb" data-label="Product-based tab list">
+          <img src="expl-4.png" alt="Product-based tab list" />
+          <span class="expl-label">Product-based tab list</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 7: The solution (polished UI) ───────────────────────── -->
+    <!-- TODO: export from Figma → "final solution flows" frame
+               Save as solution.png (web mockup) in revolut-2/ folder.
+               Figma: https://www.figma.com/design/jeyJKIQ2vCWl8wteHWCP4t/-Onboarding--Get-Started?node-id=658-38604
+               Alternatively use a video: <video class="mockup-img" src="setup-guide.mp4" muted playsinline id="setup-video"></video>
+               Or a phone flow: <div class="phone-strip"><img class="mockup-img phone" src="s1.png" alt="" />...</div> -->
+    <div class="slide" data-idx="7">
+      <span class="crumb">1/2 Setup Guide <b>/ Solution</b></span>
+      <div class="sg-solution">
+        <img class="mockup-img" src="setup-guide-preview.png" alt="Setup Guide: final solution" />
+        <a class="sg-preview__btn" href="https://claudeexp.vercel.app/setup-guide.html" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View prototype
+        </a>
+      </div>
+    </div>
+
+    <!-- ── Slide 8: What cracked it + designer's role ────────────────── -->
+    <div class="slide" data-idx="8">
+      <span class="crumb">1/2 Setup Guide <b>/ Solution</b></span>
+      <div class="col">
+        <h3 class="sec-heading">What cracked it</h3>
+        <p class="proj-body">Treat payment method activation as a recommender, not a settings page. Surface what's relevant to where the merchant sells, pre-select it, one-click activation. Manual override stays: we're the co-pilot, not the driver. For MBA upsell: anchor on a concrete financial improvement. 365-day payouts instead of every Wednesday is specific enough for a merchant to calculate exactly what it means for their cash flow.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 9: What success looks like ─────────────────────────── -->
+    <div class="slide" data-idx="9">
+      <span class="crumb">Setup Guide <b>/ Performance</b></span>
+      <div class="col">
+        <h3 class="sec-heading">What success looks like</h3>
+        <p class="proj-body" style="margin-bottom:20px">Experiment 1 engineering kicked off Week 18. Too early for results, but these are the signals that will tell us if it worked.</p>
+        <ul class="problem-list">
+          <li>MBA activation rate: Shopify NL cohort completing bank account setup in the new flow</li>
+          <li>Multi-product adoption: merchants activating 2 or more products in month one</li>
+          <li>LTMC conversion: merchants reaching 10+ payments in 30 days (they're 2× more likely to stay)</li>
+          <li>Payment method completion rate: on the recommender page vs the previous static list</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+         PROJECT B: MBA BUSINESS ACCOUNT ONBOARDING
+    ════════════════════════════════════════════════ -->
+
+    <!-- ── Slide 9: MBA: Project overview ──────────────────────────── -->
+    <div class="slide" data-idx="9" data-project="mba">
+      <div class="col">
+        <h2 class="proj-name">MBA Onboarding</h2>
+        <p class="proj-body">Self-serve mobile onboarding for business bank account linking: replacing a process that previously required ops intervention for B2B legal structures.</p>
+        <div class="proj-meta">
+          <div>
+            <p class="proj-meta-label">Role</p>
+            <p class="proj-meta-value">Product Designer II</p>
+          </div>
+          <div>
+            <p class="proj-meta-label">Timeline</p>
+            <p class="proj-meta-value">2025</p>
+          </div>
+          <div>
+            <p class="proj-meta-label">Team</p>
+            <p class="proj-meta-value">Cross-functional · Product · Risk · Compliance · Ops</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 10: MBA: The problem ─────────────────────────────── -->
+    <div class="slide" data-idx="10" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ The problem</b></span>
+      <div class="col">
+        <h3 class="sec-heading">The problem</h3>
+        <div class="problem-stat">
+          <span class="problem-stat-value">[?]%</span><!-- approx: replace with real ops-escalation or drop-off rate from Looker -->
+          <span class="problem-stat-label">[key stat: ops escalation rate or self-serve completion before this project]</span>
+        </div>
+        <ul class="problem-list">
+          <li>B2B onboarding requires different identity flows per legal entity: BV, VOF, sole trader each have distinct regulatory requirements</li>
+          <li>Legal representative verification required manual ops intervention; self-serve was not possible</li>
+          <li>No mobile-native path for bank account linking and QR code verification</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Slide 11: MBA: Where the journey breaks ─────────────────── -->
+    <div class="slide" data-idx="11" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ Context</b></span>
+      <div class="ux-col">
+        <h3 class="sec-heading">Where the journey breaks</h3>
+        <div class="ux-flow">
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Select<br>entity type</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Legal rep<br>identification</span>
+          </div>
+          <div class="ux-flow-connector drop"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node drop"></div>
+            <span class="ux-flow-label drop">Document<br>upload stalls</span><!-- approx: confirm actual drop-off point -->
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Bank<br>verification</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Payouts<br>live</span>
+          </div>
+        </div>
+        <p class="proj-body">Each entity type (BV, VOF, sole trader) has genuinely different document and representative requirements. A single path fails all three.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 12: MBA: The solution (polished UI) ──────────────── -->
+    <div class="slide" data-idx="12" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
+      <video class="mockup-img" id="mba-video" src="mba.mp4" muted playsinline></video>
+    </div>
+
+    <!-- ── Slide 13: MBA: Bank selection framings ──────────────────── -->
+    <div class="slide" data-idx="13" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ Process</b></span>
+      <div class="ux-col">
+        <h3 class="sec-heading">Four framings for bank selection</h3>
+        <p class="proj-body" style="margin-bottom:18px">Each approach positions the MBA opportunity differently relative to the moment merchants choose their payout bank.</p>
+        <div class="ux-alts">
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">As one of the banks: <em>MBA listed alongside regular bank options, too subtle, merchants miss it entirely</em></p>
+          </div>
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Value-based selection: <em>lead with the daily payout benefit before bank details. Risked confusing merchants who just wanted to link an existing account</em></p>
+          </div>
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">MBA upsell as a gate: <em>dedicated page before bank linking. Felt interruptive, merchants had a clear intent to set up payouts</em></p>
+          </div>
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Contextual upsell woven in: <em>surface the MBA benefit at the moment of bank choice, without blocking the primary task</em></p>
+          </div>
+        </div>
+        <p class="ux-edge"><strong>What worked:</strong> Contextual upsell. Merchants are choosing their payout bank at exactly the moment when a better payout option is most relevant.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 14: MBA: Explorations ────────────────────────────── -->
+    <div class="slide" data-idx="14" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ Explorations</b></span>
+      <div class="expl-grid">
+        <div class="expl-thumb" data-label="As one of the banks">
+          <img src="mba-expl-1.png" alt="As one of the banks" />
+          <span class="expl-label">As one of the banks</span>
+        </div>
+        <div class="expl-thumb" data-label="Value-based selection">
+          <img src="mba-expl-2.png" alt="Value-based selection" />
+          <span class="expl-label">Value-based selection</span>
+        </div>
+        <div class="expl-thumb" data-label="MBA Upsell">
+          <img src="mba-expl-3.png" alt="MBA Upsell" />
+          <span class="expl-label">MBA Upsell</span>
+        </div>
+        <div class="expl-thumb" data-label="Contextual upsell">
+          <img src="mba-expl-4.png" alt="Contextual upsell" />
+          <span class="expl-label">Contextual upsell</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 15: MBA: Selected bank selection design ───────────── -->
+    <div class="slide" data-idx="15" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
+      <img class="mockup-img" src="mba-bank-selection.png" alt="MBA bank selection: selected design" />
+    </div>
+
+    <!-- ── Slide 16: MBA: What cracked it + role ──────────────────── -->
+    <div class="slide" data-idx="16" data-project="mba">
+      <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
+      <div class="col">
+        <h3 class="sec-heading">What cracked it</h3>
+        <p class="proj-body">The bank selection page is the moment where the product either earns trust or loses it. Surfacing the MBA offer at the exact point where merchants are already thinking about payouts made the upsell feel like a natural next step, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
+        <p class="ux-edge"><strong>My role:</strong> Defined onboarding journeys for legal representatives and app-based identity verification across BVs, VOFs, and bank selection. Cross-functional alignment across Product, Risk, Compliance, and Ops.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 16: MBA: Performance ─────────────────────────────── -->
+    <div class="slide" data-idx="17" data-project="mba">
+      <span class="crumb">MBA Onboarding</span>
+      <div class="col" style="width:460px">
+        <h3 class="sec-heading">Performance</h3>
+        <div class="impact-stats">
+          <div class="impact-stat">
+            <span class="impact-stat-value">1,000+</span>
+            <span class="impact-stat-label">Organisations onboarded through self-serve MBA</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">68%</span>
+            <span class="impact-stat-label">Start-to-completion conversion rate</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">900+</span>
+            <span class="impact-stat-label">Merchants reached activation pre-launch</span>
+          </div>
+          <div class="impact-stat">
+            <span class="impact-stat-value">[?]</span><!-- approx: add a fourth metric if available (ops escalation reduction, time-to-activate, etc.) -->
+            <span class="impact-stat-label">[fourth metric: ops escalation rate, avg time to activate, or similar]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 17: Thank you (shared) ───────────────────────────────── -->
+    <div class="slide" data-idx="17">
+      <div class="ty-layout">
+        <h2 class="ty-heading">thank you.</h2>
+        <div class="ty-btns">
+
+          <button class="ty-resume" id="ty-resume-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M7 1.5A5.5 5.5 0 1 1 1.5 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M0.5 8.3 L1.5 7 L2.8 8.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Resume
+          </button>
+
+          <a href="https://sofiaberselli.com" target="_blank" rel="noopener" class="ty-follow" id="ty-follow-btn">
+            <svg class="ty-follow-icon" id="ty-bunny" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <g class="bunny__all">
+                <g class="bunny__ear-left"><ellipse cx="8.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+                <g class="bunny__ear-right"><ellipse cx="15.5" cy="6.5" rx="2.2" ry="5.5"/></g>
+                <g class="bunny__body">
+                  <circle cx="12" cy="15.5" r="4.5"/>
+                  <ellipse cx="12" cy="21" rx="4.5" ry="2.5"/>
+                </g>
+              </g>
+            </svg>
+            <span class="ty-follow-roller">
+              <span class="ty-follow-track">
+                <span class="ty-follow-word">Follow the white rabbit</span>
+                <span class="ty-follow-word">sofiaberselli.com</span>
+              </span>
+            </span>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.deck -->
+
+  <script type="module">
+    if (import.meta.env.DEV) {
+      import('/src/scripts/dev/agentation.js')
+    }
+  </script>
+
+  <script>
+    const slides  = [...document.querySelectorAll('.slide')]
+    const pbar    = document.getElementById('pbar')
+    const total   = slides.length
+    let cur = 0
+
+    // ── Project config ────────────────────────────────
+    const PROJECTS = {
+      setup: { start: 2, end: 10 },
+      mba:   { start: 11, end: 19 }
+    }
+    const THANKYOU_IDX = total - 1
+
+    let activeProject = 'setup'
+
+    function getProjectFromIdx(idx) {
+      if (idx >= PROJECTS.mba.start   && idx <= PROJECTS.mba.end)   return 'mba'
+      if (idx >= PROJECTS.setup.start && idx <= PROJECTS.setup.end) return 'setup'
+      return null
+    }
+
+    function updateNavPills() {
+      const proj = getProjectFromIdx(cur) || activeProject
+      activeProject = proj || activeProject
+      document.querySelectorAll('.proj-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.project === activeProject)
+      })
+    }
+
+    function switchProject(proj) {
+      activeProject = proj
+      goTo(PROJECTS[proj].start)
+    }
+
+    /* ── Navigation ──────────────────────────────────── */
+    function setBar(idx) {
+      pbar.classList.add('visible')
+      const proj = getProjectFromIdx(idx)
+      if (proj) {
+        const { start, end } = PROJECTS[proj]
+        pbar.style.transform = `scaleX(${(idx - start + 1) / (end - start + 1)})`
+      } else if (idx === THANKYOU_IDX) {
+        pbar.style.transform = `scaleX(1)`
+      } else {
+        pbar.style.transform = `scaleX(${(idx + 1) / 2})`
+      }
+    }
+
+    const setupVideo = document.getElementById('setup-video')
+    const videoSlideIdx = setupVideo
+      ? [...slides].indexOf(setupVideo.closest('.slide'))
+      : -1
+
+    const mbaVideo = document.getElementById('mba-video')
+    const mbaVideoSlideIdx = mbaVideo
+      ? [...slides].indexOf(mbaVideo.closest('.slide'))
+      : -1
+
+    function goTo(n) {
+      if (n === cur) return
+      slides[cur].classList.remove('active')
+      cur = Math.max(0, Math.min(n, total - 1))
+      slides[cur].classList.add('active')
+      setBar(cur)
+      updateNavPills()
+      if (setupVideo) {
+        if (cur === videoSlideIdx) { setupVideo.currentTime = 0; setupVideo.play() }
+        else setupVideo.pause()
+      }
+      if (mbaVideo) {
+        if (cur === mbaVideoSlideIdx) { mbaVideo.currentTime = 0; mbaVideo.play() }
+        else mbaVideo.pause()
+      }
+    }
+
+    // ── Init ─────────────────────────────────────────
+    let preloaderDone = true
+    setBar(0)
+    updateNavPills()
+    initDotCanvas()
+    showNavHint()
+
+    document.addEventListener('keydown', e => {
+      if (!preloaderDone) return
+      const lb = document.querySelector('.expl-lightbox')
+      if (lb && lb.classList.contains('visible')) {
+        if (e.key === 'Escape') lb.classList.remove('visible')
+        return
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(cur + 1) }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                   { e.preventDefault(); goTo(cur - 1) }
+    })
+
+    // ── Exploration lightbox ──────────────────────────
+    ;(function () {
+      const lb = document.createElement('div')
+      lb.className = 'expl-lightbox'
+      const lbImg = document.createElement('img')
+      const lbLabel = document.createElement('span')
+      lbLabel.className = 'expl-lb-label'
+      lb.appendChild(lbImg)
+      lb.appendChild(lbLabel)
+      document.body.appendChild(lb)
+
+      document.querySelectorAll('.expl-thumb').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          lbImg.src = thumb.querySelector('img').src
+          lbLabel.textContent = thumb.dataset.label
+          lb.classList.add('visible')
+        })
+      })
+
+      lb.addEventListener('click', e => {
+        if (e.target !== lbImg) lb.classList.remove('visible')
+      })
+    })()
+
+    let tx = 0
+    document.addEventListener('touchstart', e => { tx = e.touches[0].clientX }, { passive: true })
+    document.addEventListener('touchend',   e => {
+      if (!preloaderDone) return
+      const d = tx - e.changedTouches[0].clientX
+      if (Math.abs(d) > 50) goTo(d > 0 ? cur + 1 : cur - 1)
+    }, { passive: true })
+
+    // ── Project nav hover reveal ──────────────────────
+    ;(function () {
+      const zone = document.getElementById('proj-hover-zone')
+      const nav  = document.getElementById('proj-nav')
+      if (!zone || !nav) return
+      let hideTimer = null
+      const show = () => { clearTimeout(hideTimer); nav.classList.add('visible') }
+      const hide = () => { hideTimer = setTimeout(() => nav.classList.remove('visible'), 1200) }
+      zone.addEventListener('mouseenter', show)
+      zone.addEventListener('mouseleave', hide)
+      nav.addEventListener('mouseenter', show)
+      nav.addEventListener('mouseleave', hide)
+      nav.querySelectorAll('.proj-pill').forEach(pill => {
+        pill.addEventListener('click', () => switchProject(pill.dataset.project))
+      })
+    })()
+
+    // ── Dot canvas ──────────────────────────────────────
+    function initDotCanvas() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      const GRID = 32, R = 1.2, DOT_COLOR = 'rgba(180,175,168,0.65)'
+      const REPEL_RADIUS = 180, MAX_PUSH = 7
+      const SPRING = 0.025, DAMP = 0.76, SETTLE = 0.001
+      const mask = 'radial-gradient(ellipse at 50% 50%, transparent 25%, black 65%)'
+
+      const canvas = document.createElement('canvas')
+      Object.assign(canvas.style, {
+        position: 'fixed', inset: '0',
+        width: '100vw', height: '100vh',
+        pointerEvents: 'none', zIndex: '0',
+        maskImage: mask, webkitMaskImage: mask,
+      })
+      document.body.insertAdjacentElement('afterbegin', canvas)
+      const ctx = canvas.getContext('2d')
+
+      let W = canvas.width  = window.innerWidth
+      let H = canvas.height = window.innerHeight
+      window.addEventListener('resize', () => {
+        W = canvas.width  = window.innerWidth
+        H = canvas.height = window.innerHeight
+      })
+
+      const mouse = { x: -9999, y: -9999 }
+      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY })
+      window.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999 })
+
+      const state = new Map()
+
+      function tick() {
+        ctx.clearRect(0, 0, W, H)
+        ctx.fillStyle = DOT_COLOR
+        const cols = Math.ceil(W / GRID)
+        const rows = Math.ceil(H / GRID)
+
+        for (let i = 0; i <= rows; i++) {
+          for (let j = 0; j <= cols; j++) {
+            const bx = j * GRID, by = i * GRID
+            const key = `${j},${i}`
+            let s = state.get(key)
+            const dx = s ? s.dx : 0, dy = s ? s.dy : 0
+            const cx = bx + dx, cy = by + dy
+            const dist = Math.hypot(mouse.x - cx, mouse.y - cy)
+
+            if (dist < REPEL_RADIUS || s) {
+              if (!s) { s = { dx: 0, dy: 0, vx: 0, vy: 0 }; state.set(key, s) }
+              if (dist < REPEL_RADIUS && dist > 0) {
+                const nx = (cx - mouse.x) / dist, ny = (cy - mouse.y) / dist
+                const force = (1 - dist / REPEL_RADIUS) * MAX_PUSH * 0.18
+                s.vx += nx * force; s.vy += ny * force
+              }
+              s.vx += -s.dx * SPRING; s.vy += -s.dy * SPRING
+              s.vx *= DAMP; s.vy *= DAMP
+              s.dx += s.vx; s.dy += s.vy
+              if (Math.abs(s.dx) < SETTLE && Math.abs(s.dy) < SETTLE &&
+                  Math.abs(s.vx) < SETTLE && Math.abs(s.vy) < SETTLE) {
+                state.delete(key); s = null
+              }
+            }
+            ctx.beginPath()
+            ctx.arc(bx + (s ? s.dx : 0), by + (s ? s.dy : 0), R, 0, Math.PI * 2)
+            ctx.fill()
+          }
+        }
+        requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    }
+
+    // ── Nav hint ────────────────────────────────────────
+    function showNavHint() {
+      const hint = document.getElementById('nav-hint')
+      if (!hint) return
+      let dismissed = false
+
+      function dismiss() {
+        if (dismissed) return
+        dismissed = true
+        hint.classList.remove('in')
+        void hint.offsetWidth
+        hint.classList.add('out')
+      }
+
+      setTimeout(() => {
+        hint.classList.add('in')
+        const timer = setTimeout(dismiss, 3200)
+
+        // Dismiss on first navigation action
+        function onNav() {
+          clearTimeout(timer)
+          dismiss()
+          document.removeEventListener('keydown', onNav)
+          document.removeEventListener('touchend', onNav)
+        }
+        document.addEventListener('keydown', onNav)
+        document.addEventListener('touchend', onNav, { passive: true })
+      }, 400)
+    }
+
+    // ── Draggable photos (slide 2) ──────────────────────
+    ;(function () {
+      document.querySelectorAll('.s2-photo-wrap').forEach(wrap => {
+        let dragging = false, ox = 0, oy = 0, cx = 0, cy = 0
+
+        wrap.addEventListener('pointerdown', e => {
+          if (e.button !== 0) return
+          dragging = true
+          ox = e.clientX - cx
+          oy = e.clientY - cy
+          wrap.classList.add('is-dragging')
+          wrap.setPointerCapture(e.pointerId)
+          e.preventDefault()
+        })
+
+        wrap.addEventListener('pointermove', e => {
+          if (!dragging) return
+          cx = e.clientX - ox
+          cy = e.clientY - oy
+          wrap.style.transform = `translate(${cx}px, ${cy}px)`
+        })
+
+        const end = () => { dragging = false; wrap.classList.remove('is-dragging') }
+        wrap.addEventListener('pointerup', end)
+        wrap.addEventListener('pointercancel', end)
+        wrap.addEventListener('dragstart', e => e.preventDefault())
+      })
+    })()
+
+    // ── Draggable tweet card (slide 2) ───────────────────
+    ;(function () {
+      const wrap = document.querySelector('.tweet-card-wrap')
+      if (!wrap) return
+      let dragging = false, ox = 0, oy = 0, cx = 0, cy = 0
+
+      wrap.addEventListener('pointerdown', e => {
+        if (e.button !== 0) return
+        dragging = true
+        ox = e.clientX - cx
+        oy = e.clientY - cy
+        wrap.classList.add('is-dragging')
+        wrap.setPointerCapture(e.pointerId)
+        e.preventDefault()
+      })
+
+      wrap.addEventListener('pointermove', e => {
+        if (!dragging) return
+        cx = e.clientX - ox
+        cy = e.clientY - oy
+        wrap.style.transform = `translate(${cx}px, ${cy}px)`
+      })
+
+      const end = () => { dragging = false; wrap.classList.remove('is-dragging') }
+      wrap.addEventListener('pointerup', end)
+      wrap.addEventListener('pointercancel', end)
+      wrap.addEventListener('dragstart', e => e.preventDefault())
+    })()
+
+    // ── Thank-you slide: bunny + resume ─────────────────
+    ;(function () {
+      const bunny    = document.getElementById('ty-bunny')
+      const followBtn = document.getElementById('ty-follow-btn')
+      const resumeBtn = document.getElementById('ty-resume-btn')
+      if (!bunny || !followBtn || !resumeBtn) return
+
+      // Ear wiggle on mouseenter, clean up on mouseleave
+      followBtn.addEventListener('mouseenter', () => {
+        bunny.classList.remove('is-jumping')
+        void bunny.offsetWidth
+        bunny.classList.add('is-hovering')
+      })
+      followBtn.addEventListener('mouseleave', () => {
+        bunny.classList.remove('is-hovering')
+      })
+
+      // Jump on click (fires before navigation)
+      followBtn.addEventListener('click', () => {
+        bunny.classList.remove('is-hovering', 'is-jumping')
+        void bunny.offsetWidth
+        bunny.classList.add('is-jumping')
+      })
+
+      // Resume restarts from slide 1 (About)
+      resumeBtn.addEventListener('click', () => goTo(0))
+    })()
+  </script>
+
+
+</body>
+</html>
