@@ -580,6 +580,15 @@
     }
     .tier-item:hover .tier-tooltip { opacity: 1; }
 
+    .trials-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-width: 85vw;
+    }
+    .trials-layout .proj-name { text-align: center; }
+
     .tier-row {
       display: flex; align-items: center;
       margin-top: 20px;
@@ -1464,9 +1473,9 @@ Custom contracts, dedicated support, high volume.</span>
     <!-- ── Slide 3: 100+ variations explored (video) ────────────────── -->
     <div class="slide" data-idx="3" data-project="setup">
       <span class="crumb">Setup Guide <b>/ Process</b></span>
-      <div class="col" style="width:520px; text-align:center">
-        <h2 class="proj-name" style="margin-bottom:20px">100+ variations explored</h2>
-        <video class="mockup-img" id="trials-video" src="trials-setup.mp4" muted playsinline style="max-height:62vh"></video>
+      <div class="trials-layout">
+        <h2 class="proj-name">100+ variations explored</h2>
+        <video class="mockup-img" id="trials-video" src="trials-setup.mp4" muted playsinline></video>
       </div>
     </div>
 
