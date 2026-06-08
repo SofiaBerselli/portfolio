@@ -1196,7 +1196,15 @@
       image-rendering: -webkit-optimize-contrast;
       image-rendering: smooth;
       pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
     }
+    .s2-cluster-wrap.is-dragging .s2-cluster-photo { transition: none; }
+    .s2-cluster-wrap:nth-child(1):not(.is-dragging):hover .s2-cluster-photo { transform: rotate(8deg)   translateY(-5px) scale(1.07); box-shadow: 0 10px 28px rgba(12,12,13,0.14); }
+    .s2-cluster-wrap:nth-child(2):not(.is-dragging):hover .s2-cluster-photo { transform: rotate(13deg)  translateY(-5px) scale(1.07); box-shadow: 0 10px 28px rgba(12,12,13,0.14); }
+    .s2-cluster-wrap:nth-child(3):not(.is-dragging):hover .s2-cluster-photo { transform: rotate(-7deg)  translateY(-5px) scale(1.07); box-shadow: 0 10px 28px rgba(12,12,13,0.14); }
+    .s2-cluster-wrap:nth-child(4):not(.is-dragging):hover .s2-cluster-photo { transform: rotate(3deg)   translateY(-5px) scale(1.07); box-shadow: 0 10px 28px rgba(12,12,13,0.14); }
+    .s2-cluster-wrap:nth-child(5):not(.is-dragging):hover .s2-cluster-photo { transform: rotate(-12deg) translateY(-5px) scale(1.07); box-shadow: 0 10px 28px rgba(12,12,13,0.14); }
+    .s2-cluster-wrap:nth-child(6):not(.is-dragging):hover .s2-cluster-photo { transform: rotate(9deg)   translateY(-5px) scale(1.07); box-shadow: 0 10px 28px rgba(12,12,13,0.14); }
     /* Positions on wrapper, rotation on img */
     .s2-cluster-wrap:nth-child(1) { left:  70px; top:   0px; transition-delay: 0.08s; }
     .s2-cluster-wrap:nth-child(1) .s2-cluster-photo { width: 100px; transform: rotate(8deg); }
@@ -1566,27 +1574,8 @@ Custom contracts, dedicated support, high volume.</span>
       <img class="mockup-img" src="starting-point.png" alt="Setup Guide: the starting point" />
     </div>
 
-    <!-- ── Slide 6: What was tried ───────────────────────────────────── -->
+    <!-- ── Slide 6: Explorations (click to expand) ──────────────────── -->
     <div class="slide" data-idx="6">
-      <span class="crumb">1/2 Setup Guide <b>/ Process</b></span>
-      <div class="ux-col">
-        <h3 class="sec-heading">Selected directions</h3>
-        <div class="ux-alts">
-          <div class="ux-alt">
-            <span class="ux-alt-tried">tried</span>
-            <p class="ux-alt-text">Integrate the Get Started page into the homepage, making it a single environment. <em>This cluttered the homepage and disrupted the hierarchy.</em></p>
-          </div>
-          <div class="ux-alt">
-            <span class="ux-alt-tried">tried</span>
-            <p class="ux-alt-text">Adding multiple modules to the Get Started page, including a discovery section: <em>concluded the primary focus should be completing the onboarding steps</em></p>
-          </div>
-        </div>
-        <p class="ux-edge"><strong>The scope decision:</strong> Build a setup guide as a separate living page that persists even after receiving the first payment, so we can upsell multiple products post-enablement and validate that multi-product activation yields stickier merchants.</p>
-      </div>
-    </div>
-
-    <!-- ── Slide 7: Explorations (click to expand) ──────────────────── -->
-    <div class="slide" data-idx="7">
       <span class="crumb">Setup Guide <b>/ Explorations</b></span>
       <div class="expl-grid">
         <div class="expl-thumb" data-label="Product Spotlight">
@@ -1605,6 +1594,25 @@ Custom contracts, dedicated support, high volume.</span>
           <img src="expl-4.png" alt="Product-based tab list" />
           <span class="expl-label">Product-based tab list</span>
         </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 7: Selected directions ─────────────────────────────── -->
+    <div class="slide" data-idx="7">
+      <span class="crumb">1/2 Setup Guide <b>/ Process</b></span>
+      <div class="ux-col">
+        <h3 class="sec-heading">Selected directions</h3>
+        <div class="ux-alts">
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Integrate the Get Started page into the homepage, making it a single environment. <em>This cluttered the homepage and disrupted the hierarchy.</em></p>
+          </div>
+          <div class="ux-alt">
+            <span class="ux-alt-tried">tried</span>
+            <p class="ux-alt-text">Adding multiple modules to the Get Started page, including a discovery section: <em>concluded the primary focus should be completing the onboarding steps</em></p>
+          </div>
+        </div>
+        <p class="ux-edge"><strong>The scope decision:</strong> Build a setup guide as a separate living page that persists even after receiving the first payment, so we can upsell multiple products post-enablement and validate that multi-product activation yields stickier merchants.</p>
       </div>
     </div>
 
@@ -1630,7 +1638,7 @@ Custom contracts, dedicated support, high volume.</span>
       <span class="crumb">1/2 Setup Guide <b>/ Solution</b></span>
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
-        <p class="proj-body">The setup guide page is a <b>living hub</b> that promotes multiple products and lets merchants enable them. It shows only the actions relevant to merchants onboarding right now and supports self-serve activation. It also clarifies where merchants are in the journey, what's next, and how much remains to complete it.</p>
+        <p class="proj-body">The setup guide page is a <b style="color:var(--text)">living hub</b> that promotes multiple products and lets merchants enable them. It shows only the actions relevant to merchants onboarding right now and supports self-serve activation. It also clarifies where merchants are in the journey, what's next, and how much remains to complete it.</p>
       </div>
     </div>
 
@@ -1795,7 +1803,7 @@ Custom contracts, dedicated support, high volume.</span>
       <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
-        <p class="proj-body">The bank selection page is the moment where the product either earns trust or loses it. Surfacing the MBA offer at the exact point where merchants are <b>already thinking about payouts</b> made the upsell feel like a natural next step, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
+        <p class="proj-body">The bank selection page is the moment where the product either earns trust or loses it. Surfacing the MBA offer at the exact point where merchants are <b style="color:var(--text)">already thinking about payouts</b> made the upsell feel like a natural next step, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
         <p class="ux-edge" style="display:none"><strong>My role:</strong> Defined onboarding journeys for legal representatives and app-based identity verification across BVs, VOFs, and bank selection. Cross-functional alignment across Product, Risk, Compliance, and Ops.</p>
       </div>
     </div>
