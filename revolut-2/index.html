@@ -560,7 +560,7 @@
       padding: 7px 11px;
       border-radius: 7px;
       white-space: nowrap;
-      max-width: 240px;
+      max-width: 320px;
       white-space: normal;
       text-align: center;
       pointer-events: none;
@@ -587,7 +587,7 @@
       gap: 20px;
       max-width: 85vw;
     }
-    .trials-layout .proj-name { text-align: center; }
+    .trials-layout .sec-heading { text-align: center; }
 
     .tier-row {
       display: flex; align-items: center;
@@ -695,6 +695,11 @@
       /* Maximum rendering quality on all screens */
       image-rendering: -webkit-optimize-contrast;
       image-rendering: smooth;
+    }
+
+    video#mba-video.mockup-img {
+      max-height: 88vh;
+      max-width: 92vw;
     }
     .mockup-img.phone {
       max-height: 66vh;
@@ -1615,7 +1620,7 @@ Custom contracts, dedicated support, high volume.</span>
     <div class="slide" data-idx="3" data-project="setup">
       <span class="crumb">Setup Guide <b>/ Process</b></span>
       <div class="trials-layout">
-        <h2 class="proj-name">100+ variations explored</h2>
+        <h3 class="sec-heading">100+ variations explored</h3>
         <video class="mockup-img" id="trials-video" src="trials-setup.mp4" muted playsinline autoplay loop></video>
       </div>
     </div>
