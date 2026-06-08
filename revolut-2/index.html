@@ -1089,6 +1089,34 @@
       white-space: nowrap;
     }
 
+    /* ── About slide: scattered photo cluster (left) ───── */
+    .s2-photo-cluster {
+      position: relative;
+      width: 290px;
+      height: 445px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+    .s2-cluster-photo {
+      position: absolute;
+      display: block;
+      border-radius: 4px;
+      box-shadow: 0 4px 4px -4px rgba(12,12,13,0.05), 0 16px 32px -4px rgba(12,12,13,0.1);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .slide.active .s2-cluster-photo { opacity: 1; }
+    /* Group 1 — three photos, upper cluster */
+    .s2-cluster-photo:nth-child(1) { left: 52px;  top:   0px; width: 140px; transform: rotate(7deg);   transition-delay: 0.08s; }
+    .s2-cluster-photo:nth-child(2) { left: 129px; top: 101px; width: 120px; transform: rotate(3deg);   transition-delay: 0.15s; }
+    .s2-cluster-photo:nth-child(3) { left:   0px; top: 123px; width: 140px; transform: rotate(-8deg);  transition-delay: 0.22s; }
+    /* Group 2 — three photos, lower cluster (overlaps group 1 by 62px) */
+    .s2-cluster-photo:nth-child(4) { left:  65px; top: 222px; width: 120px; transform: rotate(12deg);  transition-delay: 0.29s; }
+    .s2-cluster-photo:nth-child(5) { left: 151px; top: 284px; width: 120px; transform: rotate(-5deg);  transition-delay: 0.36s; }
+    .s2-cluster-photo:nth-child(6) { left:   0px; top: 283px; width: 120px; transform: rotate(8deg);   transition-delay: 0.43s; }
+
     /* ── About slide: right column (card + tweet) ──────── */
     .s2-right {
       display: flex;
@@ -1219,10 +1247,13 @@
     <!-- ── Slide 0: About Sofia ──────────────────────────────────────── -->
     <div class="slide active" data-idx="0">
       <div class="s2-layout">
-        <div class="s2-photos s2-photos--left">
-          <div class="s2-photo-wrap"><img src="../revolut/photo-l1.png" alt="" /></div>
-          <div class="s2-photo-wrap"><img src="../revolut/photo-l2.png" alt="" /></div>
-          <div class="s2-photo-wrap"><img src="../revolut/photo-l3.png" alt="" /></div>
+        <div class="s2-photo-cluster">
+          <img class="s2-cluster-photo" src="about-p3.png" alt="" />
+          <img class="s2-cluster-photo" src="about-p5.png" alt="" />
+          <img class="s2-cluster-photo" src="about-p2.png" alt="" />
+          <img class="s2-cluster-photo" src="about-p4.png" alt="" />
+          <img class="s2-cluster-photo" src="about-p6.png" alt="" />
+          <img class="s2-cluster-photo" src="about-p1.png" alt="" />
         </div>
         <div class="col">
           <p class="s2-name">Sofia behind the pixels</p>
@@ -1989,7 +2020,7 @@
       }, 400)
     }
 
-    // ── Draggable photos (slide 2) ──────────────────────
+    // ── Draggable photos (legacy) ────────────────────────
     ;(function () {
       document.querySelectorAll('.s2-photo-wrap').forEach(wrap => {
         let dragging = false, ox = 0, oy = 0, cx = 0, cy = 0
