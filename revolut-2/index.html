@@ -1089,6 +1089,36 @@
       white-space: nowrap;
     }
 
+    /* ── About slide: right column (card + tweet) ──────── */
+    .s2-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex-shrink: 0;
+      width: 306px;
+      max-width: 40vw;
+    }
+    .s2-about-card {
+      width: 120px;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+      align-self: flex-end;
+      margin-bottom: -32px;
+      position: relative;
+      z-index: 2;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .slide.active .s2-about-card {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.22s;
+    }
+
     /* ── Project switcher nav ───────────────────────── */
     #proj-hover-zone {
       position: fixed; top: 0; left: 0; right: 0;
@@ -1111,9 +1141,60 @@
     }
     .proj-pill.active { color: var(--orange); border-color: var(--orange); }
     .proj-pill:hover:not(.active) { color: var(--text); border-color: var(--text); }
+
+    /* ── Preloader ────────────────────────────────────── */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .preloader__stage {
+      position: relative;
+      min-height: 4.5rem;
+      display: flex; align-items: center;
+    }
+    .preloader__output {
+      display: flex; flex-direction: column; align-items: flex-start;
+    }
+    .preloader__line {
+      font-family: var(--serif);
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 500; line-height: 1.3;
+      color: var(--text); letter-spacing: -0.01em;
+      white-space: pre; min-height: 1lh;
+    }
+    .preloader__line.is-active::after {
+      content: '';
+      display: inline-block; width: 1.5px; height: 1em;
+      background: var(--orange); margin-left: 0.08em;
+      vertical-align: baseline;
+      animation: pl-blink 0.75s step-end infinite;
+    }
+    @keyframes pl-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .preloader__hl-container {
+      position: fixed; inset: 0; pointer-events: none;
+    }
+    .preloader__hl {
+      position: absolute;
+      background: rgba(245, 78, 0, 0.15);
+      border-radius: 2px; opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .preloader__hl-container.is-visible .preloader__hl { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .preloader__line.is-active::after { animation: none; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ── Preloader ─────────────────────────────────── -->
+  <div id="preloader">
+    <div class="preloader__stage">
+      <div class="preloader__output"></div>
+    </div>
+  </div>
 
   <div id="pbar"></div>
   <nav class="dots" aria-label="Slide navigation"></nav>
@@ -1144,16 +1225,19 @@
           <div class="s2-photo-wrap"><img src="../revolut/photo-l3.png" alt="" /></div>
         </div>
         <div class="col">
-          <p class="s2-name">Sofia</p>
+          <p class="s2-name">Sofia behind the pixels</p>
           <p class="s2-body">
-            Italian by origin, curious by nature.<br>
-            I own product end to end,<br>
-            stay involved through launch and iteration,<br>
-            and prototype with AI to move at the speed of ideas.<br>
-            Multi-dimensional, playful, fast to adapt.<br>
-            I've also been a photographer and a yoga teacher.
+            Italian by origin, curious by nature<br>
+            Lived in Italy, UK, Netherlands and UAE<br>
+            Always tinkering with fun side projects<br>
+            I like games: chess, board games<br>
+            I've also been a photographer, a yoga teacher and a bartender.<br>
+            <br>
+            Multi-dimensional, playful, fast to adapt.
           </p>
-          <!-- Tweet card: replaces em quote -->
+        </div>
+        <div class="s2-right">
+          <img class="s2-about-card" src="about-card.png" alt="" />
           <div class="tweet-card-wrap">
           <div class="tweet-card">
             <div class="tw-repost">
@@ -1198,11 +1282,6 @@
             </div>
           </div>
           </div><!-- /.tweet-card-wrap -->
-        </div>
-        <div class="s2-photos s2-photos--right">
-          <div class="s2-photo-wrap"><img src="../revolut/photo-r1.png" alt="" /></div>
-          <div class="s2-photo-wrap"><img src="../revolut/photo-r2.png" alt="" /></div>
-          <div class="s2-photo-wrap"><img src="../revolut/photo-r3.png" alt="" /></div>
         </div>
       </div>
     </div>
@@ -1257,7 +1336,7 @@
           </div>
           <div>
             <p class="proj-meta-label">Team</p>
-            <p class="proj-meta-value">1 designer · 2 engineers · 1 PM</p>
+            <p class="proj-meta-value">1 designer · 3 engineers · 1 PM</p>
           </div>
         </div>
       </div>
@@ -1273,9 +1352,8 @@
           <span class="problem-stat-label">of merchants express intent to use multiple Mollie products: only 8% actually do</span>
         </div>
         <ul class="problem-list">
-          <li>6% of self-serve merchants become long-term customers, yet generate 71% of total self-serve revenue</li>
           <li>Merchants who activate 2+ products in month one are measurably stickier: the current experience captures neither signal</li>
-          <li>Nothing exists between KYC approval and first payment</li>
+          <li>The current Get Started page disappears after the first payment, reducing the opportunity to upsell additional products</li>
         </ul>
       </div>
     </div>
@@ -1305,15 +1383,15 @@
             <div class="ux-flow-node"></div>
             <span class="ux-flow-label">Approved</span>
           </div>
-          <div class="ux-flow-connector drop"></div>
-          <div class="ux-flow-step">
-            <div class="ux-flow-node drop"></div>
-            <span class="ux-flow-label drop">No next<br>step</span>
-          </div>
           <div class="ux-flow-connector"></div>
           <div class="ux-flow-step">
             <div class="ux-flow-node"></div>
             <span class="ux-flow-label">First<br>payment</span>
+          </div>
+          <div class="ux-flow-connector drop"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node drop"></div>
+            <span class="ux-flow-label drop">No next<br>step</span>
           </div>
         </div>
         <p class="proj-body">Three scenarios land here: a Shopify NL merchant (700/month) who selected only online payments and rarely returns to the dashboard; a merchant who expressed multi-product intent at signup but never completed the second product; and a merchant lost after KYC because the existing get-started page is crowded and non-directive.</p>
@@ -1328,18 +1406,14 @@
         <div class="ux-alts">
           <div class="ux-alt">
             <span class="ux-alt-tried">tried</span>
-            <p class="ux-alt-text">Patch the existing get-started page: <em>the problem was the IA, not the content. Adding copy would have made it more crowded, not clearer</em></p>
+            <p class="ux-alt-text">Integrate the Get Started page into the homepage, making it a single environment. <em>This cluttered the homepage and disrupted the hierarchy.</em></p>
           </div>
           <div class="ux-alt">
             <span class="ux-alt-tried">tried</span>
-            <p class="ux-alt-text">Reuse the Payments domain PM activation page (1 year old): <em>static list of 5 PMs, no personalisation, layout constraints prevented the recommender pattern</em></p>
-          </div>
-          <div class="ux-alt">
-            <span class="ux-alt-tried">tried</span>
-            <p class="ux-alt-text">Full 4-step journey upfront (PM activation + integration verification + payment testing + MBA upsell): <em>ideal experience: deliberately deferred steps 2 and 3 to validate the core hypothesis first</em></p>
+            <p class="ux-alt-text">Adding multiple modules to the Get Started page, including a discovery section: <em>concluded the primary focus should be completing the onboarding steps</em></p>
           </div>
         </div>
-        <p class="ux-edge"><strong>The scope decision:</strong> Build only steps 1 (payment methods) and 4 (MBA upsell) for the first experiment. Validate whether we can cross-sell MBA to single-product merchants before committing to the complete journey.</p>
+        <p class="ux-edge"><strong>The scope decision:</strong> Build a setup guide as a separate living page that persists even after receiving the first payment, so we can upsell multiple products post-enablement and validate that multi-product activation yields stickier merchants.</p>
       </div>
     </div>
 
@@ -1394,7 +1468,7 @@
       <span class="crumb">1/2 Setup Guide <b>/ Solution</b></span>
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
-        <p class="proj-body">Treat payment method activation as a recommender, not a settings page. Surface what's relevant to where the merchant sells, pre-select it, one-click activation. Manual override stays: we're the co-pilot, not the driver. For MBA upsell: anchor on a concrete financial improvement. 365-day payouts instead of every Wednesday is specific enough for a merchant to calculate exactly what it means for their cash flow.</p>
+        <p class="proj-body">The setup guide page is a living hub that promotes multiple products and lets merchants enable them. It shows only the actions relevant to merchants onboarding right now and supports self-serve activation. It also clarifies where merchants are in the journey, what's next, and how much remains to complete it.</p>
       </div>
     </div>
 
@@ -1406,9 +1480,8 @@
         <p class="proj-body" style="margin-bottom:20px">Experiment 1 engineering kicked off Week 18. Too early for results, but these are the signals that will tell us if it worked.</p>
         <ul class="problem-list">
           <li>MBA activation rate: Shopify NL cohort completing bank account setup in the new flow</li>
-          <li>Multi-product adoption: merchants activating 2 or more products in month one</li>
+          <li>Product activation rate: merchants activating 2 or more products in month one</li>
           <li>LTMC conversion: merchants reaching 10+ payments in 30 days (they're 2× more likely to stay)</li>
-          <li>Payment method completion rate: on the recommender page vs the previous static list</li>
         </ul>
       </div>
     </div>
@@ -1429,7 +1502,7 @@
           </div>
           <div>
             <p class="proj-meta-label">Timeline</p>
-            <p class="proj-meta-value">2025</p>
+            <p class="proj-meta-value">2025 Q3</p>
           </div>
           <div>
             <p class="proj-meta-label">Team</p>
@@ -1445,7 +1518,6 @@
       <div class="col">
         <h3 class="sec-heading">The problem</h3>
         <ul class="problem-list">
-          <li>B2B onboarding requires different identity flows per legal entity: BV, VOF, sole trader each have distinct regulatory requirements</li>
           <li>Legal representative verification required manual ops intervention; self-serve was not possible</li>
           <li>No mobile-native path for bank account linking and QR code verification</li>
         </ul>
@@ -1456,31 +1528,36 @@
     <div class="slide" data-idx="11" data-project="mba">
       <span class="crumb">MBA Onboarding <b>/ Context</b></span>
       <div class="ux-col">
-        <h3 class="sec-heading">What was missing in the journey</h3>
+        <h3 class="sec-heading">A brand new journey</h3>
         <div class="ux-flow">
           <div class="ux-flow-step">
             <div class="ux-flow-node"></div>
-            <span class="ux-flow-label">Select<br>entity type</span>
+            <span class="ux-flow-label">Company<br>ownership</span>
           </div>
           <div class="ux-flow-connector"></div>
           <div class="ux-flow-step">
             <div class="ux-flow-node"></div>
-            <span class="ux-flow-label">Legal rep<br>identification</span>
+            <span class="ux-flow-label">Tax<br>information</span>
           </div>
           <div class="ux-flow-connector"></div>
           <div class="ux-flow-step">
             <div class="ux-flow-node"></div>
-            <span class="ux-flow-label">Document<br>upload</span>
+            <span class="ux-flow-label">Tax<br>classification</span>
           </div>
           <div class="ux-flow-connector"></div>
           <div class="ux-flow-step">
             <div class="ux-flow-node"></div>
-            <span class="ux-flow-label">Bank<br>verification</span>
+            <span class="ux-flow-label">Account usage<br>information</span>
           </div>
           <div class="ux-flow-connector"></div>
           <div class="ux-flow-step">
             <div class="ux-flow-node"></div>
-            <span class="ux-flow-label">Payouts<br>live</span>
+            <span class="ux-flow-label">ID<br>verification</span>
+          </div>
+          <div class="ux-flow-connector"></div>
+          <div class="ux-flow-step">
+            <div class="ux-flow-node"></div>
+            <span class="ux-flow-label">Phone number<br>verification</span>
           </div>
         </div>
         <p class="proj-body">Each entity type (BV, VOF, sole trader) has genuinely different document and representative requirements. A single path fails all three.</p>
@@ -1517,7 +1594,7 @@
             <p class="ux-alt-text">Contextual upsell woven in: <em>surface the MBA benefit at the moment of bank choice, without blocking the primary task</em></p>
           </div>
         </div>
-        <p class="ux-edge"><strong>What worked:</strong> Contextual upsell. Merchants are choosing their payout bank at exactly the moment when a better payout option is most relevant.</p>
+        <p class="ux-edge" style="display:none"><strong>What worked:</strong> Contextual upsell. Merchants are choosing their payout bank at exactly the moment when a better payout option is most relevant.</p>
       </div>
     </div>
 
@@ -1556,7 +1633,7 @@
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
         <p class="proj-body">The bank selection page is the moment where the product either earns trust or loses it. Surfacing the MBA offer at the exact point where merchants are already thinking about payouts made the upsell feel like a natural next step, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
-        <p class="ux-edge"><strong>My role:</strong> Defined onboarding journeys for legal representatives and app-based identity verification across BVs, VOFs, and bank selection. Cross-functional alignment across Product, Risk, Compliance, and Ops.</p>
+        <p class="ux-edge" style="display:none"><strong>My role:</strong> Defined onboarding journeys for legal representatives and app-based identity verification across BVs, VOFs, and bank selection. Cross-functional alignment across Product, Risk, Compliance, and Ops.</p>
       </div>
     </div>
 
@@ -1564,7 +1641,7 @@
     <div class="slide" data-idx="17" data-project="mba">
       <span class="crumb">MBA Onboarding</span>
       <div class="col" style="width:460px">
-        <h3 class="sec-heading">Performance</h3>
+        <h3 class="sec-heading">What success looked like</h3>
         <div class="impact-stats">
           <div class="impact-stat">
             <span class="impact-stat-value">1,000+</span>
@@ -1702,12 +1779,54 @@
       }
     }
 
-    // ── Init ─────────────────────────────────────────
-    let preloaderDone = true
-    setBar(0)
-    updateNavPills()
-    initDotCanvas()
-    showNavHint()
+    // ── Preloader ─────────────────────────────────────
+    let preloaderDone = false
+
+    ;(async () => {
+      const CHAR_MS = 50, HOLD_MS = 800, FADE_MS = 500
+      const sleep = ms => new Promise(r => setTimeout(r, ms))
+      const el     = document.getElementById('preloader')
+      const output = el.querySelector('.preloader__output')
+
+      function mkLine() {
+        const l = document.createElement('div')
+        l.className = 'preloader__line'
+        output.appendChild(l)
+        return l
+      }
+
+      async function typeFrame(lines) {
+        for (const item of lines) {
+          const lineEl = mkLine()
+          lineEl.classList.add('is-active')
+          const segs = Array.isArray(item) ? item : [{ text: item }]
+          for (const seg of segs) {
+            for (const ch of seg.text) { lineEl.textContent += ch; await sleep(CHAR_MS) }
+            if (seg.pauseAfter) await sleep(seg.pauseAfter)
+          }
+          if (item !== lines.at(-1)) lineEl.classList.remove('is-active')
+        }
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        await sleep(300)
+        el.style.opacity = '0'
+        await sleep(FADE_MS)
+        el.remove()
+      } else {
+        await typeFrame([[{ text: 'Sofia Berselli.', pauseAfter: 420 }], 'Designing, ', 'tinkering.'])
+        await sleep(HOLD_MS)
+        el.style.opacity = '0'
+        await sleep(FADE_MS)
+        el.remove()
+      }
+
+      preloaderDone = true
+      setBar(0)
+      updateNavPills()
+      initDotCanvas()
+      showNavHint()
+    })()
 
     document.addEventListener('keydown', e => {
       if (!preloaderDone) return
@@ -1957,6 +2076,6 @@
     })()
   </script>
 
-
+  <script type="module" src="/src/agentation-overlay.jsx"></script>
 </body>
 </html>
