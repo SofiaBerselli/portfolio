@@ -545,6 +545,41 @@
       color: var(--muted);
       margin-bottom: 10px;
     }
+
+    .tier-item { position: relative; }
+    .tier-tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--sans);
+      font-size: 11px;
+      line-height: 1.5;
+      padding: 7px 11px;
+      border-radius: 7px;
+      white-space: nowrap;
+      max-width: 180px;
+      white-space: normal;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      z-index: 200;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .tier-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--text);
+    }
+    .tier-item:hover .tier-tooltip { opacity: 1; }
+
     .tier-row {
       display: flex; align-items: center;
       margin-top: 20px;
@@ -1391,29 +1426,47 @@
           <div class="tier-item tier-item--muted">
             <div class="tier-dot"></div>
             <span class="tier-name">Micro</span>
+            <span class="tier-tooltip">Freelancers and sole traders.
+Simple setup, low friction, basic needs.</span>
           </div>
           <div class="tier-connector"></div>
           <div class="tier-item">
             <div class="tier-dot tier-dot--on"></div>
             <span class="tier-name">Small</span>
+            <span class="tier-tooltip">Early-stage businesses.
+Reliable checkout, quick integration, good docs.</span>
           </div>
           <div class="tier-connector tier-connector--on"></div>
           <div class="tier-item">
             <div class="tier-dot tier-dot--on"></div>
             <span class="tier-name">Medium</span>
+            <span class="tier-tooltip">Scaling companies.
+Multi-channel, broader payment methods, reporting.</span>
           </div>
           <div class="tier-connector tier-connector--on"></div>
           <div class="tier-item">
             <div class="tier-dot tier-dot--on"></div>
             <span class="tier-name">Upmarket</span>
+            <span class="tier-tooltip">Established SMEs.
+API access, team roles, compliance, SLAs.</span>
           </div>
           <div class="tier-connector"></div>
           <div class="tier-item tier-item--muted">
             <div class="tier-dot"></div>
             <span class="tier-name">Enterprise</span>
+            <span class="tier-tooltip">Large corporations.
+Custom contracts, dedicated support, high volume.</span>
           </div>
         </div>
         <p class="proj-body" style="margin-top:28px">I build this understanding through competitive benchmarks, merchant interviews, and continuous feedback from Mollie's product teams.</p>
+      </div>
+
+    <!-- ── Slide 3: 100+ variations explored (video) ────────────────── -->
+    <div class="slide" data-idx="3" data-project="setup">
+      <span class="crumb">Setup Guide <b>/ Process</b></span>
+      <div class="col" style="width:520px; text-align:center">
+        <h2 class="proj-name" style="margin-bottom:20px">100+ variations explored</h2>
+        <video class="mockup-img" id="trials-video" src="trials-setup.mp4" muted playsinline style="max-height:62vh"></video>
       </div>
     </div>
 
@@ -1506,7 +1559,7 @@
     <div class="slide" data-idx="6">
       <span class="crumb">1/2 Setup Guide <b>/ Process</b></span>
       <div class="ux-col">
-        <h3 class="sec-heading">Directions explored</h3>
+        <h3 class="sec-heading">Selected directions</h3>
         <div class="ux-alts">
           <div class="ux-alt">
             <span class="ux-alt-tried">tried</span>
@@ -1566,7 +1619,7 @@
       <span class="crumb">1/2 Setup Guide <b>/ Solution</b></span>
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
-        <p class="proj-body">The setup guide page is a living hub that promotes multiple products and lets merchants enable them. It shows only the actions relevant to merchants onboarding right now and supports self-serve activation. It also clarifies where merchants are in the journey, what's next, and how much remains to complete it.</p>
+        <p class="proj-body">The setup guide page is a <b>living hub</b> that promotes multiple products and lets merchants enable them. It shows only the actions relevant to merchants onboarding right now and supports self-serve activation. It also clarifies where merchants are in the journey, what's next, and how much remains to complete it.</p>
       </div>
     </div>
 
@@ -1731,7 +1784,7 @@
       <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
-        <p class="proj-body">The <b>bank selection page</b> is the moment where the product either <b>earns trust or loses it</b>. Surfacing the MBA offer at the exact point where merchants are <b>already thinking about payouts</b> made the upsell feel like a <b>natural next step</b>, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
+        <p class="proj-body">The bank selection page is the moment where the product either earns trust or loses it. Surfacing the MBA offer at the exact point where merchants are <b>already thinking about payouts</b> made the upsell feel like a natural next step, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
         <p class="ux-edge" style="display:none"><strong>My role:</strong> Defined onboarding journeys for legal representatives and app-based identity verification across BVs, VOFs, and bank selection. Cross-functional alignment across Product, Risk, Compliance, and Ops.</p>
       </div>
     </div>
@@ -1811,8 +1864,8 @@
 
     // ── Project config ────────────────────────────────
     const PROJECTS = {
-      setup: { start: 3, end: 11 },
-      mba:   { start: 12, end: 20 }
+      setup: { start: 3, end: 12 },
+      mba:   { start: 13, end: 21 }
     }
     const THANKYOU_IDX = total - 1
 
@@ -1858,6 +1911,11 @@
     const setupVideo = document.getElementById('setup-video')
     const videoSlideIdx = setupVideo
       ? [...slides].indexOf(setupVideo.closest('.slide'))
+      : -1
+
+    const trialsVideo = document.getElementById('trials-video')
+    const trialsVideoSlideIdx = trialsVideo
+      ? [...slides].indexOf(trialsVideo.closest('.slide'))
       : -1
 
     const mbaVideo = document.getElementById('mba-video')
@@ -1928,6 +1986,10 @@
       if (setupVideo) {
         if (cur === videoSlideIdx) { setupVideo.currentTime = 0; setupVideo.play() }
         else setupVideo.pause()
+      }
+      if (trialsVideo) {
+        if (cur === trialsVideoSlideIdx) { trialsVideo.currentTime = 0; trialsVideo.play() }
+        else trialsVideo.pause()
       }
       if (mbaVideo) {
         if (cur === mbaVideoSlideIdx) { mbaVideo.currentTime = 0; mbaVideo.play() }
