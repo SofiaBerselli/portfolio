@@ -196,6 +196,7 @@
     .slide .problem-stat,
     .slide .problem-list,
     .slide .takeaway-list,
+    .slide .proj-grid,
     .slide .tier-row,
     .slide .ux-flow,
     .slide .ux-alts,
@@ -231,6 +232,7 @@
     .slide.active .problem-stat,
     .slide.active .problem-list,
     .slide.active .takeaway-list,
+    .slide.active .proj-grid,
     .slide.active .tier-row,
     .slide.active .ux-flow,
     .slide.active .ux-alts,
@@ -580,6 +582,15 @@
     }
     .tier-item:hover .tier-tooltip { opacity: 1; }
 
+
+    .revolut-closing {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .revolut-closing .slide-label { text-align: center; margin-bottom: 0; }
+
     .trials-layout {
       display: flex;
       flex-direction: column;
@@ -613,6 +624,29 @@
       flex: 1; height: 1px; background: var(--border); margin-bottom: 14px;
     }
     .tier-connector--on { background: var(--orange); opacity: 0.35; }
+    .proj-grid {
+      display: flex; align-items: flex-start; gap: 48px;
+    }
+    .proj-card {
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 14px;
+      width: min(380px, 38vw);
+    }
+    .proj-card-title {
+      font-family: var(--serif);
+      font-size: 1.125rem; font-weight: 500; font-style: italic;
+      color: var(--text); letter-spacing: -0.02em;
+    }
+    .proj-card-img {
+      width: 100%; border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(30,28,24,0.10), 0 2px 6px rgba(30,28,24,0.06);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+    }
+    .proj-card-tags {
+      font-family: var(--sans); font-size: 0.6875rem;
+      color: var(--muted); letter-spacing: -0.01em; line-height: 1.5;
+    }
     .proj-name {
       font-family: var(--serif);
       font-size: 1.625rem;
@@ -1489,7 +1523,23 @@ Custom contracts, dedicated support, high volume.</span>
       </div>
     </div>
 
-    <!-- ── Slide 3: Project overview ──────────────────────────────────── -->
+    <!-- ── Slide 3: Projects overview ──────────────────────────────────── -->
+    <div class="slide" data-idx="3">
+      <div class="proj-grid">
+        <div class="proj-card">
+          <p class="proj-card-title">Setup Guide</p>
+          <img class="proj-card-img" src="proj-setup-guide.png" alt="Setup Guide" />
+          <p class="proj-card-tags">innovation • strategy • multi-product • upselling</p>
+        </div>
+        <div class="proj-card">
+          <p class="proj-card-title">Business Accounts Onboarding</p>
+          <img class="proj-card-img" src="proj-mba.png" alt="Business Accounts Onboarding" />
+          <p class="proj-card-tags">design systems • data maturity • compliance • compliance complexity</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Slide 4: Project overview ──────────────────────────────────── -->
     <div class="slide" data-idx="2">
       <div class="col">
         <p class="case-label">Case 1/2</p>
@@ -1839,6 +1889,19 @@ Custom contracts, dedicated support, high volume.</span>
       </div>
     </div>
 
+    <!-- ── Love ya Revolut — phone strip slide ─────────────────────────── -->
+    <!-- TODO: save 3 screenshots as revolut-ss-1.png, revolut-ss-2.png, revolut-ss-3.png in revolut-2/ -->
+    <div class="slide" data-idx="18">
+      <div class="revolut-closing">
+        <p class="slide-label">Love ya Revolut pls fix this</p>
+        <div class="phone-strip">
+          <img class="mockup-img phone" src="revolut-ss-1.png" alt="Revolut group chat" />
+          <img class="mockup-img phone" src="revolut-ss-2.png" alt="Revolut 1:1 chat" />
+          <img class="mockup-img phone" src="revolut-ss-3.png" alt="Revolut analytics" />
+        </div>
+      </div>
+    </div>
+
     <!-- ── Slide 17: Thank you (shared) ───────────────────────────────── -->
     <div class="slide" data-idx="17">
       <div class="ty-layout">
@@ -1892,7 +1955,7 @@ Custom contracts, dedicated support, high volume.</span>
 
     // ── Project config ────────────────────────────────
     const PROJECTS = {
-      setup: { start: 3, end: 12 },
+      setup: { start: 4, end: 12 },
       mba:   { start: 13, end: 21 }
     }
     const THANKYOU_IDX = total - 1
@@ -1932,7 +1995,7 @@ Custom contracts, dedicated support, high volume.</span>
       } else if (idx === THANKYOU_IDX) {
         pbar.style.transform = `scaleX(1)`
       } else {
-        pbar.style.transform = `scaleX(${(idx + 1) / 3})`
+        pbar.style.transform = `scaleX(${(idx + 1) / 4})`
       }
     }
 
