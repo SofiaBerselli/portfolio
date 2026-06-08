@@ -594,22 +594,32 @@
       gap: 32px;
       align-items: flex-start;
     }
-    /* Override expl-thumb crop behaviour for phone screenshots */
+    /* Phone wrap: override all expl-thumb defaults that cause cropping */
     .revolut-phone-wrap {
-      border: none;
-      background: transparent;
-      overflow: visible;
-      border-radius: 34px;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 10px;
+      border: none !important;
+      background: transparent !important;
+      overflow: visible !important;
+      border-radius: 0 !important;
     }
     .revolut-phone-wrap img.mockup-img {
       width: auto !important;
       aspect-ratio: auto !important;
       object-fit: contain !important;
-      max-height: 60vh;
-      border-radius: 34px;
-      /* white border via box-shadow — follows border-radius perfectly with no gap */
-      box-shadow: 0 0 0 3px #ffffff, 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
+      max-height: 58vh;
+      border-radius: 28px;
+      box-shadow: 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
       cursor: zoom-in;
+    }
+    .revolut-phone-caption {
+      font-family: var(--sans);
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      text-align: center;
     }
 
     .trials-layout {
@@ -1915,14 +1925,17 @@ Custom contracts, dedicated support, high volume.</span>
       <div class="revolut-closing">
         <p class="slide-label">Love ya Revolut pls fix this</p>
         <div class="phone-strip">
-          <div class="expl-thumb revolut-phone-wrap" data-label="Group payments · Pesto squad">
+          <div class="expl-thumb revolut-phone-wrap" data-label="Group chat expenses">
             <img class="mockup-img phone" src="revolut-ss-1.png" alt="Revolut group chat" />
+            <span class="revolut-phone-caption">Group chat expenses</span>
           </div>
-          <div class="expl-thumb revolut-phone-wrap" data-label="1:1 payments · Anatoli">
+          <div class="expl-thumb revolut-phone-wrap" data-label="Personal chat">
             <img class="mockup-img phone" src="revolut-ss-2.png" alt="Revolut 1:1 chat" />
+            <span class="revolut-phone-caption">Personal chat</span>
           </div>
-          <div class="expl-thumb revolut-phone-wrap" data-label="Spend analytics · 177€ transfers">
+          <div class="expl-thumb revolut-phone-wrap" data-label="Spend analytics">
             <img class="mockup-img phone" src="revolut-ss-3.png" alt="Revolut analytics" />
+            <span class="revolut-phone-caption">Spend analytics</span>
           </div>
         </div>
       </div>
