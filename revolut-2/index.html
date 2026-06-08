@@ -1092,30 +1092,43 @@
     /* ── About slide: scattered photo cluster (left) ───── */
     .s2-photo-cluster {
       position: relative;
-      width: 290px;
-      height: 445px;
+      width: 340px;
+      height: 460px;
       flex-shrink: 0;
       align-self: center;
     }
-    .s2-cluster-photo {
+    /* Wrapper: handles drag translate, stagger fade-in */
+    .s2-cluster-wrap {
       position: absolute;
+      cursor: grab;
+      user-select: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .s2-cluster-wrap.is-dragging { cursor: grabbing; z-index: 10; transition: none; }
+    .slide.active .s2-cluster-wrap { opacity: 1; }
+    /* Inner image: carries rotation only */
+    .s2-cluster-photo {
       display: block;
       border-radius: 4px;
       box-shadow: 0 4px 4px -4px rgba(12,12,13,0.05), 0 16px 32px -4px rgba(12,12,13,0.1);
       image-rendering: -webkit-optimize-contrast;
       image-rendering: smooth;
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      pointer-events: none;
     }
-    .slide.active .s2-cluster-photo { opacity: 1; }
-    /* Group 1 — three photos, upper cluster */
-    .s2-cluster-photo:nth-child(1) { left: 52px;  top:   0px; width: 140px; transform: rotate(7deg);   transition-delay: 0.08s; }
-    .s2-cluster-photo:nth-child(2) { left: 129px; top: 101px; width: 120px; transform: rotate(3deg);   transition-delay: 0.15s; }
-    .s2-cluster-photo:nth-child(3) { left:   0px; top: 123px; width: 140px; transform: rotate(-8deg);  transition-delay: 0.22s; }
-    /* Group 2 — three photos, lower cluster (overlaps group 1 by 62px) */
-    .s2-cluster-photo:nth-child(4) { left:  65px; top: 222px; width: 120px; transform: rotate(12deg);  transition-delay: 0.29s; }
-    .s2-cluster-photo:nth-child(5) { left: 151px; top: 284px; width: 120px; transform: rotate(-5deg);  transition-delay: 0.36s; }
-    .s2-cluster-photo:nth-child(6) { left:   0px; top: 283px; width: 120px; transform: rotate(8deg);   transition-delay: 0.43s; }
+    /* Positions on wrapper, rotation on img */
+    .s2-cluster-wrap:nth-child(1) { left:  70px; top:   0px; transition-delay: 0.08s; }
+    .s2-cluster-wrap:nth-child(1) .s2-cluster-photo { width: 100px; transform: rotate(8deg); }
+    .s2-cluster-wrap:nth-child(2) { left: 205px; top:  55px; transition-delay: 0.15s; }
+    .s2-cluster-wrap:nth-child(2) .s2-cluster-photo { width:  88px; transform: rotate(13deg); }
+    .s2-cluster-wrap:nth-child(3) { left:   0px; top:  90px; transition-delay: 0.22s; }
+    .s2-cluster-wrap:nth-child(3) .s2-cluster-photo { width:  88px; transform: rotate(-7deg); }
+    .s2-cluster-wrap:nth-child(4) { left: 130px; top: 185px; transition-delay: 0.29s; }
+    .s2-cluster-wrap:nth-child(4) .s2-cluster-photo { width: 100px; transform: rotate(3deg); }
+    .s2-cluster-wrap:nth-child(5) { left:  15px; top: 295px; transition-delay: 0.36s; }
+    .s2-cluster-wrap:nth-child(5) .s2-cluster-photo { width:  88px; transform: rotate(-12deg); }
+    .s2-cluster-wrap:nth-child(6) { left: 235px; top: 265px; transition-delay: 0.43s; }
+    .s2-cluster-wrap:nth-child(6) .s2-cluster-photo { width:  88px; transform: rotate(9deg); }
 
     /* ── About slide: right column (card + tweet) ──────── */
     .s2-right {
@@ -1265,12 +1278,12 @@
     <div class="slide active" data-idx="0">
       <div class="s2-layout">
         <div class="s2-photo-cluster">
-          <img class="s2-cluster-photo" src="assets-about/frame.png" alt="" />
-          <img class="s2-cluster-photo" src="assets-about/frame-1.png" alt="" />
-          <img class="s2-cluster-photo" src="assets-about/frame-2.png" alt="" />
-          <img class="s2-cluster-photo" src="assets-about/frame-3.png" alt="" />
-          <img class="s2-cluster-photo" src="assets-about/frame-5.png" alt="" />
-          <img class="s2-cluster-photo" src="assets-about/frame-4.png" alt="" />
+          <div class="s2-cluster-wrap"><img class="s2-cluster-photo" src="assets-about/frame.png" alt="" /></div>
+          <div class="s2-cluster-wrap"><img class="s2-cluster-photo" src="assets-about/frame-1.png" alt="" /></div>
+          <div class="s2-cluster-wrap"><img class="s2-cluster-photo" src="assets-about/frame-2.png" alt="" /></div>
+          <div class="s2-cluster-wrap"><img class="s2-cluster-photo" src="assets-about/frame-3.png" alt="" /></div>
+          <div class="s2-cluster-wrap"><img class="s2-cluster-photo" src="assets-about/frame-5.png" alt="" /></div>
+          <div class="s2-cluster-wrap"><img class="s2-cluster-photo" src="assets-about/frame-4.png" alt="" /></div>
         </div>
         <div class="col">
           <p class="s2-name">Sofia behind the pixels</p>
@@ -1994,9 +2007,9 @@
       }, 400)
     }
 
-    // ── Draggable photos (legacy) ────────────────────────
+    // ── Draggable photo cluster ──────────────────────────
     ;(function () {
-      document.querySelectorAll('.s2-photo-wrap').forEach(wrap => {
+      document.querySelectorAll('.s2-cluster-wrap, .s2-photo-wrap').forEach(wrap => {
         let dragging = false, ox = 0, oy = 0, cx = 0, cy = 0
 
         wrap.addEventListener('pointerdown', e => {
