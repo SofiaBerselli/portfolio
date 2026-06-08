@@ -196,6 +196,7 @@
     .slide .problem-stat,
     .slide .problem-list,
     .slide .takeaway-list,
+    .slide .tier-row,
     .slide .ux-flow,
     .slide .ux-alts,
     .slide .ux-edge,
@@ -230,6 +231,7 @@
     .slide.active .problem-stat,
     .slide.active .problem-list,
     .slide.active .takeaway-list,
+    .slide.active .tier-row,
     .slide.active .ux-flow,
     .slide.active .ux-alts,
     .slide.active .ux-edge,
@@ -543,6 +545,30 @@
       color: var(--muted);
       margin-bottom: 10px;
     }
+    .tier-row {
+      display: flex; align-items: center;
+      margin-top: 20px;
+    }
+    .tier-item {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+    }
+    .tier-item--muted .tier-name { color: var(--muted); }
+    .tier-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+    }
+    .tier-dot--on {
+      background: var(--orange);
+      box-shadow: 0 0 0 3px rgba(245,78,0,0.12);
+    }
+    .tier-name {
+      font-family: var(--sans); font-size: 0.6875rem;
+      color: var(--text); letter-spacing: -0.01em; white-space: nowrap;
+    }
+    .tier-connector {
+      flex: 1; height: 1px; background: var(--border); margin-bottom: 14px;
+    }
+    .tier-connector--on { background: var(--orange); opacity: 0.35; }
     .proj-name {
       font-family: var(--serif);
       font-size: 1.625rem;
@@ -1357,7 +1383,41 @@
       </div>
     </div>
 
-    <!-- ── Slide 2: Project overview ──────────────────────────────────── -->
+    <!-- ── Slide 2: Who I design for ──────────────────────────────────── -->
+    <div class="slide" data-idx="2">
+      <div class="col" style="width:500px; max-width:90vw">
+        <p class="slide-label">Who I design for</p>
+        <div class="tier-row">
+          <div class="tier-item tier-item--muted">
+            <div class="tier-dot"></div>
+            <span class="tier-name">Micro</span>
+          </div>
+          <div class="tier-connector"></div>
+          <div class="tier-item">
+            <div class="tier-dot tier-dot--on"></div>
+            <span class="tier-name">Small</span>
+          </div>
+          <div class="tier-connector tier-connector--on"></div>
+          <div class="tier-item">
+            <div class="tier-dot tier-dot--on"></div>
+            <span class="tier-name">Medium</span>
+          </div>
+          <div class="tier-connector tier-connector--on"></div>
+          <div class="tier-item">
+            <div class="tier-dot tier-dot--on"></div>
+            <span class="tier-name">Upmarket</span>
+          </div>
+          <div class="tier-connector"></div>
+          <div class="tier-item tier-item--muted">
+            <div class="tier-dot"></div>
+            <span class="tier-name">Enterprise</span>
+          </div>
+        </div>
+        <p class="proj-body" style="margin-top:28px">I build this understanding through competitive benchmarks, merchant interviews, and continuous feedback from Mollie's product teams.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 3: Project overview ──────────────────────────────────── -->
     <div class="slide" data-idx="2">
       <div class="col">
         <p class="case-label">Case 1/2</p>
@@ -1446,7 +1506,7 @@
     <div class="slide" data-idx="6">
       <span class="crumb">1/2 Setup Guide <b>/ Process</b></span>
       <div class="ux-col">
-        <h3 class="sec-heading">What we evaluated</h3>
+        <h3 class="sec-heading">Directions explored</h3>
         <div class="ux-alts">
           <div class="ux-alt">
             <span class="ux-alt-tried">tried</span>
@@ -1671,7 +1731,7 @@
       <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
       <div class="col">
         <h3 class="sec-heading">What cracked it</h3>
-        <p class="proj-body">The bank selection page is the moment where the product either earns trust or loses it. Surfacing the MBA offer at the exact point where merchants are already thinking about payouts made the upsell feel like a natural next step, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
+        <p class="proj-body">The <b>bank selection page</b> is the moment where the product either <b>earns trust or loses it</b>. Surfacing the MBA offer at the exact point where merchants are <b>already thinking about payouts</b> made the upsell feel like a <b>natural next step</b>, not a distraction. Contextual framing converted better than a dedicated upsell page because it matched what the merchant was already trying to do.</p>
         <p class="ux-edge" style="display:none"><strong>My role:</strong> Defined onboarding journeys for legal representatives and app-based identity verification across BVs, VOFs, and bank selection. Cross-functional alignment across Product, Risk, Compliance, and Ops.</p>
       </div>
     </div>
@@ -1751,8 +1811,8 @@
 
     // ── Project config ────────────────────────────────
     const PROJECTS = {
-      setup: { start: 2, end: 10 },
-      mba:   { start: 11, end: 19 }
+      setup: { start: 3, end: 11 },
+      mba:   { start: 12, end: 20 }
     }
     const THANKYOU_IDX = total - 1
 
@@ -1791,7 +1851,7 @@
       } else if (idx === THANKYOU_IDX) {
         pbar.style.transform = `scaleX(1)`
       } else {
-        pbar.style.transform = `scaleX(${(idx + 1) / 2})`
+        pbar.style.transform = `scaleX(${(idx + 1) / 3})`
       }
     }
 
