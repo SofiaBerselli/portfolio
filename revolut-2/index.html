@@ -590,10 +590,15 @@
       gap: 20px;
     }
     .revolut-closing .slide-label { text-align: center; margin-bottom: 0; }
+    .revolut-closing .phone-strip {
+      gap: 28px;
+    }
     .revolut-closing .phone-strip .mockup-img {
-      border-radius: 36px;
+      border-radius: 20px;
       box-shadow: 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
-      max-height: 62vh;
+      outline: 3px solid #fff;
+      max-height: 60vh;
+      cursor: zoom-in;
     }
 
     .trials-layout {
@@ -1894,14 +1899,19 @@ Custom contracts, dedicated support, high volume.</span>
     </div>
 
     <!-- ── Love ya Revolut — phone strip slide ─────────────────────────── -->
-    <!-- TODO: save 3 screenshots as revolut-ss-1.png, revolut-ss-2.png, revolut-ss-3.png in revolut-2/ -->
     <div class="slide" data-idx="18">
       <div class="revolut-closing">
         <p class="slide-label">Love ya Revolut pls fix this</p>
         <div class="phone-strip">
-          <img class="mockup-img phone" src="revolut-ss-1.png" alt="Revolut group chat" />
-          <img class="mockup-img phone" src="revolut-ss-2.png" alt="Revolut 1:1 chat" />
-          <img class="mockup-img phone" src="revolut-ss-3.png" alt="Revolut analytics" />
+          <div class="expl-thumb revolut-phone-wrap" data-label="Group payments · Pesto squad">
+            <img class="mockup-img phone" src="revolut-ss-1.png" alt="Revolut group chat" />
+          </div>
+          <div class="expl-thumb revolut-phone-wrap" data-label="1:1 payments · Anatoli">
+            <img class="mockup-img phone" src="revolut-ss-2.png" alt="Revolut 1:1 chat" />
+          </div>
+          <div class="expl-thumb revolut-phone-wrap" data-label="Spend analytics · 177€ transfers">
+            <img class="mockup-img phone" src="revolut-ss-3.png" alt="Revolut analytics" />
+          </div>
         </div>
       </div>
     </div>
