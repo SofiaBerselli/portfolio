@@ -1412,6 +1412,7 @@
       <button class="proj-pill" data-project="intro" type="button">Intro</button>
       <button class="proj-pill active" data-project="setup" type="button">Setup Guide</button>
       <button class="proj-pill" data-project="mba" type="button">MBA Onboarding</button>
+      <button class="proj-pill" data-project="revolut" type="button">Revolut</button>
     </nav>
   </div>
 
@@ -1969,14 +1970,16 @@ Custom contracts, dedicated support, high volume.</span>
 
     // ── Project config ────────────────────────────────
     const PROJECTS = {
-      setup: { start: 4, end: 12 },
-      mba:   { start: 13, end: 21 }
+      setup:   { start: 4,  end: 12 },
+      mba:     { start: 13, end: 21 },
+      revolut: { start: 22, end: 22 }
     }
     const THANKYOU_IDX = total - 1
 
     let activeProject = 'setup'
 
     function getProjectFromIdx(idx) {
+      if (idx >= PROJECTS.revolut.start && idx <= PROJECTS.revolut.end) return 'revolut'
       if (idx >= PROJECTS.mba.start   && idx <= PROJECTS.mba.end)   return 'mba'
       if (idx >= PROJECTS.setup.start && idx <= PROJECTS.setup.end) return 'setup'
       return null
