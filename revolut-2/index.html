@@ -1127,24 +1127,41 @@
       max-width: 40vw;
     }
     .s2-about-card {
-      width: 120px;
+      width: 130px;
       display: block;
-      border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
       align-self: flex-end;
-      margin-bottom: -32px;
+      margin-right: 8px;
+      margin-bottom: -40px;
       position: relative;
       z-index: 2;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: smooth;
+      opacity: 0;
+      transform: translateY(8px) rotate(4deg);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .slide.active .s2-about-card {
+      opacity: 1;
+      transform: translateY(0) rotate(4deg);
+      transition-delay: 0.22s;
+    }
+    .s2-tweet-img {
+      width: 300px;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       image-rendering: -webkit-optimize-contrast;
       image-rendering: smooth;
       opacity: 0;
       transform: translateY(8px);
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
-    .slide.active .s2-about-card {
+    .slide.active .s2-tweet-img {
       opacity: 1;
       transform: translateY(0);
-      transition-delay: 0.22s;
+      transition-delay: 0.3s;
     }
 
     /* ── Project switcher nav ───────────────────────── */
@@ -1248,12 +1265,12 @@
     <div class="slide active" data-idx="0">
       <div class="s2-layout">
         <div class="s2-photo-cluster">
-          <img class="s2-cluster-photo" src="about-p3.png" alt="" />
-          <img class="s2-cluster-photo" src="about-p5.png" alt="" />
-          <img class="s2-cluster-photo" src="about-p2.png" alt="" />
-          <img class="s2-cluster-photo" src="about-p4.png" alt="" />
-          <img class="s2-cluster-photo" src="about-p6.png" alt="" />
-          <img class="s2-cluster-photo" src="about-p1.png" alt="" />
+          <img class="s2-cluster-photo" src="assets-about/frame.png" alt="" />
+          <img class="s2-cluster-photo" src="assets-about/frame-1.png" alt="" />
+          <img class="s2-cluster-photo" src="assets-about/frame-2.png" alt="" />
+          <img class="s2-cluster-photo" src="assets-about/frame-3.png" alt="" />
+          <img class="s2-cluster-photo" src="assets-about/frame-5.png" alt="" />
+          <img class="s2-cluster-photo" src="assets-about/frame-4.png" alt="" />
         </div>
         <div class="col">
           <p class="s2-name">Sofia behind the pixels</p>
@@ -1268,51 +1285,8 @@
           </p>
         </div>
         <div class="s2-right">
-          <img class="s2-about-card" src="about-card.png" alt="" />
-          <div class="tweet-card-wrap">
-          <div class="tweet-card">
-            <div class="tw-repost">
-              <span class="tw-repost-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.37H4V8.38L2.353 9.91.647 8.09l4.103-4.3zM15.066 5.02L10.56 9.32l1.706 1.82 1.634-1.51V17h2V9.63l1.74 1.52 1.706-1.82-4.48-4.3z"/></svg>
-              </span>
-              <span class="tw-repost-label">You reposted</span>
-            </div>
-            <div class="tw-row">
-              <div class="tw-avatar-col">
-                <img class="tw-avatar" src="../revolut/tweet-avatar.png" alt="" />
-              </div>
-              <div class="tw-content">
-                <div class="tw-header">
-                  <div class="tw-user">
-                    <span class="tw-name">Jay Alto</span>
-                    <svg class="tw-badge" width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1D9BF0" d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-2-2.19-3.34-2.19s-2.67.88-3.34 2.19c-1.39-.46-2.9-.2-3.91.81S3.49 6.6 3.95 8c-1.31.66-2.19 2-2.19 3.34s.88 2.67 2.19 3.34c-.46 1.39-.2 2.9.81 3.91s2.52 1.27 3.91.81c.66 1.31 2 2.19 3.34 2.19s2.67-.88 3.34-2.19c1.39.46 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.66 2.19-2 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"/></svg>
-                    <span class="tw-handle">@theJayAlto · Dec 21, 2025</span>
-                  </div>
-                  <span class="tw-more">···</span>
-                </div>
-                <p class="tw-text">my competitive advantage is i'm having fun</p>
-                <div class="tw-actions">
-                  <span class="tw-action">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M1.751 10c0-4.42 3.584-8 8-8h4.498c4.43 0 8.002 3.58 8.002 8s-3.572 8-8.002 8H9.748c-1.93 0-3.71-.69-5.1-1.84H3.5c-.41 0-.75-.34-.75-.75V14.1c-.476-1.23-.749-2.6-.749-4.1z"/></svg>
-                    123
-                  </span>
-                  <span class="tw-action tw-repost-count">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.38H4V8.38L2.353 9.91.647 8.09l4.103-4.3zM15.066 5.02L10.56 9.32l1.706 1.82 1.634-1.51V17h2V9.63l1.74 1.52 1.706-1.82-4.48-4.3z"/></svg>
-                    2.4K
-                  </span>
-                  <span class="tw-action tw-like">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.807 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91z"/></svg>
-                    9.8K
-                  </span>
-                  <span class="tw-action">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21l.004-10h2L6 21H4zm9.248 0v-7h2v7h-2z"/></svg>
-                    472K
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div><!-- /.tweet-card-wrap -->
+          <img class="s2-about-card" src="assets-about/card.png" alt="" />
+          <img class="s2-tweet-img" src="assets-about/twitter.png" alt="" />
         </div>
       </div>
     </div>
