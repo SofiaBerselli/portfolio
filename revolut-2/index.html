@@ -604,6 +604,7 @@
       background: transparent !important;
       overflow: visible !important;
       border-radius: 0 !important;
+      box-shadow: none !important; /* suppress wrapper hover shadow from .expl-thumb:hover */
     }
     .revolut-phone-wrap img.mockup-img {
       width: auto !important;
@@ -611,8 +612,12 @@
       object-fit: contain !important;
       max-height: 58vh;
       border-radius: 28px;
-      box-shadow: 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
+      box-shadow: none; /* shadow appears only on hover */
       cursor: zoom-in;
+      transition: box-shadow 0.25s ease;
+    }
+    .revolut-phone-wrap:hover img.mockup-img {
+      box-shadow: 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
     }
     .revolut-phone-caption {
       font-family: var(--sans);
