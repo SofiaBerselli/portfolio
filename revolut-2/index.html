@@ -590,6 +590,11 @@
       gap: 20px;
     }
     .revolut-closing .slide-label { text-align: center; margin-bottom: 0; }
+    .revolut-closing .phone-strip .mockup-img {
+      border-radius: 36px;
+      box-shadow: 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
+      max-height: 62vh;
+    }
 
     .trials-layout {
       display: flex;
@@ -731,10 +736,6 @@
       image-rendering: smooth;
     }
 
-    video#mba-video.mockup-img {
-      max-height: 88vh;
-      max-width: 92vw;
-    }
     .mockup-img.phone {
       max-height: 66vh;
       border-radius: 28px;
@@ -1797,7 +1798,10 @@ Custom contracts, dedicated support, high volume.</span>
     <!-- ── Slide 12: MBA: The solution (polished UI) ──────────────── -->
     <div class="slide" data-idx="12" data-project="mba">
       <span class="crumb">MBA Onboarding <b>/ Solution</b></span>
-      <video class="mockup-img" id="mba-video" src="mba.mp4" muted playsinline></video>
+      <div class="trials-layout">
+        <h3 class="sec-heading">The full flow</h3>
+        <video class="mockup-img" id="mba-video" src="mba.mp4" muted playsinline></video>
+      </div>
     </div>
 
     <!-- ── Slide 13: MBA: Bank selection framings ──────────────────── -->
