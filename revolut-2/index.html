@@ -591,13 +591,24 @@
     }
     .revolut-closing .slide-label { text-align: center; margin-bottom: 0; }
     .revolut-closing .phone-strip {
-      gap: 28px;
+      gap: 32px;
+      align-items: flex-start;
     }
-    .revolut-closing .phone-strip .mockup-img {
-      border-radius: 20px;
-      box-shadow: 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
-      outline: 3px solid #fff;
+    /* Override expl-thumb crop behaviour for phone screenshots */
+    .revolut-phone-wrap {
+      border: none;
+      background: transparent;
+      overflow: visible;
+      border-radius: 34px;
+    }
+    .revolut-phone-wrap img.mockup-img {
+      width: auto !important;
+      aspect-ratio: auto !important;
+      object-fit: contain !important;
       max-height: 60vh;
+      border-radius: 34px;
+      /* white border via box-shadow — follows border-radius perfectly with no gap */
+      box-shadow: 0 0 0 3px #ffffff, 0 20px 48px rgba(30,28,24,0.16), 0 4px 12px rgba(30,28,24,0.10);
       cursor: zoom-in;
     }
 
